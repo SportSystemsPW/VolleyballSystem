@@ -22,6 +22,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArbiterMAUI.Clinet", "VolleyballArbiter\ArbiterMAUI.Clinet\ArbiterMAUI.Clinet.csproj", "{ACD84394-4B58-4572-8062-F91271724363}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VolleyballTreningOrganizer", "VolleyballTreningOrganizer", "{C2674A0E-31BC-4C9F-9ABC-B1A0122E7683}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TreningOrganizer.API", "VolleyballTreningOrganizer\TreningOrganizer.API\TreningOrganizer.API.csproj", "{48077658-3AF1-4744-A185-98C385678140}"
 EndProject

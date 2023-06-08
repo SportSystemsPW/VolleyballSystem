@@ -6,12 +6,15 @@ namespace Volleyball.Infrastructure.Database.Models;
 
 public partial class VolleyballContext : DbContext
 {
- 
+    public VolleyballContext()
+    {
+    }
 
     public VolleyballContext(DbContextOptions<VolleyballContext> options)
         : base(options)
     {
     }
+    private string connStringLocal = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=volleyball;Integrated Security=True;Connect Timeout=60;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
 
     public virtual DbSet<Article> Articles { get; set; }
 
@@ -57,6 +60,12 @@ public partial class VolleyballContext : DbContext
 
     public virtual DbSet<Invitation> Invitations { get; set; }
 
+    public virtual DbSet<MessageTemplate> MessageTemplates { get; set; }
+    public virtual DbSet<TrainingParticipant> TrainingParticipants { get; set; }
+    public virtual DbSet<Training> Trainings { get; set; }
+    public virtual DbSet<TrainingGroup> TrainingGroups { get; set; }
+    public virtual DbSet<TrainingTrainingParticipant> TrainingTrainingParticipants { get; set; }
+    public virtual DbSet<TrainingGroupTrainingParticipant> TrainingGroupTrainingParticipants { get; set; }
  
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -196,9 +205,46 @@ public partial class VolleyballContext : DbContext
 
         });
 
+        modelBuilder.Entity<TrainingGroup>(entity =>
+        {
+
+            entity.HasOne(tg => tg.Trainer).WithMany(t => t.TrainingGroups).HasForeignKey(tg => tg.TrainerId);
+
+        });
+
+        modelBuilder.Entity<TrainingGroupTrainingParticipant>(entity =>
+        {
+            entity.HasOne(e => e.TrainingGroup).WithMany(tg => tg.TrainingGroupTrainingParticipants).HasForeignKey(e => e.TrainingGroupId).OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasOne(e => e.TrainingParticipant).WithMany(tp => tp.TrainingGroupTrainingParticipants).HasForeignKey(e => e.TrainingParticipantId).OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasKey(e => new { e.TrainingGroupId, e.TrainingParticipantId });
+        });
+
+        modelBuilder.Entity<TrainingTrainingParticipant>(entity =>
+        {
+            entity.HasOne(t_tp => t_tp.Training).WithMany(t => t.TrainingParticipants).HasForeignKey(t_tp => t_tp.TrainingId).OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasOne(t_tp => t_tp.TrainingParticipant).WithMany().HasForeignKey(t_tp => t_tp.TrainingParticipantId).OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasKey(t_tp => new { t_tp.TrainingId, t_tp.TrainingParticipantId });
+        });
+
+        modelBuilder.Entity<MessageTemplate>(entity =>
+        {
+            entity.HasOne(mt => mt.Trainer).WithMany(t => t.MessageTemplates).HasForeignKey(mt => mt.TrainerId);
+        });
+
+        modelBuilder.Entity<Trainer>(entity =>
+        {
+            entity.HasOne(t => t.User).WithOne().HasForeignKey<Trainer>(t => t.UserId);
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+       => optionsBuilder.UseSqlServer(connStringLocal);
 }
