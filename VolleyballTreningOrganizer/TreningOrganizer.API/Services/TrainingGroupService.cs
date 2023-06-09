@@ -95,7 +95,7 @@ namespace TreningOrganizer.API.Services
                 });
             }
             trainingGroup.TrainingGroupTrainingParticipants = groupTrainingParticipants;
-            trainingGroupRepository.InsertTrainingGroup(trainingGroup);
+            trainingGroupRepository.UpdateTrainingGroup(trainingGroup);
         }
     }
 }

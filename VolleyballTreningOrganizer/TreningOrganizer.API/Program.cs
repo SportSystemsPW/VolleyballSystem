@@ -23,10 +23,12 @@ builder.Services.AddDbContext<VolleyballContext>(options =>
 builder.Services.AddScoped<IMessageTemplateRepository, MessageTemplateRepository>();
 builder.Services.AddScoped<ITrainingGroupRepository, TrainingGroupRepository>();
 builder.Services.AddScoped<ITrainingParticipantRepository, TrainingParticipantRepository>();
+builder.Services.AddScoped<ITrainingRepository, TrainingRepository>();
 
 builder.Services.AddScoped<IMessageTemplateService, MessageTemplateService>();
 builder.Services.AddScoped<ITrainingGroupService, TrainingGroupService>();
 builder.Services.AddScoped<ITrainingParticipantService, TrainingParticipantService>();
+builder.Services.AddScoped<ITrainingService, TrainingService>();
 
 var app = builder.Build();
 

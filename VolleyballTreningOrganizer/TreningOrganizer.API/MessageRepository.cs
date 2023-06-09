@@ -7,5 +7,6 @@
         public static string CannotRemoveMessageTemplate = "";
         public static string CannotRemoveTrainingParticipant = "";
         public static string CannotRemoveTrainingGroup = "";
+        public static string CannotRemoveTraining = "";
     }
 }
