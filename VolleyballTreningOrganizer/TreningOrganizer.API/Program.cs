@@ -20,8 +20,13 @@ builder.Services.AddDbContext<VolleyballContext>(options =>
     options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=volleyball;Integrated Security=True;Connect Timeout=60;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
 });
 
-builder.Services.AddScoped<IMessageTemplateService, MessageTemplateService>();
 builder.Services.AddScoped<IMessageTemplateRepository, MessageTemplateRepository>();
+builder.Services.AddScoped<ITrainingGroupRepository, TrainingGroupRepository>();
+builder.Services.AddScoped<ITrainingParticipantRepository, TrainingParticipantRepository>();
+
+builder.Services.AddScoped<IMessageTemplateService, MessageTemplateService>();
+builder.Services.AddScoped<ITrainingGroupService, TrainingGroupService>();
+builder.Services.AddScoped<ITrainingParticipantService, TrainingParticipantService>();
 
 var app = builder.Build();
 

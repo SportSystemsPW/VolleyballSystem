@@ -10,7 +10,7 @@ namespace TreningOrganizer.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MessageTemplateController : ControllerBase
+    public class MessageTemplateController : BaseController
     {
         private readonly IMessageTemplateService messageTemplateService;
         public MessageTemplateController(IMessageTemplateService messageTemplateService)
@@ -24,27 +24,18 @@ namespace TreningOrganizer.API.Controllers
             List<string> errors = ValidateMessageTemplate(newMessageTemplate);
             if (errors.Count == 0)
             {
-                MessageTemplate messageTemplate = new MessageTemplate
-                {
-                    TemplateName = newMessageTemplate.TemplateName,
-                    Content = newMessageTemplate.Content,
-                    TrainerId = GetTrainerId()
-                };
-                messageTemplateService.InsertMessageTemplate(messageTemplate);
+                messageTemplateService.InsertMessageTemplate(newMessageTemplate, GetTrainerId());
             }
             return errors;
         }
 
         [HttpPut("EditMessageTemplate")]
-        public List<string> EditMessageTemplate(int id, MessageTemplateDTO newMessageTemplate)
+        public List<string> EditMessageTemplate(int id, MessageTemplateDTO editedMessageTemplate)
         {
-            List<string> errors = ValidateMessageTemplate(newMessageTemplate);
+            List<string> errors = ValidateMessageTemplate(editedMessageTemplate);
             if (errors.Count == 0)
             {
-                MessageTemplate messageTemplate = messageTemplateService.GetMessageTemplateById(id);
-                messageTemplate.TemplateName = newMessageTemplate.TemplateName;
-                messageTemplate.Content = newMessageTemplate.Content;
-                messageTemplateService.UpdateMessageTemplate(messageTemplate);
+                messageTemplateService.UpdateMessageTemplate(editedMessageTemplate);
             }
             return errors;
         }
@@ -83,10 +74,6 @@ namespace TreningOrganizer.API.Controllers
         private bool ValidateMessageTemplateRemove(int id)
         {
             return true;
-        }
-        private int GetTrainerId()
-        {
-            return 2;
         }
     }
 }

@@ -20,7 +20,13 @@ namespace TreningOrganizer.API.Services
 
         public MessageTemplateDTO GetMessageTemplateById(int id)
         {
-            return messageTemplateRepository.GetMessageTemplateById(id);
+            MessageTemplate template = messageTemplateRepository.GetMessageTemplateById(id);
+            return new MessageTemplateDTO
+            {
+                Id = template.Id,
+                TemplateName = template.TemplateName,
+                Content = template.Content
+            };
         }
 
         public List<string> GetMessageTemplateNames(int trainerId)
@@ -33,13 +39,22 @@ namespace TreningOrganizer.API.Services
             return messageTemplateRepository.GetMessageTemplatesForTrainer(trainerId);
         }
 
-        public void InsertMessageTemplate(MessageTemplate template)
+        public void InsertMessageTemplate(MessageTemplateDTO template, int trainerId)
         {
-            messageTemplateRepository.InsertMessageTemplate(template);
+            MessageTemplate messageTemplate = new MessageTemplate
+            {
+                TemplateName = template.TemplateName,
+                Content = template.Content,
+                TrainerId = trainerId
+            };
+            messageTemplateRepository.InsertMessageTemplate(messageTemplate);
         }
 
-        public void UpdateMessageTemplate(MessageTemplate template)
+        public void UpdateMessageTemplate(MessageTemplateDTO templateDTO)
         {
+            MessageTemplate template = messageTemplateRepository.GetMessageTemplateById(templateDTO.Id);
+            template.TemplateName = templateDTO.TemplateName;
+            template.Content = templateDTO.Content;
             messageTemplateRepository.UpdateMessageTemplate(template);
         }
     }

@@ -6,7 +6,7 @@ namespace TreningOrganizer.API.IRepositories
     public interface IMessageTemplateRepository
     {
         public List<MessageTemplateDTO> GetMessageTemplatesForTrainer(int trainerId);
-        public MessageTemplateDTO GetMessageTemplateById(int id);
+        public MessageTemplate GetMessageTemplateById(int id);
         public void InsertMessageTemplate(MessageTemplate template);
         public void UpdateMessageTemplate(MessageTemplate template);
         public void DeleteMessageTemplateById(int id);

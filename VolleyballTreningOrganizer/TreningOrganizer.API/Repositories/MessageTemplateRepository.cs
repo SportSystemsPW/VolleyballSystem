@@ -25,19 +25,14 @@ namespace TreningOrganizer.API.Repositories
             }
         }
 
-        public MessageTemplateDTO GetMessageTemplateById(int id)
+        public MessageTemplate GetMessageTemplateById(int id)
         {
             MessageTemplate messageTemplate = messageTemplates.FirstOrDefault(mt => mt.Id == id);
             if(messageTemplate == null)
             {
                 throw new Exception();
             }
-            return new MessageTemplateDTO
-            {
-                Id = messageTemplate.Id,
-                TemplateName = messageTemplate.TemplateName,
-                Content = messageTemplate.Content
-            };
+            return messageTemplate;
         }
 
         public List<MessageTemplateDTO> GetMessageTemplatesForTrainer(int trainerId)
