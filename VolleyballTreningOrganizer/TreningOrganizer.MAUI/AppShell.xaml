@@ -4,11 +4,59 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:TreningOrganizer.MAUI"
+    xmlns:views="clr-namespace:TreningOrganizer.MAUI.Views"
     Shell.FlyoutBehavior="Disabled">
 
+    <!-- Loading Page -->
     <ShellContent
         Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        ContentTemplate="{DataTemplate views:LoadingPage}"
+        Route="loading" />
+
+    <!-- Login Page -->
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate views:LoginPage}"
+        Route="login" />
+
+    <!--Main Page-->
+    <TabBar>
+        <!--Message templates-->
+        <Tab Title="Templates" Icon="email.svg">
+            <ShellContent
+                Icon="email.svg"
+        Title="Templates"
+        ContentTemplate="{DataTemplate views:MessageTemplatesPage}"
+        Route="messageTemplates" />
+
+            <!--Groups-->
+        </Tab>
+        <Tab Title="Groups" Icon="group.svg">
+            <ShellContent
+                Icon="email.svg"
+        Title="Groups"
+        ContentTemplate="{DataTemplate views:GroupsPage}"
+        Route="groups" />
+
+            <!--Trainings-->
+        </Tab>
+        <Tab Title="Trainings" Icon="volleyball.svg">
+            <ShellContent
+                Icon="volleyball.svg"
+        Title="Trainings"
+        ContentTemplate="{DataTemplate views:TrainingsPage}"
+        Route="trainings" />
+
+            <!--Payment-->
+        </Tab>
+        <Tab Title="Payment" Icon="money.svg">
+            <ShellContent
+                Icon="money.svg"
+        Title="Payment"
+        ContentTemplate="{DataTemplate views:PaymentPage}"
+        Route="payment" />
+
+        </Tab>
+    </TabBar>
 
 </Shell>
