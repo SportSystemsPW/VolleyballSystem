@@ -1,4 +1,4 @@
-﻿using TreningOrganizer.API.DTOs;
+﻿using Volleyball.DTO.TrainingOrganizer;
 
 namespace TreningOrganizer.API.IServices
 {

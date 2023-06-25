@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TreningOrganizer.API.DTOs;
+using Volleyball.DTO.TrainingOrganizer;
 using TreningOrganizer.API.IServices;
 using TreningOrganizer.API.Services;
 using Volleyball.Infrastructure.Database.Models;

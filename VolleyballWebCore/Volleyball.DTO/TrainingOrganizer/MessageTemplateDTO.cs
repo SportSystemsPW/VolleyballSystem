@@ -1,4 +1,4 @@
-﻿namespace TreningOrganizer.API.DTOs
+﻿namespace Volleyball.DTO.TrainingOrganizer
 {
     public class MessageTemplateDTO
     {

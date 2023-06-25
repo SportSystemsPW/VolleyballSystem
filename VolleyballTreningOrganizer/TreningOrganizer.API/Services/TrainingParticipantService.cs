@@ -1,4 +1,4 @@
-﻿using TreningOrganizer.API.DTOs;
+﻿using Volleyball.DTO.TrainingOrganizer;
 using TreningOrganizer.API.IRepositories;
 using TreningOrganizer.API.IServices;
 using Volleyball.Infrastructure.Database.Models;

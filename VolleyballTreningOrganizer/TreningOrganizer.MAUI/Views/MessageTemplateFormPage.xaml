@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModel="clr-namespace:TreningOrganizer.MAUI.ViewModels"
+             x:Class="TreningOrganizer.MAUI.Views.MessageTemplateFormPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Shell.NavBarIsVisible="True"
+             Title="{Binding Title}">
+    <ContentPage.BindingContext>
+        <viewModel:MessageTemplateFormViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+        EventName="Appearing"
+        Command="{Binding FillFormCommand}" />
+    </ContentPage.Behaviors>
+    <VerticalStackLayout>
+        <Label FontFamily="Consolas" Text="Message template name:" Margin="10,5,0,0"/>
+        <Frame CornerRadius="10" Padding="3" Margin="10,10,10,0">
+            <VerticalStackLayout>
+
+                <Entry Text="{Binding FormTemplate.TemplateName,Mode=TwoWay}" Margin="5,0,0,0" Placeholder="Message template name" FontSize="18">
+                </Entry>
+
+            </VerticalStackLayout>
+        </Frame>
+        <Label FontFamily="Consolas" Text="Message template:" Margin="10,0,0,0"/>
+        <Frame CornerRadius="10" Padding="3" Margin="10,10,10,0">
+            <VerticalStackLayout>
+
+                <Editor Text="{Binding FormTemplate.Content,Mode=TwoWay}" Margin="5,0,5,0" Placeholder="Message template" 
+                       FontSize="18" HeightRequest="300">
+                </Editor>
+
+            </VerticalStackLayout>
+        </Frame>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Button Text="Cancel"
+                    Grid.Row="1"
+                    WidthRequest="150"
+                    Command="{Binding CancelCommand}">
+            </Button>
+            <Button Text="Save"
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    WidthRequest="150"
+                    Command="{Binding SaveCommand}">
+            </Button>
+        </Grid>
+    </VerticalStackLayout>
+</ContentPage>

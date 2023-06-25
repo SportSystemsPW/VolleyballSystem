@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
-using TreningOrganizer.API.DTOs;
+using Volleyball.DTO.TrainingOrganizer;
 using TreningOrganizer.API.IServices;
 
 namespace TreningOrganizer.API.Controllers

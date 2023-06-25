@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\VolleyballWebCore\Volleyball.DTO\Volleyball.DTO.csproj" />
     <ProjectReference Include="..\..\VolleyballWebCore\Volleyball.Infrastructure.Database\Volleyball.Infrastructure.Database.csproj" />
   </ItemGroup>
 

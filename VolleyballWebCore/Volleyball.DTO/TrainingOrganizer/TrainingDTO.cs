@@ -1,6 +1,4 @@
-﻿using Volleyball.Infrastructure.Database.Models;
-
-namespace TreningOrganizer.API.DTOs
+﻿namespace Volleyball.DTO.TrainingOrganizer
 {
     public class TrainingDTO
     {

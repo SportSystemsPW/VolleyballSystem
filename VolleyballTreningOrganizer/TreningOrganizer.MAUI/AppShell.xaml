@@ -59,4 +59,10 @@
         </Tab>
     </TabBar>
 
+    <!-- MessageTemplateForm Page -->
+    <ShellContent
+        Title="TemplateForm"
+        ContentTemplate="{DataTemplate views:MessageTemplateFormPage}"
+        Route="templateForm" />
+
 </Shell>

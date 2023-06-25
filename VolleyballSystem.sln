@@ -29,6 +29,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TreningOrganizer.API", "VolleyballTreningOrganizer\TreningOrganizer.API\TreningOrganizer.API.csproj", "{48077658-3AF1-4744-A185-98C385678140}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TreningOrganizer.MAUI", "VolleyballTreningOrganizer\TreningOrganizer.MAUI\TreningOrganizer.MAUI.csproj", "{0B0D8D80-9919-488A-96BB-3AD7193CEB69}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DB8B7D54-1FEB-4260-94D8-1B82B0BCD53D} = {DB8B7D54-1FEB-4260-94D8-1B82B0BCD53D}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Volleyball.Infrastructure.Database", "VolleyballWebCore\Volleyball.Infrastructure.Database\Volleyball.Infrastructure.Database.csproj", "{031320A9-E42A-4EAD-A6C6-0FEAAF5045BB}"
 EndProject

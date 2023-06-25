@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
-using TreningOrganizer.API.DTOs;
+using Volleyball.DTO.TrainingOrganizer;
 using TreningOrganizer.API.IRepositories;
 using Volleyball.Infrastructure.Database.Models;
 

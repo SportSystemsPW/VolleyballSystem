@@ -14,6 +14,7 @@ namespace TreningOrganizer.MAUI
             Routing.RegisterRoute("groups", typeof(GroupsPage));
             Routing.RegisterRoute("trainings", typeof(TrainingsPage));
             Routing.RegisterRoute("payment", typeof(PaymentPage));
+            Routing.RegisterRoute("templateForm", typeof(MessageTemplateFormPage));
         }
     }
 }
