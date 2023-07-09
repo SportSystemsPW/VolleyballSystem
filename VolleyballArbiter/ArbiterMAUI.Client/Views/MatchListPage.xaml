@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:ArbiterMAUI.Client.Models"
+             xmlns:viewmodel="clr-namespace:ArbiterMAUI.Client.ViewModels"
+             x:Class="ArbiterMAUI.Client.Views.MatchListPage"
+             Title="{Binding Title}">
+
+    <Grid ColumnDefinitions="*,*"
+          ColumnSpacing="5"
+          RowDefinitions="*,Auto"
+          RowSpacing="0">
+
+        <CollectionView BackgroundColor="Transparent"
+                        Grid.ColumnSpan="2"
+                        ItemsSource="{Binding Matches}"
+                        SelectionMode="None">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Match">
+                    <Grid Padding="10">
+                        <Frame HeightRequest="125"
+                               Padding="0"
+                               Style="{StaticResource CardView}">
+                            <Grid Padding="0"
+                                  ColumnDefinitions="125,*,125">
+                                <Image Grid.Column="0" 
+                                       Aspect="AspectFill"
+                                       Source="{Binding HomeTeamLogo}"
+                                       WidthRequest="100"
+                                       HeightRequest="100"></Image>
+                                <VerticalStackLayout Grid.Column="1"         
+                                                 Padding="5"
+                                                 VerticalOptions="Center">
+                                    <Label Text="{Binding HomeTeam}"
+                                           Style="{StaticResource MediumLabel}"></Label>
+                                    <Label Text="{Binding GuestTeam}"
+                                           Style="{StaticResource MediumLabel}"></Label>
+                                    <Label Text="{Binding LeagueName}"
+                                           Style="{StaticResource MediumLabel}"></Label>
+                                    <Label Text="{Binding MatchDateTime}"
+                                           Style="{StaticResource MediumLabel}"></Label>
+                                </VerticalStackLayout>
+                                <Image Grid.Column="2"
+                                       Aspect="AspectFill"
+                                       Source="{Binding GuestTeamLogo}"
+                                       WidthRequest="100"
+                                       HeightRequest="100"></Image>
+                            </Grid>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Text="Get Matches"
+                Style="{StaticResource ButtonOutline}"
+                Command="{Binding GetMatchesCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                Grid.Row="1"
+                Margin="8"></Button>
+
+        <ActivityIndicator IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalOptions="CenterAndExpand"
+                           Grid.RowSpan="2"
+                           Grid.ColumnSpan="2"></ActivityIndicator>
+
+    </Grid>
+</ContentPage>

@@ -19,15 +19,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VolleyballArbiter", "Volley
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arbiter.API", "VolleyballArbiter\Arbiter.API\Arbiter.API.csproj", "{E880FE02-59D1-42DC-89F0-58868F995B5A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArbiterMAUI.Clinet", "VolleyballArbiter\ArbiterMAUI.Clinet\ArbiterMAUI.Clinet.csproj", "{ACD84394-4B58-4572-8062-F91271724363}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArbiterMAUI.Client", "VolleyballArbiter\ArbiterMAUI.Client\ArbiterMAUI.Client.csproj", "{ACD84394-4B58-4572-8062-F91271724363}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Volleyball.Infrastructure.Database", "Volleyball.Infrastructure.Database\Volleyball.Infrastructure.Database.csproj", "{14D38643-5FEF-480F-BB9C-C1CF0532919C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Volleyball.Infrastructure.Database", "Volleyball.Infrastructure.Database\Volleyball.Infrastructure.Database.csproj", "{14D38643-5FEF-480F-BB9C-C1CF0532919C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VolleyballTreningOrganizer", "VolleyballTreningOrganizer", "{C2674A0E-31BC-4C9F-9ABC-B1A0122E7683}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TreningOrganizer.API", "VolleyballTreningOrganizer\TreningOrganizer.API\TreningOrganizer.API.csproj", "{48077658-3AF1-4744-A185-98C385678140}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TreningOrganizer.MAUI", "VolleyballTreningOrganizer\TreningOrganizer.MAUI\TreningOrganizer.MAUI.csproj", "{0B0D8D80-9919-488A-96BB-3AD7193CEB69}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arbiter.Shared", "Arbiter.Shared\Arbiter.Shared.csproj", "{2CA73C7C-42AA-408B-9B47-7E3ED21098EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,6 +81,10 @@ Global
 		{0B0D8D80-9919-488A-96BB-3AD7193CEB69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B0D8D80-9919-488A-96BB-3AD7193CEB69}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0B0D8D80-9919-488A-96BB-3AD7193CEB69}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{2CA73C7C-42AA-408B-9B47-7E3ED21098EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CA73C7C-42AA-408B-9B47-7E3ED21098EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CA73C7C-42AA-408B-9B47-7E3ED21098EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CA73C7C-42AA-408B-9B47-7E3ED21098EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +100,7 @@ Global
 		{14D38643-5FEF-480F-BB9C-C1CF0532919C} = {B727C8AD-AC19-4076-8A33-3A000FCE9919}
 		{48077658-3AF1-4744-A185-98C385678140} = {C2674A0E-31BC-4C9F-9ABC-B1A0122E7683}
 		{0B0D8D80-9919-488A-96BB-3AD7193CEB69} = {C2674A0E-31BC-4C9F-9ABC-B1A0122E7683}
+		{2CA73C7C-42AA-408B-9B47-7E3ED21098EC} = {83EA714D-E653-43B4-BD76-52E9792D9F4D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8DF48D3A-2813-4D8C-AB1B-52A5220713AF}
