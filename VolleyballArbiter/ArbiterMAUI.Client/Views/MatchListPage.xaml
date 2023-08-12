@@ -4,6 +4,7 @@
              xmlns:model="clr-namespace:ArbiterMAUI.Client.Models"
              xmlns:viewmodel="clr-namespace:ArbiterMAUI.Client.ViewModels"
              x:Class="ArbiterMAUI.Client.Views.MatchListPage"
+             x:DataType="viewmodel:MatchListViewModel"
              Title="{Binding Title}">
 
     <Grid ColumnDefinitions="*,*"
@@ -19,33 +20,60 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:Match">
                     <Grid Padding="10">
-                        <Frame HeightRequest="125"
+                        <Frame HeightRequest="160"
                                Padding="0"
                                Style="{StaticResource CardView}">
+
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer CommandParameter="{Binding .}"
+                                                      Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MatchListViewModel}}, Path=GoToMatchDetailsCommand}"></TapGestureRecognizer>
+                            </Frame.GestureRecognizers>
+
                             <Grid Padding="0"
                                   ColumnDefinitions="125,*,125">
-                                <Image Grid.Column="0" 
-                                       Aspect="AspectFill"
-                                       Source="{Binding HomeTeamLogo}"
-                                       WidthRequest="100"
-                                       HeightRequest="100"></Image>
+                                
+                                <VerticalStackLayout Padding="3"
+                                                     VerticalOptions="Center"
+                                                     Grid.Column="0">
+                                    <Image Aspect="AspectFill"
+                                           Source="{Binding HomeTeamLogo}"
+                                           WidthRequest="100"
+                                           HeightRequest="100"></Image>
+                                    <Label Text="{Binding HomeTeam}"
+                                           Style="{StaticResource MediumLabel}"
+                                           HorizontalOptions="Center"></Label>
+                                </VerticalStackLayout>
+
                                 <VerticalStackLayout Grid.Column="1"         
                                                  Padding="5"
                                                  VerticalOptions="Center">
-                                    <Label Text="{Binding HomeTeam}"
-                                           Style="{StaticResource MediumLabel}"></Label>
-                                    <Label Text="{Binding GuestTeam}"
-                                           Style="{StaticResource MediumLabel}"></Label>
                                     <Label Text="{Binding LeagueName}"
-                                           Style="{StaticResource MediumLabel}"></Label>
-                                    <Label Text="{Binding MatchDateTime}"
-                                           Style="{StaticResource MediumLabel}"></Label>
+                                           Style="{StaticResource MediumLabel}"
+                                           HorizontalOptions="Center"></Label>
+                                    <Label Text="{Binding MatchDate}"
+                                           Style="{StaticResource MediumLabel}"
+                                           HorizontalOptions="Center"></Label>
+                                    <Label Text="{Binding MatchTime}"
+                                           Style="{StaticResource MediumLabel}"
+                                           HorizontalOptions="Center"></Label>
+                                    <!--<Button Text="Go To Details"
+                                            Style="{StaticResource ButtonOutline}"
+                                            CommandParameter="{Binding .}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MatchListViewModel}}, Path=GoToMatchDetailsCommand}"
+                                            Margin="8"></Button>-->
                                 </VerticalStackLayout>
-                                <Image Grid.Column="2"
-                                       Aspect="AspectFill"
-                                       Source="{Binding GuestTeamLogo}"
-                                       WidthRequest="100"
-                                       HeightRequest="100"></Image>
+
+                                <VerticalStackLayout Padding="3"
+                                                     VerticalOptions="Center"
+                                                     Grid.Column="2">
+                                    <Image Aspect="AspectFill"
+                                           Source="{Binding GuestTeamLogo}"
+                                           WidthRequest="100"
+                                           HeightRequest="100"></Image>
+                                    <Label Text="{Binding GuestTeam}"
+                                           Style="{StaticResource MediumLabel}"
+                                           HorizontalOptions="Center"></Label>
+                                </VerticalStackLayout>
                             </Grid>
                         </Frame>
                     </Grid>

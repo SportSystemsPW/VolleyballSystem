@@ -1,4 +1,5 @@
-﻿using ArbiterMAUI.Client.Services;
+﻿using ArbiterMAUI.Client.Platforms.Services;
+using ArbiterMAUI.Client.Services;
 using ArbiterMAUI.Client.Services.Interfaces;
 using ArbiterMAUI.Client.ViewModels;
 using ArbiterMAUI.Client.Views;
@@ -22,11 +23,16 @@ public static class MauiProgram
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
-
 		builder.Services.AddTransient<IMatchService, MatchService>();
-        builder.Services.AddSingleton<MatchListViewModel>();
+		//builder.Services.AddTransient<ISpeechToTextService, MauiSpeechToText>();
+		builder.Services.AddTransient<ISpeechToTextService, AzureSpeechToText>();
+
+        builder.Services.AddTransient<MatchListViewModel>();
+        builder.Services.AddTransient<MatchRecordViewModel>();
+
         builder.Services.AddSingleton<MainPage>();
-        builder.Services.AddSingleton<MatchListPage>();
+        builder.Services.AddTransient<MatchListPage>(); 
+		builder.Services.AddTransient<MatchRecordPage>();
 
         return builder.Build();
 	}

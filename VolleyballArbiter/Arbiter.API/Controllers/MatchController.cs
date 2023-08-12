@@ -1,5 +1,5 @@
-﻿using Arbiter.API.Services.Interfaces;
-using Arbiter.Shared.DTOs;
+﻿using Arbiter.API.DTOs;
+using Arbiter.API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Arbiter.API.Controllers

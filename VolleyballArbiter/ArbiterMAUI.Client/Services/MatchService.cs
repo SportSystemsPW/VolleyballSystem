@@ -1,4 +1,4 @@
-﻿using Arbiter.Shared.DTOs;
+﻿using ArbiterMAUI.Client.DTOs;
 using ArbiterMAUI.Client.Models;
 using ArbiterMAUI.Client.Services.Interfaces;
 using System.Net.Http.Json;
@@ -9,8 +9,18 @@ namespace ArbiterMAUI.Client.Services
     {
         public async Task<IEnumerable<Match>> DownloadMatches()
         {
-            var httpClient = new HttpClient();
-            var response = await httpClient.GetAsync("http://10.0.2.2:5218/api/matches");
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+            {
+                return true;
+                //if (cert.Issuer.Equals("CN=localhost"))
+                //    return true;
+                //return errors == System.Net.Security.SslPolicyErrors.None;
+            };
+            var httpClient = new HttpClient(handler);
+            //var response = await httpClient.GetAsync("http://10.0.2.2:5218/api/matches");
+            var response = await httpClient.GetAsync("http://192.168.100.16:56693/api/matches");
+            var text = await response.Content.ReadAsStringAsync();
             var matchDtoList = await response.Content.ReadFromJsonAsync<IEnumerable<MatchDto>>();
             var matchList = new List<Match>();
 
@@ -45,7 +55,8 @@ namespace ArbiterMAUI.Client.Services
                     GuestTeam = matchDto.GuestTeam,
                     GuestTeamLogo = guestLogo,
                     LeagueName= matchDto.LeagueName,
-                    MatchDateTime = matchDto.MatchDateTime.ToString("G")
+                    MatchDate = matchDto.MatchDateTime.ToString("d"),
+                    MatchTime = matchDto.MatchDateTime.ToString("H:mm")
                 });
             }
             return matchList;

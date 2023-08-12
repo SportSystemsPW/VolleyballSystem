@@ -14,6 +14,7 @@ namespace ArbiterMAUI.Client.Models
         public string GuestTeam { get; set; } = string.Empty;
         public ImageSource GuestTeamLogo { get; set; }
         public string LeagueName { get; set; } = string.Empty;
-        public string MatchDateTime { get; set; } = string.Empty;
+        public string MatchDate { get; set; } = string.Empty;
+        public string MatchTime { get; set; } = string.Empty;
     }
 }

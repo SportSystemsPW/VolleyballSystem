@@ -1,5 +1,6 @@
 ﻿using ArbiterMAUI.Client.Models;
 using ArbiterMAUI.Client.Services.Interfaces;
+using ArbiterMAUI.Client.Views;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -52,6 +53,16 @@ namespace ArbiterMAUI.Client.ViewModels
             {
                 IsBusy = false;
             }
+        }
+
+        [RelayCommand]
+        async Task GoToMatchDetailsAsync(Match match)
+        {
+            await Shell.Current.GoToAsync($"{nameof(MatchRecordPage)}", true,
+                new Dictionary<string, object>
+                {
+                    { "MatchDetails", match }
+                });
         }
     }
 }
