@@ -1,8 +1,14 @@
+using Arbiter.API.Options;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddOptions<AzureSpeechServiceOptions>()
+    .Bind(builder.Configuration.GetSection("azureSpeechService"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
 var app = builder.Build();
 
