@@ -13,7 +13,7 @@ public partial class LoginPage : ContentPage
         {
             Preferences.Set("Password", Password.Text);
             Preferences.Set("Username", Username.Text);
-            await Shell.Current.GoToAsync("///messageTemplates");
+            await Shell.Current.GoToAsync("///templateTab");
         }
         else
         {

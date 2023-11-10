@@ -1,8 +1,8 @@
 namespace TreningOrganizer.MAUI.Views;
 
-public partial class GroupsPage : ContentPage
+public partial class ContactsPage : ContentPage
 {
-	public GroupsPage()
+	public ContactsPage()
 	{
 		InitializeComponent();
 	}

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModel="clr-namespace:TreningOrganizer.MAUI.ViewModels"
+             x:Class="TreningOrganizer.MAUI.Views.TrainingGroupFormPage"
+             x:Name="trainingGroupFormPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Shell.NavBarIsVisible="True"
+             Title="{Binding Title}">
+    <ContentPage.BindingContext>
+        <viewModel:TrainingGroupFormViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+        EventName="Appearing"
+        Command="{Binding FillFormCommand}" />
+    </ContentPage.Behaviors>
+    <VerticalStackLayout>
+        <Label FontFamily="Consolas" Text="Training group name:" Margin="10,5,0,0"/>
+        <Frame CornerRadius="10" Padding="3" Margin="10,10,10,0">
+            <VerticalStackLayout>
+
+                <Entry Text="{Binding FormGroup.Name,Mode=TwoWay}" Margin="5,0,0,0" Placeholder="Training group name" FontSize="18">
+                </Entry>
+
+            </VerticalStackLayout>
+        </Frame>
+        
+        <Grid Padding="10,5,0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label FontFamily="Consolas" Text="Group members:"/>
+            <Button Text="Select from contacts"
+                    Grid.Column="1"
+                    VerticalOptions="End"
+                    Margin="0,0,10,0"
+                    Command="{Binding ContactsCommand}"/>
+        </Grid>
+        <ListView  ItemsSource="{Binding Members}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Padding="10,5,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Text="{Binding Name}"/>
+                            <ImageButton Source="delete.svg"      
+                                         Grid.Column="1"
+                                         VerticalOptions="End"
+                                         HeightRequest="30"
+                                         Command="{Binding Source={x:Reference trainingGroupFormPage}, Path=BindingContext.DeleteCommand}"
+                                         CommandParameter="{Binding .}"/>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Button Text="Cancel"
+                    Grid.Row="1"
+                    WidthRequest="150"
+                    Command="{Binding CancelCommand}">
+            </Button>
+            <Button Text="Save"
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    WidthRequest="150"
+                    Command="{Binding SaveCommand}">
+            </Button>
+        </Grid>
+    </VerticalStackLayout>
+</ContentPage>

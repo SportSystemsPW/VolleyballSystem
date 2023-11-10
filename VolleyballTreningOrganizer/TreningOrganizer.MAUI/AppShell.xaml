@@ -22,47 +22,52 @@
     <!--Main Page-->
     <TabBar>
         <!--Message templates-->
-        <Tab Title="Templates" Icon="email.svg">
+        <Tab Title="Templates" Icon="email.svg" Route="templateTab">
             <ShellContent
                 Icon="email.svg"
-        Title="Templates"
-        ContentTemplate="{DataTemplate views:MessageTemplatesPage}"
-        Route="messageTemplates" />
+                Title="Templates"
+                ContentTemplate="{DataTemplate views:MessageTemplatesPage}">
+                <!-- MessageTemplateForm Page -->
+                <ShellContent
+                    Title="TemplateForm"
+                    ContentTemplate="{DataTemplate views:MessageTemplateFormPage}" />
+            </ShellContent>
 
             <!--Groups-->
         </Tab>
-        <Tab Title="Groups" Icon="group.svg">
+        <Tab Title="Groups" Icon="group.svg" Route="groupsTab">
             <ShellContent
                 Icon="email.svg"
-        Title="Groups"
-        ContentTemplate="{DataTemplate views:GroupsPage}"
-        Route="groups" />
+                Title="Groups"
+                ContentTemplate="{DataTemplate views:TrainingGroupsPage}">
+                <!-- TrainingGroupForm Page -->
+                <ShellContent
+                    Title="TemplateForm"
+                    ContentTemplate="{DataTemplate views:TrainingGroupFormPage}">
+
+                    <!-- Contacts Page -->
+                    <ShellContent
+                        Title="TemplateForm"
+                        ContentTemplate="{DataTemplate views:ContactsPage}"/>
+                </ShellContent>
+            </ShellContent>
 
             <!--Trainings-->
         </Tab>
-        <Tab Title="Trainings" Icon="volleyball.svg">
+        <Tab Title="Trainings" Icon="volleyball.svg" Route="trainingsTab">
             <ShellContent
                 Icon="volleyball.svg"
-        Title="Trainings"
-        ContentTemplate="{DataTemplate views:TrainingsPage}"
-        Route="trainings" />
+                Title="Trainings"
+                ContentTemplate="{DataTemplate views:TrainingsPage}"/>
 
             <!--Payment-->
         </Tab>
-        <Tab Title="Payment" Icon="money.svg">
+        <Tab Title="Payment" Icon="money.svg" Route="paymentTab">
             <ShellContent
                 Icon="money.svg"
-        Title="Payment"
-        ContentTemplate="{DataTemplate views:PaymentPage}"
-        Route="payment" />
+                Title="Payment"
+                ContentTemplate="{DataTemplate views:PaymentPage}"/>
 
         </Tab>
     </TabBar>
-
-    <!-- MessageTemplateForm Page -->
-    <ShellContent
-        Title="TemplateForm"
-        ContentTemplate="{DataTemplate views:MessageTemplateFormPage}"
-        Route="templateForm" />
-
 </Shell>

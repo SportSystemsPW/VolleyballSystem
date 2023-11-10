@@ -11,7 +11,7 @@ public partial class LoadingPage : ContentPage
     {
         if (await isAuthenticated())
         {
-            await Shell.Current.GoToAsync("///messageTemplates");
+            await Shell.Current.GoToAsync("///templateTab");
         }
         else
         {
