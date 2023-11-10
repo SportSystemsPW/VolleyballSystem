@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace TreningOrganizer.MAUI.Models
 {
-    public class TrainingParticipant
+    public class TrainingParticipant : INotifyPropertyChanged
     {
         private int id;
         private string name;
