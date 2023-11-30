@@ -55,7 +55,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             //to do API call + refresh
             var parameters = new Dictionary<string, object>
             {
-                { "FormTemplate", FormTemplate } //todo zwracac templatke zwrocona przez api
+                { "formTemplate", FormTemplate } //todo zwracac templatke zwrocona przez api
             };
             await Shell.Current.GoToAsync("..", parameters);
         }

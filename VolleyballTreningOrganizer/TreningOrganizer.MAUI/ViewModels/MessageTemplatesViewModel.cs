@@ -9,10 +9,10 @@ using TreningOrganizer.MAUI.Models;
 
 namespace TreningOrganizer.MAUI.ViewModels
 {
-    [QueryProperty("FormTemplate","FormTemplate")]
+    [QueryProperty("formTemplate","formTemplate")]
     class MessageTemplatesViewModel
     {
-        public MessageTemplate FormTemplate { get; set; }
+        public MessageTemplate formTemplate { get; set; }
         public ICommand EditCommand
         {
             get
@@ -94,21 +94,21 @@ namespace TreningOrganizer.MAUI.ViewModels
 
         private void Apperar()
         {
-            if(FormTemplate == null)
+            if (formTemplate == null)
             {
                 return;
             }
 
             foreach(MessageTemplate template in Templates)
             {
-                if(template.Id == FormTemplate.Id)
+                if(template.Id == formTemplate.Id)
                 {
-                    template.Content = FormTemplate.Content;
-                    template.TemplateName = FormTemplate.TemplateName;
+                    template.Content = formTemplate.Content;
+                    template.TemplateName = formTemplate.TemplateName;
                     return;
                 }
             }
-            Templates.Add(FormTemplate);
+            Templates.Add(formTemplate);
         }
 
     }

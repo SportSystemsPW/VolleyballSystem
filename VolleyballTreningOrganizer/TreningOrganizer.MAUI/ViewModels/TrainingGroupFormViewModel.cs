@@ -101,7 +101,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             {
                 { "formGroup", FormGroup }
             };
-            await Shell.Current.GoToAsync("//groupsTab/groups", parameters);
+            await Shell.Current.GoToAsync("..", parameters);
         }
 
         private void FillForm()

@@ -24,13 +24,7 @@
         <!--Message templates-->
         <Tab Title="Templates" Icon="email.svg" Route="templateTab">
             <ShellContent
-                Icon="email.svg"
-                Title="Templates"
                 ContentTemplate="{DataTemplate views:MessageTemplatesPage}">
-                <!-- MessageTemplateForm Page -->
-                <ShellContent
-                    Title="TemplateForm"
-                    ContentTemplate="{DataTemplate views:MessageTemplateFormPage}" />
             </ShellContent>
 
             <!--Groups-->
@@ -40,16 +34,6 @@
                 Icon="email.svg"
                 Title="Groups"
                 ContentTemplate="{DataTemplate views:TrainingGroupsPage}">
-                <!-- TrainingGroupForm Page -->
-                <ShellContent
-                    Title="TemplateForm"
-                    ContentTemplate="{DataTemplate views:TrainingGroupFormPage}">
-
-                    <!-- Contacts Page -->
-                    <ShellContent
-                        Title="TemplateForm"
-                        ContentTemplate="{DataTemplate views:ContactsPage}"/>
-                </ShellContent>
             </ShellContent>
 
             <!--Trainings-->
