@@ -30,6 +30,24 @@ namespace TreningOrganizer.MAUI.Models
         }
         public string Phone { get; set; }
 
+        private bool present;
+        public bool Present
+        {
+            get
+            {
+                return present;
+            }
+
+            set
+            {
+                if (value != present)
+                {
+                    present = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {

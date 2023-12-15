@@ -68,6 +68,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\TrainingDetailsPage.xaml.cs">
+	    <DependentUpon>TrainingDetailsPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\TrainingGroupFormPage.xaml.cs">
 	    <DependentUpon>TrainingGroupFormPage.xaml</DependentUpon>
 	  </Compile>
@@ -93,6 +96,12 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\PaymentPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\TrainingDetailsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\TrainingFormPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\TrainingGroupFormPage.xaml">

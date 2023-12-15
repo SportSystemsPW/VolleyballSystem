@@ -26,32 +26,28 @@
             <ShellContent
                 ContentTemplate="{DataTemplate views:MessageTemplatesPage}">
             </ShellContent>
-
-            <!--Groups-->
         </Tab>
+        <!--Groups-->
         <Tab Title="Groups" Icon="group.svg" Route="groupsTab">
             <ShellContent
                 Icon="email.svg"
                 Title="Groups"
                 ContentTemplate="{DataTemplate views:TrainingGroupsPage}">
             </ShellContent>
-
-            <!--Trainings-->
         </Tab>
+        <!--Trainings-->
         <Tab Title="Trainings" Icon="volleyball.svg" Route="trainingsTab">
             <ShellContent
                 Icon="volleyball.svg"
                 Title="Trainings"
                 ContentTemplate="{DataTemplate views:TrainingsPage}"/>
-
-            <!--Payment-->
         </Tab>
+        <!--Payment-->
         <Tab Title="Payment" Icon="money.svg" Route="paymentTab">
             <ShellContent
                 Icon="money.svg"
                 Title="Payment"
                 ContentTemplate="{DataTemplate views:PaymentPage}"/>
-
         </Tab>
     </TabBar>
 </Shell>

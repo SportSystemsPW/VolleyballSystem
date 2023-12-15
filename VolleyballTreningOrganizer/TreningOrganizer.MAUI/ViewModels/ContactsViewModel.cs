@@ -12,12 +12,17 @@ namespace TreningOrganizer.MAUI.ViewModels
     [QueryProperty("formGroup", "formGroup")]
     [QueryProperty("group", "group")]
     [QueryProperty("members", "members")]
-    public class ContactsViewModel
+    [QueryProperty("Training", "Training")]
+    [QueryProperty("fromTraining", "fromTraining")]
+public class ContactsViewModel
     {
         public ObservableCollection<Models.Contact> PhoneContacts { get; set; }
         public List<Models.Contact> members { get; set; }
         public TrainingGroup formGroup { get; set; }
         public TrainingGroup group { get; set; }
+        public Training Training { get; set; }
+        public Training formTraining { get; set; }
+        private bool isInintialLoad = true;
         public ICommand AppearCommand
         {
             get
@@ -45,23 +50,27 @@ namespace TreningOrganizer.MAUI.ViewModels
         }
         private async void Apperar()
         {
-            var phoneContacts = await Contacts.GetAllAsync();
-            foreach (var contact in phoneContacts)
+            if (isInintialLoad)
             {
-                PhoneContacts.Add(new Models.Contact
+                var phoneContacts = await Contacts.GetAllAsync();
+                foreach (var contact in phoneContacts)
                 {
-                    Name = contact.DisplayName,
-                    Phone = contact.Phones.FirstOrDefault().ToString(),
-                    Selected = false
-                });
-            }
-            foreach (var contact in PhoneContacts)
-            {
-                if (members.FirstOrDefault(m => m.Phone == contact.Phone) != null)
-                {
-                    contact.Selected = true;
+                    PhoneContacts.Add(new Models.Contact
+                    {
+                        Name = contact.DisplayName,
+                        Phone = contact.Phones.FirstOrDefault().ToString(),
+                        Selected = false
+                    });
                 }
-            }
+                foreach (var contact in PhoneContacts)
+                {
+                    if (members.FirstOrDefault(m => m.Phone == contact.Phone) != null)
+                    {
+                        contact.Selected = true;
+                    }
+                }
+                isInintialLoad = false;
+            }   
         }
         private async void Cancel()
         {
@@ -69,7 +78,9 @@ namespace TreningOrganizer.MAUI.ViewModels
             {
                 { "group", group },
                 { "formGroup", formGroup },
-                { "members", members }
+                { "members", members },
+                { "Training", Training },
+                { "formTraining", formTraining }
             };
             await Shell.Current.GoToAsync("..", parameters);
         }
@@ -81,7 +92,9 @@ namespace TreningOrganizer.MAUI.ViewModels
             {
                 { "group", group },
                 { "formGroup", formGroup },
-                { "members", SelectedMembers }
+                { "members", SelectedMembers },
+                { "Training", Training },
+                { "formTraining", formTraining }
             };
             await Shell.Current.GoToAsync("..", parameters);
         }
