@@ -10,7 +10,7 @@ using TreningOrganizer.MAUI.Models;
 namespace TreningOrganizer.MAUI.ViewModels
 {
     [QueryProperty("formTemplate","formTemplate")]
-    class MessageTemplatesViewModel
+    public class MessageTemplatesViewModel : BaseViewModel
     {
         public MessageTemplate formTemplate { get; set; }
         public ICommand EditCommand
@@ -44,8 +44,9 @@ namespace TreningOrganizer.MAUI.ViewModels
         }
 
         public ObservableCollection<MessageTemplate> Templates { get; }
-        public MessageTemplatesViewModel()
+        public MessageTemplatesViewModel(HttpClient httpClient)
         {
+            _httpClient = httpClient;
             Templates = new ObservableCollection<MessageTemplate>
             {
                 new MessageTemplate()

@@ -14,7 +14,7 @@ namespace TreningOrganizer.MAUI.ViewModels
     [QueryProperty("members", "members")]
     [QueryProperty("Training", "Training")]
     [QueryProperty("fromTraining", "fromTraining")]
-public class ContactsViewModel
+    public class ContactsViewModel
     {
         public ObservableCollection<Models.Contact> PhoneContacts { get; set; }
         public List<Models.Contact> members { get; set; }

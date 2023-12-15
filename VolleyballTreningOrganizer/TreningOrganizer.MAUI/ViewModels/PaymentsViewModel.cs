@@ -9,7 +9,7 @@ using TreningOrganizer.MAUI.Models;
 
 namespace TreningOrganizer.MAUI.ViewModels
 {
-    public class PaymentsViewModel
+    public class PaymentsViewModel : BaseViewModel
     {
         public ICommand EditCommand
         {
@@ -20,8 +20,9 @@ namespace TreningOrganizer.MAUI.ViewModels
         }
 
         public ObservableCollection<TrainingParticipant> TrainingParticipants { get; }
-        public PaymentsViewModel()
+        public PaymentsViewModel(HttpClient httpClient)
         {
+            _httpClient = httpClient;
             TrainingParticipants = new ObservableCollection<TrainingParticipant>
             {
                 new TrainingParticipant

@@ -10,11 +10,12 @@ using TreningOrganizer.MAUI.Models;
 namespace TreningOrganizer.MAUI.ViewModels
 {
     [QueryProperty("formGroup", "formGroup")]
-    public class TrainingGroupsViewModel
+    public class TrainingGroupsViewModel : BaseViewModel
     {
         public TrainingGroup formGroup { get; set; }
-        public TrainingGroupsViewModel()
+        public TrainingGroupsViewModel(HttpClient httpClient)
         {
+            _httpClient = httpClient;
             Groups = new ObservableCollection<TrainingGroup>()
             {
                 new TrainingGroup()

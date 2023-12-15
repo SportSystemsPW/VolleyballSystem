@@ -1,5 +1,4 @@
-﻿using Javax.Xml.Transform;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -13,7 +12,7 @@ namespace TreningOrganizer.MAUI.ViewModels
     [QueryProperty("Training", "Training")]
     [QueryProperty("formTraining", "formTraining")]
     [QueryProperty("members", "members")]
-    public class TrainingFormViewModel
+    public class TrainingFormViewModel : BaseViewModel
     {
         //training form and training details was supposed to be single view but binding to IsVisible and IsEnabled doesn't work
         public string Title { get; set; }
@@ -28,8 +27,9 @@ namespace TreningOrganizer.MAUI.ViewModels
         public TimeSpan Time { get; set; } = DateTime.Now.TimeOfDay;
         private Dictionary<string, int> MessageTemplatesDropdown { get; set; }
         private Dictionary<string, int> GroupsDropdown { get; set; }
-        public TrainingFormViewModel()
+        public TrainingFormViewModel(HttpClient httpClient)
         {
+            _httpClient = httpClient;
             Members = new ObservableCollection<Models.Contact>();
             FormTraining = new Training();
         }

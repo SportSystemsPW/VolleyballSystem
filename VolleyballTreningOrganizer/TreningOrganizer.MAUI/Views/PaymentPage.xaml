@@ -6,9 +6,6 @@
              x:Class="TreningOrganizer.MAUI.Views.PaymentPage"
              x:Name="paymentPage"
              Title="Payment">
-    <ContentPage.BindingContext>
-        <viewModel:PaymentsViewModel />
-    </ContentPage.BindingContext>
     <VerticalStackLayout>
         <ListView  ItemsSource="{Binding TrainingParticipants}" HasUnevenRows="True">
             <ListView.ItemTemplate>

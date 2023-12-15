@@ -12,7 +12,7 @@ namespace TreningOrganizer.MAUI.ViewModels
     [QueryProperty("group","group")]
     [QueryProperty("formGroup","formGroup")]
     [QueryProperty("members","members")]
-    class TrainingGroupFormViewModel
+    public class TrainingGroupFormViewModel : BaseViewModel
     {
         public string Title { get; set; }
         public TrainingGroup group { get; set; }
@@ -20,8 +20,9 @@ namespace TreningOrganizer.MAUI.ViewModels
         public TrainingGroup formGroup { get; set; }
         public ObservableCollection<Models.Contact> Members { get; set; }
         public List<Models.Contact> members { get; set; }
-        public TrainingGroupFormViewModel()
+        public TrainingGroupFormViewModel(HttpClient httpClient)
         {
+            _httpClient = httpClient;
             Members = new ObservableCollection<Models.Contact>();
             FormGroup = new TrainingGroup();
         }

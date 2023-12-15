@@ -10,7 +10,7 @@ using TreningOrganizer.MAUI.Models;
 namespace TreningOrganizer.MAUI.ViewModels
 {
     [QueryProperty("FormTraining", "FormTraining")]
-    public class TrainingsViewModel
+    public class TrainingsViewModel : BaseViewModel
     {
         public Training FormTraining { get; set; }
         public ICommand DetailsCommand
@@ -45,8 +45,9 @@ namespace TreningOrganizer.MAUI.ViewModels
         }
 
         public ObservableCollection<Training> Trainings { get; }
-        public TrainingsViewModel()
+        public TrainingsViewModel(HttpClient httpClient)
         {
+            _httpClient = httpClient;
             Trainings = new ObservableCollection<Training>
             {
                 new Training()

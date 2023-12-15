@@ -6,9 +6,6 @@
              x:Class="TreningOrganizer.MAUI.Views.TrainingGroupsPage"
              x:Name="trainingGroupsPage"
              Title="Training Groups">
-    <ContentPage.BindingContext>
-        <viewModel:TrainingGroupsViewModel />
-    </ContentPage.BindingContext>
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
         EventName="Appearing"

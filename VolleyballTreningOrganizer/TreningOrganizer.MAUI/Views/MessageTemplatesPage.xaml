@@ -6,9 +6,6 @@
              x:Class="TreningOrganizer.MAUI.Views.MessageTemplatesPage"
              x:Name="messageTemplatesPage"
              Title="Message Templates">
-    <ContentPage.BindingContext>
-        <viewModel:MessageTemplatesViewModel />
-    </ContentPage.BindingContext>
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
         EventName="Appearing"

@@ -9,7 +9,7 @@ using TreningOrganizer.MAUI.Models;
 namespace TreningOrganizer.MAUI.ViewModels
 {
     [QueryProperty("Template", "Template")]
-    public class MessageTemplateFormViewModel
+    public class MessageTemplateFormViewModel : BaseViewModel
     {
         public string Title { get; set; }
         public MessageTemplate Template { get; set; }
@@ -36,9 +36,9 @@ namespace TreningOrganizer.MAUI.ViewModels
             }
         }
 
-        public MessageTemplateFormViewModel()
+        public MessageTemplateFormViewModel(HttpClient httpClient)
         {
-            
+            _httpClient = httpClient;
         }
         private async void Cancel()
         {
