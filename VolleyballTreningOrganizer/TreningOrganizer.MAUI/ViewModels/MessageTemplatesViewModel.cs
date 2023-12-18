@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TreningOrganizer.MAUI.Models;
+using Volleyball.DTO.TrainingOrganizer;
 
 namespace TreningOrganizer.MAUI.ViewModels
 {
@@ -47,27 +49,7 @@ namespace TreningOrganizer.MAUI.ViewModels
         public MessageTemplatesViewModel(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            Templates = new ObservableCollection<MessageTemplate>
-            {
-                new MessageTemplate()
-                {
-                    Id = 1,
-                    TemplateName = "Test",
-                    Content = "Test content",
-                },
-                new MessageTemplate()
-                {
-                    Id = 2,
-                    TemplateName = "Test2",
-                    Content = "Test content2",
-                },
-                new MessageTemplate()
-                {
-                    Id = 3,
-                    TemplateName = "Test3",
-                    Content = "Test content3",
-                }
-            };
+            Templates = new ObservableCollection<MessageTemplate>();
         }
         private async void EditTemplate(MessageTemplate template)
         {
@@ -83,7 +65,14 @@ namespace TreningOrganizer.MAUI.ViewModels
             bool delete = await Application.Current.MainPage.DisplayAlert("Are you sure?", string.Format("{0} will be deleted.", template.TemplateName),"Yes", "No");
             if (delete)
             {
-                //to do call do api
+                try
+                {
+                    await DeleteDataToAPI("MessageTemplate/RemoveMessageTemplate", template.Id);
+                }
+                catch
+                {
+                    return;
+                }
                 Templates.Remove(template);
             }
         }
@@ -93,8 +82,24 @@ namespace TreningOrganizer.MAUI.ViewModels
             await Shell.Current.GoToAsync("templateForm");
         }
 
-        private void Apperar()
+        private async void Apperar()
         {
+            if (isInitialLoad)
+            {
+                try
+                {
+                    var templateDTOs = await GetDataFromAPI<List<MessageTemplateDTO>>("MessageTemplate/GetMessageTemplatesForTrainer");
+                    foreach (var templateDTO in templateDTOs)
+                    {
+                        Templates.Add(MessageTemplate.MapDTOToModel(templateDTO));
+                    }
+                    isInitialLoad = false;
+                }
+                catch
+                {
+                    return;
+                }
+            }
             if (formTemplate == null)
             {
                 return;

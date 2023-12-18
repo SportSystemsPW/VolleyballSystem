@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TreningOrganizer.MAUI.Models;
+using Volleyball.DTO.TrainingOrganizer;
 
 namespace TreningOrganizer.MAUI.ViewModels
 {
@@ -36,6 +37,8 @@ namespace TreningOrganizer.MAUI.ViewModels
             }
         }
 
+        private bool isEdit;
+
         public MessageTemplateFormViewModel(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -48,7 +51,26 @@ namespace TreningOrganizer.MAUI.ViewModels
         private async void Save()
         {
             bool validate = true;
-            if (!validate)
+            if (validate)
+            {
+                try
+                {
+                    if (isEdit)
+                    {
+                        await PutDataToAPI("MessageTemplate/EditMessageTemplate", MessageTemplate.MapModelToDTO(FormTemplate));
+                    }
+                    else
+                    {
+                        int id = await PostDataToAPI<int>("MessageTemplate/CreateMessageTemplate", MessageTemplate.MapModelToDTO(FormTemplate));
+                        FormTemplate.Id = id;
+                    }
+                }
+                catch
+                {
+                    await Shell.Current.GoToAsync("..");
+                }
+            }
+            else
             {
                 //todo popup
             }
@@ -62,6 +84,7 @@ namespace TreningOrganizer.MAUI.ViewModels
 
         private void FillForm()
         {
+            isEdit = Template != null;
             Title = Template == null ? "Create new message template" : "Edit message template";
             Template = Template ?? new MessageTemplate();
             FormTemplate.TemplateName = Template.TemplateName;

@@ -19,51 +19,57 @@ namespace TreningOrganizer.API.Controllers
         }
 
         [HttpPost("CreateMessageTemplate")]
-        public List<string> CreateMessageTemplate(MessageTemplateDTO newMessageTemplate)
+        public TrainingOrganizerResponse<int> CreateMessageTemplate([FromBody] MessageTemplateDTO newMessageTemplate)
         {
             List<string> errors = ValidateMessageTemplate(newMessageTemplate);
+            int insertedTemplateId = -1;
             if (errors.Count == 0)
             {
-                messageTemplateService.InsertMessageTemplate(newMessageTemplate, GetTrainerId());
+                insertedTemplateId = messageTemplateService.InsertMessageTemplate(newMessageTemplate, GetTrainerId());
             }
-            return errors;
+            return CreateResponse(insertedTemplateId, errors);
         }
 
         [HttpPut("EditMessageTemplate")]
-        public List<string> EditMessageTemplate(int id, MessageTemplateDTO editedMessageTemplate)
+        public TrainingOrganizerResponse<bool> EditMessageTemplate([FromBody] MessageTemplateDTO editedMessageTemplate)
         {
             List<string> errors = ValidateMessageTemplate(editedMessageTemplate);
+            bool success = false;
             if (errors.Count == 0)
             {
                 messageTemplateService.UpdateMessageTemplate(editedMessageTemplate);
+                success = true;
             }
-            return errors;
+            return CreateResponse(success, errors);
         }
 
         [HttpDelete("RemoveMessageTemplate")]
-        public string RemoveMessageTemplate(int id)
+        public TrainingOrganizerResponse<bool> RemoveMessageTemplate(int id)
         {
+            bool success = true;
+            var errors = new List<string>();
             if (!ValidateMessageTemplateRemove(id))
             {
-                return MessageRepository.CannotRemoveMessageTemplate;
+                errors.Add(MessageRepository.CannotRemoveMessageTemplate);
+                success = false;
             }
             messageTemplateService.DeleteMessageTemplateById(id);
-            return string.Empty;
+            return CreateResponse(success, errors);
         }
         [HttpGet("GetMessageTemplatesForTrainer")]
-        public List<MessageTemplateDTO> GetMessageTemplatesForTrainer()
+        public TrainingOrganizerResponse<List<MessageTemplateDTO>> GetMessageTemplatesForTrainer()
         {
-            return messageTemplateService.GetMessageTemplatesForTrainer(GetTrainerId());
+            return CreateResponse(messageTemplateService.GetMessageTemplatesForTrainer(GetTrainerId()));
         }
         [HttpGet("GetMessageTemplateById")]
-        public MessageTemplateDTO GetMessageTemplateById(int id)
+        public TrainingOrganizerResponse<MessageTemplateDTO> GetMessageTemplateById(int id)
         {
-            return messageTemplateService.GetMessageTemplateById(id);
+            return CreateResponse(messageTemplateService.GetMessageTemplateById(id));
         }
         [HttpGet("GetMessageTemplateNames")]
-        public List<string> GetMessageTemplateNames()
+        public TrainingOrganizerResponse<List<string>> GetMessageTemplateNames()
         {
-            return messageTemplateService.GetMessageTemplateNames(GetTrainerId()); 
+            return CreateResponse(messageTemplateService.GetMessageTemplateNames(GetTrainerId()));
         }
 
         private List<string> ValidateMessageTemplate(MessageTemplateDTO messageTemplate)

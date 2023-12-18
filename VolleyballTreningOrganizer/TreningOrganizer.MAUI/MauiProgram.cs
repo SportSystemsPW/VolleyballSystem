@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using System.Net.Http;
 using TreningOrganizer.MAUI.Models;
 using TreningOrganizer.MAUI.ViewModels;
 using TreningOrganizer.MAUI.Views;
@@ -22,10 +23,9 @@ namespace TreningOrganizer.MAUI
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
-            builder.Services.AddHttpClient("HttpClient", client =>
+            builder.Services.AddScoped(sp => new HttpClient
             {
-                //"https://10.0.2.2:44441/api/"
-                client.BaseAddress = new Uri("https://10.0.2.2:44441/api/");
+                BaseAddress = new Uri("http://10.0.2.2:5204/api/")
             });
 
             builder.Services.AddSingleton<MessageTemplatesPage>();

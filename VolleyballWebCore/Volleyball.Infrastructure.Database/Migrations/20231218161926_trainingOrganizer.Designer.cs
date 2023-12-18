@@ -12,8 +12,8 @@ using Volleyball.Infrastructure.Database.Models;
 namespace Volleyball.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(VolleyballContext))]
-    [Migration("20230608130213_VolleyballTrainingOrganizer")]
-    partial class VolleyballTrainingOrganizer
+    [Migration("20231218161926_trainingOrganizer")]
+    partial class trainingOrganizer
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -656,25 +656,6 @@ namespace Volleyball.Infrastructure.Database.Migrations
                     b.ToTable("Teams");
                 });
 
-            modelBuilder.Entity("Volleyball.Infrastructure.Database.Models.Trainer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Trainer");
-                });
-
             modelBuilder.Entity("Volleyball.Infrastructure.Database.Models.Training", b =>
                 {
                     b.Property<int>("Id")
@@ -972,7 +953,7 @@ namespace Volleyball.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("Volleyball.Infrastructure.Database.Models.MessageTemplate", b =>
                 {
-                    b.HasOne("Volleyball.Infrastructure.Database.Models.Trainer", "Trainer")
+                    b.HasOne("User", "Trainer")
                         .WithMany("MessageTemplates")
                         .HasForeignKey("TrainerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1027,20 +1008,9 @@ namespace Volleyball.Infrastructure.Database.Migrations
                     b.Navigation("League");
                 });
 
-            modelBuilder.Entity("Volleyball.Infrastructure.Database.Models.Trainer", b =>
-                {
-                    b.HasOne("User", "User")
-                        .WithOne()
-                        .HasForeignKey("Volleyball.Infrastructure.Database.Models.Trainer", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Volleyball.Infrastructure.Database.Models.Training", b =>
                 {
-                    b.HasOne("Volleyball.Infrastructure.Database.Models.Trainer", "Trainer")
+                    b.HasOne("User", "Trainer")
                         .WithMany("Trainings")
                         .HasForeignKey("TrainerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1051,7 +1021,7 @@ namespace Volleyball.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("Volleyball.Infrastructure.Database.Models.TrainingGroup", b =>
                 {
-                    b.HasOne("Volleyball.Infrastructure.Database.Models.Trainer", "Trainer")
+                    b.HasOne("User", "Trainer")
                         .WithMany("TrainingGroups")
                         .HasForeignKey("TrainerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1081,7 +1051,7 @@ namespace Volleyball.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("Volleyball.Infrastructure.Database.Models.TrainingParticipant", b =>
                 {
-                    b.HasOne("Volleyball.Infrastructure.Database.Models.Trainer", "Trainer")
+                    b.HasOne("User", "Trainer")
                         .WithMany("TrainingParticipants")
                         .HasForeignKey("TrainerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1142,6 +1112,8 @@ namespace Volleyball.Infrastructure.Database.Migrations
 
                     b.Navigation("MVPMatches");
 
+                    b.Navigation("MessageTemplates");
+
                     b.Navigation("PersonalLogs");
 
                     b.Navigation("RefereeMatches");
@@ -1151,6 +1123,12 @@ namespace Volleyball.Infrastructure.Database.Migrations
                     b.Navigation("TeamPlayers");
 
                     b.Navigation("Topics");
+
+                    b.Navigation("TrainingGroups");
+
+                    b.Navigation("TrainingParticipants");
+
+                    b.Navigation("Trainings");
 
                     b.Navigation("TypedResults");
                 });
@@ -1206,17 +1184,6 @@ namespace Volleyball.Infrastructure.Database.Migrations
                     b.Navigation("Invitations");
 
                     b.Navigation("TeamPlayers");
-                });
-
-            modelBuilder.Entity("Volleyball.Infrastructure.Database.Models.Trainer", b =>
-                {
-                    b.Navigation("MessageTemplates");
-
-                    b.Navigation("TrainingGroups");
-
-                    b.Navigation("TrainingParticipants");
-
-                    b.Navigation("Trainings");
                 });
 
             modelBuilder.Entity("Volleyball.Infrastructure.Database.Models.Training", b =>

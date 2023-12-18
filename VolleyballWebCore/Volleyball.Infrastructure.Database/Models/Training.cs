@@ -14,7 +14,7 @@ namespace Volleyball.Infrastructure.Database.Models
         public DateTime Date { get; set; }
         public double Price { get; set; }
         public int TrainerId { get; set; }
-        virtual public Trainer Trainer { get; set; } = null!;
+        virtual public User Trainer { get; set; } = null!;
         virtual public ICollection<TrainingTrainingParticipant> TrainingParticipants { get; set; } = new List<TrainingTrainingParticipant>();
     }
 }

@@ -33,7 +33,9 @@ builder.Services.AddScoped<ITrainingService, TrainingService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+#if !DEBUG
 app.UseHttpsRedirection();
+#endif
 
 app.UseAuthorization();
 

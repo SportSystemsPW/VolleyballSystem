@@ -6,30 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Volleyball.Infrastructure.Database.Migrations
 {
     /// <inheritdoc />
-    public partial class VolleyballTrainingOrganizer : Migration
+    public partial class trainingOrganizer : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Trainer",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Trainer", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Trainer_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateTable(
                 name: "MessageTemplates",
                 columns: table => new
@@ -44,9 +25,9 @@ namespace Volleyball.Infrastructure.Database.Migrations
                 {
                     table.PrimaryKey("PK_MessageTemplates", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MessageTemplates_Trainer_TrainerId",
+                        name: "FK_MessageTemplates_Users_TrainerId",
                         column: x => x.TrainerId,
-                        principalTable: "Trainer",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -64,9 +45,9 @@ namespace Volleyball.Infrastructure.Database.Migrations
                 {
                     table.PrimaryKey("PK_TrainingGroups", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TrainingGroups_Trainer_TrainerId",
+                        name: "FK_TrainingGroups_Users_TrainerId",
                         column: x => x.TrainerId,
-                        principalTable: "Trainer",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -86,9 +67,9 @@ namespace Volleyball.Infrastructure.Database.Migrations
                 {
                     table.PrimaryKey("PK_TrainingParticipants", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TrainingParticipants_Trainer_TrainerId",
+                        name: "FK_TrainingParticipants_Users_TrainerId",
                         column: x => x.TrainerId,
-                        principalTable: "Trainer",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -109,9 +90,9 @@ namespace Volleyball.Infrastructure.Database.Migrations
                 {
                     table.PrimaryKey("PK_Trainings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Trainings_Trainer_TrainerId",
+                        name: "FK_Trainings_Users_TrainerId",
                         column: x => x.TrainerId,
-                        principalTable: "Trainer",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -168,12 +149,6 @@ namespace Volleyball.Infrastructure.Database.Migrations
                 column: "TrainerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Trainer_UserId",
-                table: "Trainer",
-                column: "UserId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TrainingGroups_TrainerId",
                 table: "TrainingGroups",
                 column: "TrainerId");
@@ -219,9 +194,6 @@ namespace Volleyball.Infrastructure.Database.Migrations
 
             migrationBuilder.DropTable(
                 name: "Trainings");
-
-            migrationBuilder.DropTable(
-                name: "Trainer");
         }
     }
 }

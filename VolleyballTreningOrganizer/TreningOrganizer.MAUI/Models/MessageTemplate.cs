@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Volleyball.DTO.TrainingOrganizer;
 
 namespace TreningOrganizer.MAUI.Models
 {
@@ -13,7 +15,7 @@ namespace TreningOrganizer.MAUI.Models
         private int id;
         private string content;
         private string templateName;
-        public int Id 
+        public int Id
         {
             get
             {
@@ -63,6 +65,26 @@ namespace TreningOrganizer.MAUI.Models
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public static MessageTemplate MapDTOToModel(MessageTemplateDTO messageTemplateDTO)
+        {
+            return new MessageTemplate
+            {
+                id = messageTemplateDTO.Id,
+                content = messageTemplateDTO.Content,
+                templateName = messageTemplateDTO.TemplateName
+            };
+        }
+
+        public static MessageTemplateDTO MapModelToDTO(MessageTemplate messageTemplate)
+        {
+            return new MessageTemplateDTO
+            {
+                Id = messageTemplate.Id,
+                Content = messageTemplate.Content,
+                TemplateName = messageTemplate.TemplateName
+            };
+        }
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {

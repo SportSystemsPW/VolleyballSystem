@@ -39,7 +39,7 @@ namespace TreningOrganizer.API.Services
             return messageTemplateRepository.GetMessageTemplatesForTrainer(trainerId);
         }
 
-        public void InsertMessageTemplate(MessageTemplateDTO template, int trainerId)
+        public int InsertMessageTemplate(MessageTemplateDTO template, int trainerId)
         {
             MessageTemplate messageTemplate = new MessageTemplate
             {
@@ -47,7 +47,7 @@ namespace TreningOrganizer.API.Services
                 Content = template.Content,
                 TrainerId = trainerId
             };
-            messageTemplateRepository.InsertMessageTemplate(messageTemplate);
+            return messageTemplateRepository.InsertMessageTemplate(messageTemplate);
         }
 
         public void UpdateMessageTemplate(MessageTemplateDTO templateDTO)

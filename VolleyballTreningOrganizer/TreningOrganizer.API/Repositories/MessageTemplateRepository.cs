@@ -45,10 +45,11 @@ namespace TreningOrganizer.API.Repositories
             }).ToList();
         }
 
-        public void InsertMessageTemplate(MessageTemplate template)
+        public int InsertMessageTemplate(MessageTemplate template)
         {
             messageTemplates.Add(template);
             context.SaveChanges();
+            return template.Id;
         }
 
         public void UpdateMessageTemplate(MessageTemplate template)

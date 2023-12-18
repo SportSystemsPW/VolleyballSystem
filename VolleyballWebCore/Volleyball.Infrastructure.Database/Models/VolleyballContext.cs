@@ -235,11 +235,6 @@ public partial class VolleyballContext : DbContext
             entity.HasOne(mt => mt.Trainer).WithMany(t => t.MessageTemplates).HasForeignKey(mt => mt.TrainerId);
         });
 
-        modelBuilder.Entity<Trainer>(entity =>
-        {
-            entity.HasOne(t => t.User).WithOne().HasForeignKey<Trainer>(t => t.UserId);
-        });
-
         OnModelCreatingPartial(modelBuilder);
     }
 

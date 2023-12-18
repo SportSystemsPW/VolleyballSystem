@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Maui.ApplicationModel.Communication;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TreningOrganizer.MAUI.Models;
+using Communication = Microsoft.Maui.ApplicationModel.Communication;
 
 namespace TreningOrganizer.MAUI.ViewModels
 {
@@ -52,7 +54,7 @@ namespace TreningOrganizer.MAUI.ViewModels
         {
             if (isInintialLoad)
             {
-                var phoneContacts = await Contacts.GetAllAsync();
+                var phoneContacts = await Communication.Contacts.GetAllAsync();
                 foreach (var contact in phoneContacts)
                 {
                     PhoneContacts.Add(new Models.Contact
