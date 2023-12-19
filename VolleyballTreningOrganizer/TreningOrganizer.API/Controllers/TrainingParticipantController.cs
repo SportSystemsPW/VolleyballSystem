@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
 using Volleyball.DTO.TrainingOrganizer;
 using TreningOrganizer.API.IServices;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TreningOrganizer.API.Controllers
 {
@@ -61,44 +62,50 @@ namespace TreningOrganizer.API.Controllers
 
 
         [HttpGet("GetTrainingGroupsForTrainer")]
-        public List<TrainingGroupDTO> GetTrainingGroupsForTrainer()
+        public TrainingOrganizerResponse<List<TrainingGroupDTO>> GetTrainingGroupsForTrainer()
         {
-            return trainingGroupService.GetTrainingGroupsForTrainer(GetTrainerId());
+            return CreateResponse(trainingGroupService.GetTrainingGroupsForTrainer(GetTrainerId()));
         }
         [HttpGet("GetTrainingGroupById")]
-        public TrainingGroupDTO GetTrainingGroupById(int id)
+        public TrainingOrganizerResponse<TrainingGroupDTO> GetTrainingGroupById(int id)
         {
-            return trainingGroupService.GetTrainingGroupById(id);
+            return CreateResponse(trainingGroupService.GetTrainingGroupById(id));
         }
         [HttpPost("CreateTrainingGroup")]
-        public List<string> CreateTrainingGroup(TrainingGroupDTO trainingGroupDTO)
+        public TrainingOrganizerResponse<int> CreateTrainingGroup(TrainingGroupDTO trainingGroupDTO)
         {
             List<string> errors = ValidateTrainingGroup(trainingGroupDTO);
+            int insertedGroupId = -1;
             if(errors.Count == 0)
             {
-                trainingGroupService.InsertTrainingGroup(trainingGroupDTO, GetTrainerId());
+                insertedGroupId = trainingGroupService.InsertTrainingGroup(trainingGroupDTO, GetTrainerId());
             }
-            return errors;
+            return CreateResponse(insertedGroupId, errors);
         }
         [HttpPut("EditTrainingGroup")]
-        public List<string> EditTrainingGroup(TrainingGroupDTO trainingGroupDTO)
+        public TrainingOrganizerResponse<bool> EditTrainingGroup(TrainingGroupDTO trainingGroupDTO)
         {
+            bool success = false;
             List<string> errors = ValidateTrainingGroup(trainingGroupDTO);
             if (errors.Count == 0)
             {
+                success = true;
                 trainingGroupService.UpdateTrainingGroup(trainingGroupDTO);
             }
-            return errors;
+            return CreateResponse(success, errors);
         }
         [HttpDelete("RemoveTrainingGroup")]
-        public string RemoveTrainingGroup(int id)
+        public TrainingOrganizerResponse<bool> RemoveTrainingGroup(int id)
         {
+            bool success = true;
+            List<string> errors = new List<string>();
             if (!ValidateTrainingGroupRemove(id))
             {
-                return MessageRepository.CannotRemoveTrainingGroup;
+                success = false;
+                errors.Add(MessageRepository.CannotRemoveTrainingGroup);
             }
             trainingGroupService.DeleteTrainingGroupById(id);
-            return string.Empty;
+            return CreateResponse(success, errors);
         }
 
 

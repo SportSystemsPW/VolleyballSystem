@@ -7,7 +7,7 @@ namespace TreningOrganizer.API.IServices
     {
         public List<TrainingGroupDTO> GetTrainingGroupsForTrainer(int trainerId);
         public TrainingGroupDTO GetTrainingGroupById(int id);
-        public void InsertTrainingGroup(TrainingGroupDTO groupDTO, int trainerId);
+        public int InsertTrainingGroup(TrainingGroupDTO groupDTO, int trainerId);
         public void UpdateTrainingGroup(TrainingGroupDTO groupDTO);
         public void DeleteTrainingGroupById(int id);
     }

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TreningOrganizer.MAUI.Models;
+using Volleyball.DTO.TrainingOrganizer;
 
 namespace TreningOrganizer.MAUI.ViewModels
 {
@@ -20,6 +22,7 @@ namespace TreningOrganizer.MAUI.ViewModels
         public TrainingGroup formGroup { get; set; }
         public ObservableCollection<Models.Contact> Members { get; set; }
         public List<Models.Contact> members { get; set; }
+        private bool isEdit;
         public TrainingGroupFormViewModel(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -92,11 +95,29 @@ namespace TreningOrganizer.MAUI.ViewModels
         private async void Save()
         {
             bool validate = true;
-            if (!validate)
+            if (validate)
+            {
+                try
+                {
+                    if (isEdit)
+                    {
+                        await PutDataToAPI("TrainingParticipant/EditTrainingGroup", TrainingGroup.MapModelToDTO(FormGroup, Members));
+                    }
+                    else
+                    {
+                        int id = await PostDataToAPI<int>("TrainingParticipant/CreateTrainingGroup", TrainingGroup.MapModelToDTO(FormGroup, Members));
+                        FormGroup.Id = id;
+                    }
+                }
+                catch
+                {
+                    await Shell.Current.GoToAsync("..");
+                }
+            }
+            else
             {
                 //todo popup
             }
-            //to do API call + refresh
             FormGroup.MembersCount = Members.Count;
             var parameters = new Dictionary<string, object>
             {
@@ -105,8 +126,9 @@ namespace TreningOrganizer.MAUI.ViewModels
             await Shell.Current.GoToAsync("..", parameters);
         }
 
-        private void FillForm()
+        private async void FillForm()
         {
+            isEdit = group != null;
             Title = group == null ? "Create new training group" : "Edit training group";
             if (formGroup != null)
             {
@@ -119,13 +141,25 @@ namespace TreningOrganizer.MAUI.ViewModels
                 FormGroup.Name = group.Name;
             }
 
-            if (members == null)
+            Members.Clear();
+            //cannot use isInitialLoad - only true when entering edit for first time
+            if (members == null && isEdit)
             {
-                //pobrać członków z API
+                try
+                {
+                    var trainingGroupDTO = await GetDataFromAPI<TrainingGroupDTO>("TrainingParticipant/GetTrainingGroupById", group.Id);
+                    foreach (var participantDTO in trainingGroupDTO.TrainingParticipantDTOs)
+                    {
+                        Members.Add(Models.Contact.MapDTOToModel(participantDTO));
+                    }
+                }
+                catch
+                {
+                    return;
+                }
             }
-            else
+            else if (members != null)
             {
-                Members.Clear();
                 foreach(var member in members)
                 {
                     Members.Add(member);

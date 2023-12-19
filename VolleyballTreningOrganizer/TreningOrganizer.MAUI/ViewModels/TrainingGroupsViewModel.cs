@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TreningOrganizer.MAUI.Models;
+using Volleyball.DTO.TrainingOrganizer;
 
 namespace TreningOrganizer.MAUI.ViewModels
 {
@@ -16,27 +17,7 @@ namespace TreningOrganizer.MAUI.ViewModels
         public TrainingGroupsViewModel(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            Groups = new ObservableCollection<TrainingGroup>()
-            {
-                new TrainingGroup()
-                {
-                    Id = 1,
-                    Name = "Group1",
-                    MembersCount = 0
-                },
-                new TrainingGroup()
-                {
-                    Id = 2,
-                    Name = "Group2",
-                    MembersCount = 0
-                },
-                new TrainingGroup()
-                {
-                    Id = 3,
-                    Name = "Group3",
-                    MembersCount = 0
-                },
-            };
+            Groups = new ObservableCollection<TrainingGroup>();
         }
         public ICommand EditCommand
         {
@@ -83,7 +64,14 @@ namespace TreningOrganizer.MAUI.ViewModels
             bool delete = await Application.Current.MainPage.DisplayAlert("Are you sure?", string.Format("{0} will be deleted.", group.Name), "Yes", "No");
             if (delete)
             {
-                //to do call do api
+                try
+                {
+                    await DeleteDataToAPI("TrainingParticipant/RemoveTrainingGroup", group.Id);
+                }
+                catch
+                {
+                    return;
+                }
                 Groups.Remove(group);
             }
         }
@@ -93,8 +81,25 @@ namespace TreningOrganizer.MAUI.ViewModels
             await Shell.Current.GoToAsync("groupForm");
         }
 
-        private void Apperar()
+        private async void Apperar()
         {
+            if (isInitialLoad)
+            {
+                try
+                {
+                    var trainingGroupsDTOs = await GetDataFromAPI<List<TrainingGroupDTO>>("TrainingParticipant/GetTrainingGroupsForTrainer");
+                    foreach (var groupDTO in trainingGroupsDTOs)
+                    {
+                        Groups.Add(TrainingGroup.MapDTOToModel(groupDTO));
+                    }
+                    isInitialLoad = false;
+                }
+                catch
+                {
+                    return;
+                }
+            }
+
             if (formGroup == null)
             {
                 return;
@@ -106,10 +111,17 @@ namespace TreningOrganizer.MAUI.ViewModels
                 {
                     group.Name = formGroup.Name;
                     group.MembersCount = formGroup.MembersCount;
+                    formGroup = null;
                     return;
                 }
             }
-            Groups.Add(formGroup);
+            Groups.Add(new TrainingGroup
+            {
+                Id = formGroup.Id,
+                Name = formGroup.Name,
+                MembersCount = formGroup.MembersCount
+            });
+            formGroup = null;
         }
     }
 }

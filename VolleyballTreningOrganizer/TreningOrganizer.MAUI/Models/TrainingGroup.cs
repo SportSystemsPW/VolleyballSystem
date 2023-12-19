@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Volleyball.DTO.TrainingOrganizer;
 
 namespace TreningOrganizer.MAUI.Models
 {
@@ -62,6 +63,31 @@ namespace TreningOrganizer.MAUI.Models
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public static TrainingGroup MapDTOToModel(TrainingGroupDTO trainingGroupDTO)
+        {
+            return new TrainingGroup
+            {
+                id = trainingGroupDTO.Id,
+                name = trainingGroupDTO.Name,
+                membersCount = trainingGroupDTO.MembersCount
+            };
+        }
+
+        public static TrainingGroupDTO MapModelToDTO(TrainingGroup trainingGroup, IEnumerable<Contact> contacts)
+        {
+            List<TrainingParticipantDTO> participantDTOs = new List<TrainingParticipantDTO>();
+            foreach(var contact in contacts)
+            {
+                participantDTOs.Add(Contact.MapModelToDTO(contact));
+            }
+            return new TrainingGroupDTO
+            {
+                Id = trainingGroup.Id,
+                Name = trainingGroup.Name,
+                TrainingParticipantDTOs = participantDTOs
+            };
+        }
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {

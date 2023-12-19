@@ -111,10 +111,17 @@ namespace TreningOrganizer.MAUI.ViewModels
                 {
                     template.Content = formTemplate.Content;
                     template.TemplateName = formTemplate.TemplateName;
+                    formTemplate = null;
                     return;
                 }
             }
-            Templates.Add(formTemplate);
+            Templates.Add(new MessageTemplate
+            {
+                Id = formTemplate.Id,
+                Content = formTemplate.Content,
+                TemplateName = formTemplate.TemplateName
+            });
+            formTemplate = null;
         }
 
     }

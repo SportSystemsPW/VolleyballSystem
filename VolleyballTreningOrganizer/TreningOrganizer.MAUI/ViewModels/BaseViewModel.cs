@@ -15,8 +15,9 @@ namespace TreningOrganizer.MAUI.ViewModels
         protected HttpClient _httpClient;
         protected bool isInitialLoad = true;
 
-        protected async Task<T> GetDataFromAPI<T>(string url)
+        protected async Task<T> GetDataFromAPI<T>(string url, int id = -1)
         {
+            url = id == -1 ? url : url + $"?id={id}";
             var responseMessage = await _httpClient.GetAsync(url);
             return await ProcessAPIResponse<T>(responseMessage);
         }

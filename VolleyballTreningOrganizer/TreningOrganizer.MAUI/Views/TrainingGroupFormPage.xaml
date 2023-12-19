@@ -22,7 +22,7 @@
 
             </VerticalStackLayout>
         </Frame>
-        
+
         <Grid Padding="10,5,0,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -35,37 +35,36 @@
                     Margin="0,0,10,0"
                     Command="{Binding ContactsCommand}"/>
         </Grid>
-        <ListView  ItemsSource="{Binding Members}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <Grid Padding="10,5,0,5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="4*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Text="{Binding Name}"/>
-                            <ImageButton Source="delete.svg"      
-                                         Grid.Column="1"
-                                         VerticalOptions="End"
-                                         HeightRequest="30"
-                                         Command="{Binding Source={x:Reference trainingGroupFormPage}, Path=BindingContext.DeleteCommand}"
-                                         CommandParameter="{Binding .}"/>
-                        </Grid>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="150"/>
+                <RowDefinition Height="450"/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
+            <ListView  ItemsSource="{Binding Members}" Grid.ColumnSpan="2">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid Padding="10,5,0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Text="{Binding Name}"/>
+                                <ImageButton Source="delete.svg"      
+                                         Grid.Column="1"
+                                         VerticalOptions="End"
+                                         HeightRequest="30"
+                                         Command="{Binding Source={x:Reference trainingGroupFormPage}, Path=BindingContext.DeleteCommand}"
+                                         CommandParameter="{Binding .}"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
             <Button Text="Cancel"
                     Grid.Row="1"
                     WidthRequest="150"

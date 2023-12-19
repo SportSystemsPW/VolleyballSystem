@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using Volleyball.DTO.TrainingOrganizer;
 
 namespace TreningOrganizer.MAUI.Models
 {
@@ -46,6 +48,24 @@ namespace TreningOrganizer.MAUI.Models
                     NotifyPropertyChanged();
                 }
             }
+        }
+
+        public static Contact MapDTOToModel(TrainingParticipantDTO trainingParticipantDTO)
+        {
+            return new Contact
+            {
+                Name = trainingParticipantDTO.Name,
+                Phone = trainingParticipantDTO.Phone
+            };
+        }
+
+        public static TrainingParticipantDTO MapModelToDTO(Contact contact)
+        {
+            return new TrainingParticipantDTO
+            {
+                Name = contact.Name,
+                Phone = contact.Phone
+            };
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

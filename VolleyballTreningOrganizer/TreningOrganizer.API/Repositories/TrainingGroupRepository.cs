@@ -16,9 +16,10 @@ namespace TreningOrganizer.API.Repositories
         }
         public void DeleteTrainingGroupById(int id)
         {
-            TrainingGroup trainingGroup = trainingGroups.FirstOrDefault(tg => tg.Id == id);
+            TrainingGroup trainingGroup = trainingGroups.Include(tg => tg.TrainingGroupTrainingParticipants).FirstOrDefault(tg => tg.Id == id);
             if(trainingGroup != null)
             {
+                context.TrainingGroupTrainingParticipants.RemoveRange(trainingGroup.TrainingGroupTrainingParticipants);
                 trainingGroups.Remove(trainingGroup);
                 context.SaveChanges();
             }
@@ -35,19 +36,15 @@ namespace TreningOrganizer.API.Repositories
             {
                 Id = tg.Id,
                 Name = tg.Name,
-                TrainingParticipantDTOs = tg.TrainingGroupTrainingParticipants.Select(tgtp => new TrainingParticipantDTO
-                {
-                    Id = tgtp.TrainingParticipant.Id,
-                    Name = tgtp.TrainingParticipant.Name,
-                    Phone = tgtp.TrainingParticipant.Phone
-                }).ToList()
+                MembersCount = tg.TrainingGroupTrainingParticipants.Count
             }).ToList();
         }
 
-        public void InsertTrainingGroup(TrainingGroup group)
+        public int InsertTrainingGroup(TrainingGroup group)
         {
             trainingGroups.Add(group);
             context.SaveChanges();
+            return group.Id;
         }
 
         public void UpdateTrainingGroup(TrainingGroup group)

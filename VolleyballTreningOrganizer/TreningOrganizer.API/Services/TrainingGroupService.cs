@@ -38,7 +38,7 @@ namespace TreningOrganizer.API.Services
         {
             return trainingGroupRepository.GetTrainingGroupsForTrainer(trainerId);
         }
-        public void InsertTrainingGroup(TrainingGroupDTO groupDTO, int trainerId)
+        public int InsertTrainingGroup(TrainingGroupDTO groupDTO, int trainerId)
         {
             TrainingGroup trainingGroup = new TrainingGroup
             {
@@ -65,7 +65,7 @@ namespace TreningOrganizer.API.Services
                 });
             }
             trainingGroup.TrainingGroupTrainingParticipants = groupTrainingParticipants;
-            trainingGroupRepository.InsertTrainingGroup(trainingGroup);
+            return trainingGroupRepository.InsertTrainingGroup(trainingGroup);
         }
         public void UpdateTrainingGroup(TrainingGroupDTO groupDTO)
         {
