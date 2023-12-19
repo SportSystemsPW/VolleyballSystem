@@ -20,9 +20,9 @@ namespace TreningOrganizer.API.Controllers
         }
 
         [HttpGet("GetTrainingParticipantsForTrainer")]
-        public List<TrainingParticipantDTO> GetTrainingParticipantsForTrainer()
+        public TrainingOrganizerResponse<List<TrainingParticipantDTO>> GetTrainingParticipantsForTrainer()
         {
-            return participantService.GetTrainingParticpantsForTrainer(GetTrainerId());
+            return CreateResponse(participantService.GetTrainingParticpantsForTrainer(GetTrainerId()));
         }
         [HttpGet("GetTrainingParticipantById")]
         public TrainingParticipantDTO GetTrainingParticipantById(int id)
@@ -40,14 +40,16 @@ namespace TreningOrganizer.API.Controllers
             return errors;
         }
         [HttpPut("EditTraingParticipant")]
-        public List<string> EditTrainingParticipant(TrainingParticipantDTO trainingParticipantDTO)
+        public TrainingOrganizerResponse<bool> EditTrainingParticipant(TrainingParticipantDTO trainingParticipantDTO)
         {
+            bool success = false;
             List<string> errors = ValidateTrainingParticipant(trainingParticipantDTO);
             if (errors.Count == 0)
             {
+                success = true;
                 participantService.UpdateTrainingParticipant(trainingParticipantDTO);
             }
-            return errors;
+            return CreateResponse(success, errors);
         }
         [HttpDelete("RemoveTrainingParticipant")]
         public string RemoveTrainingParticipant(int id)

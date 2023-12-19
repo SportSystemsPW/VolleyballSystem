@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Volleyball.DTO.TrainingOrganizer;
 
 namespace TreningOrganizer.MAUI.Models
 {
@@ -79,6 +80,28 @@ namespace TreningOrganizer.MAUI.Models
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public static TrainingParticipant MapDTOToModel(TrainingParticipantDTO trainingParticipantDTO)
+        {
+            return new TrainingParticipant
+            {
+                Id = trainingParticipantDTO.Id,
+                Name = trainingParticipantDTO.Name,
+                Phone = trainingParticipantDTO.Phone,
+                Balance = trainingParticipantDTO.Balance
+            };
+        }
+
+        public static TrainingParticipantDTO MapModelToDTO(TrainingParticipant trainingParticipant)
+        {
+            return new TrainingParticipantDTO
+            {
+                Id = trainingParticipant.id,
+                Name = trainingParticipant.name,
+                Phone = trainingParticipant.phone,
+                Balance = trainingParticipant.balance
+            };
+        }
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {

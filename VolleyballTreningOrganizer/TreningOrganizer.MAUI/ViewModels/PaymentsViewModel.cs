@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TreningOrganizer.MAUI.Models;
+using Volleyball.DTO.TrainingOrganizer;
 
 namespace TreningOrganizer.MAUI.ViewModels
 {
@@ -19,34 +21,19 @@ namespace TreningOrganizer.MAUI.ViewModels
             }
         }
 
+        public ICommand AppearCommand
+        {
+            get
+            {
+                return new Command(Appear);
+            }
+        }
+
         public ObservableCollection<TrainingParticipant> TrainingParticipants { get; }
         public PaymentsViewModel(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            TrainingParticipants = new ObservableCollection<TrainingParticipant>
-            {
-                new TrainingParticipant
-                {
-                    Id = 1,
-                    Name = "Antek",
-                    Balance = 0,
-                    Phone = "536499869"
-                },
-                new TrainingParticipant
-                {
-                    Id = 2,
-                    Name = "Marek",
-                    Balance = -10,
-                    Phone = "502387711"
-                },
-                new TrainingParticipant
-                {
-                    Id = 3,
-                    Name = "Antek",
-                    Balance = 20,
-                    Phone = "536499869"
-                }
-            };
+            TrainingParticipants = new ObservableCollection<TrainingParticipant>();
         }
         private async void EditBalance(TrainingParticipant participant)
         {
@@ -54,7 +41,35 @@ namespace TreningOrganizer.MAUI.ViewModels
             if (double.TryParse(changeBalanceByString, out double changeBalanceBy))
             {
                 participant.Balance += changeBalanceBy;
-                //todo api call
+
+                try
+                {
+                    await PutDataToAPI("TrainingParticipant/EditTraingParticipant", TrainingParticipant.MapModelToDTO(participant));
+                }
+                catch
+                {
+                    
+                }
+            }
+        }
+
+        private async void Appear()
+        {
+            if (isInitialLoad)
+            {
+                try
+                {
+                    var trainingParticipantDTOs = await GetDataFromAPI<List<TrainingParticipantDTO>>("TrainingParticipant/GetTrainingParticipantsForTrainer");
+                    foreach (var participantDTO in trainingParticipantDTOs)
+                    {
+                        TrainingParticipants.Add(TrainingParticipant.MapDTOToModel(participantDTO));
+                    }
+                    isInitialLoad = false;
+                }
+                catch
+                {
+                    return;
+                }
             }
         }
     }

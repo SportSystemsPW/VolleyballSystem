@@ -6,6 +6,11 @@
              x:Class="TreningOrganizer.MAUI.Views.PaymentPage"
              x:Name="paymentPage"
              Title="Payment">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+        EventName="Appearing"
+        Command="{Binding AppearCommand}" />
+    </ContentPage.Behaviors>
     <VerticalStackLayout>
         <ListView  ItemsSource="{Binding TrainingParticipants}" HasUnevenRows="True">
             <ListView.ItemTemplate>
