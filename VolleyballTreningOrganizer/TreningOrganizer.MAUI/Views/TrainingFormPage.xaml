@@ -44,6 +44,17 @@
 
                 </VerticalStackLayout>
             </Frame>
+            <Grid Padding="10,5,0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Text="Inform how to respond to SMS."/>
+                <CheckBox Grid.Column="1"
+                        VerticalOptions="End"
+                        IsChecked="{Binding InformHowToRespond, Mode=TwoWay}"/>
+            </Grid>
+            
             <Label FontFamily="Consolas" Text="Date:" Margin="10,5,0,0"/>
             <Grid Padding="10,5,0,5">
                 <Grid.ColumnDefinitions>

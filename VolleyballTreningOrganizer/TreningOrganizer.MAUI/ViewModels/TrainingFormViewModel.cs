@@ -25,6 +25,7 @@ namespace TreningOrganizer.MAUI.ViewModels
         public string Message { get; set; }
         public DateTime Date { get; set; } = DateTime.Now;
         public TimeSpan Time { get; set; } = DateTime.Now.TimeOfDay;
+        public bool InformHowToRespond { get; set; } = false;
         private Dictionary<string, int> MessageTemplatesDropdown { get; set; }
         private Dictionary<string, int> GroupsDropdown { get; set; }
         public TrainingFormViewModel(HttpClient httpClient)
@@ -128,9 +129,41 @@ namespace TreningOrganizer.MAUI.ViewModels
                 {
                     //todo popup
                 }
-                //to do API call + refresh
+
+                if (await Permissions.CheckStatusAsync<Permissions.Sms>() != PermissionStatus.Granted)
+                {
+                    if (await Permissions.RequestAsync<Permissions.Sms>() != PermissionStatus.Granted)
+                        return;
+                }
+
+                bool proceed = await CheckMessageForVariables();
+                if (!proceed) return;
+
                 FormTraining.ParticipantsPresent = 0;
                 FormTraining.Date = Date.Date + Time;
+
+                if (Sms.Default.IsComposeSupported)
+                {
+                    List<string> recipients = new List<string>();
+                    foreach (var contact in Members)
+                    {
+                        recipients.Add(contact.Phone);
+                    }
+
+                    Message = Message.Replace("{date}", FormTraining.DateString).Replace("{price}", FormTraining.Price.ToString()).Replace("{location}", FormTraining.Location);
+                    if (InformHowToRespond)
+                    {
+                        Message += "\n\nTo confirm that you will attend this training reply YES to this message";
+                    }
+
+                    var message = new SmsMessage(Message, recipients);
+
+                    await Sms.Default.ComposeAsync(message);
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Warning", "SMS messages will not be send", "OK");
+                }               
             }
             FormTraining.ParticipantsTotal = Members.Count;
             var parameters = new Dictionary<string, object>
@@ -138,6 +171,36 @@ namespace TreningOrganizer.MAUI.ViewModels
                 { "FormTraining", FormTraining }
             };
             await Shell.Current.GoToAsync("..", parameters);
+        }
+
+        private async Task<bool> CheckMessageForVariables()
+        {
+            bool proceed = true;
+            if(Message != null)
+            {
+                string[] variables = { "{date}", "{location}", "{price}" };
+                List<string> missingVariables = new List<string>();
+                foreach (string variable in variables)
+                {
+                    if (!Message.Contains(variable))
+                    {
+                        missingVariables.Add(variable);
+                    }
+                }
+
+                if (missingVariables.Count > 0)
+                {
+                    string warningMessage = string.Format("Your message does not contain {0} variable{1}.\nDo you want to proceed anyway?", string.Join(", ", missingVariables), missingVariables.Count == 1 ? "" : "s");
+                    proceed = await Application.Current.MainPage.DisplayAlert("Warning", warningMessage, "Yes", "No");
+                }
+            }
+            else
+            {
+                string warningMessage = "Your message is empty.\nDo you want to proceed anyway?";
+                proceed = await Application.Current.MainPage.DisplayAlert("Warning", warningMessage, "Yes", "No");
+            }
+
+            return proceed;
         }
 
         private void FillForm()
