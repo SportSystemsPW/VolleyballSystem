@@ -34,11 +34,9 @@ namespace TreningOrganizer.API.Repositories
                 Date = t.Date,
                 Name = t.Name,
                 Price = t.Price,
-                participantDTOs = t.TrainingParticipants.Select(tp => new TrainingTrainingParticipantDTO
+                Location = t.Location,
+                ParticipantDTOs = t.TrainingParticipants.Select(tp => new TrainingTrainingParticipantDTO
                 {
-                    Id = tp.TrainingParticipantId,
-                    Name = tp.TrainingParticipant.Name,
-                    MessageSent = tp.MessageSent,
                     Presence = tp.Presence
                 }).ToList()
             }).ToList();
@@ -49,10 +47,11 @@ namespace TreningOrganizer.API.Repositories
             return trainings.Include(t => t.TrainingParticipants).ThenInclude(tp => tp.TrainingParticipant).FirstOrDefault(t => t.Id == id);
         }
 
-        public void InsertTraining(Training training)
+        public int InsertTraining(Training training)
         {
             trainings.Add(training);
             context.SaveChanges();
+            return training.Id;
         }
 
         public void UpdateTraining(Training training)

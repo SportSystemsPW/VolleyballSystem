@@ -10,6 +10,6 @@ namespace TreningOrganizer.API.IRepositories
         public int InsertMessageTemplate(MessageTemplate template);
         public void UpdateMessageTemplate(MessageTemplate template);
         public void DeleteMessageTemplateById(int id);
-        public List<string> GetMessageTemplateNames(int trainerId);
+        public Dictionary<string, int> GetMessageTemplateDictionary(int trainerId);
     }
 }

@@ -38,7 +38,7 @@
             <Frame CornerRadius="10" Padding="3" Margin="10,10,10,0">
                 <VerticalStackLayout>
 
-                    <Editor Text="{Binding Message,Mode=TwoWay}" Margin="5,0,5,0" Placeholder="Message" 
+                    <Editor Text="{Binding FormTraining.Message,Mode=TwoWay}" Margin="5,0,5,0" Placeholder="Message" 
                            FontSize="18" HeightRequest="300">
                     </Editor>
 

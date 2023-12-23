@@ -58,9 +58,9 @@ namespace TreningOrganizer.API.Repositories
             context.SaveChanges();
         }
 
-        public List<string> GetMessageTemplateNames(int trainerId)
+        public Dictionary<string, int> GetMessageTemplateDictionary(int trainerId)
         {
-            return messageTemplates.Where(mt => mt.TrainerId == trainerId).Select(mt => mt.TemplateName).ToList();
+            return messageTemplates.Where(mt => mt.TrainerId == trainerId).ToDictionary(mt => mt.TemplateName, mt => mt.Id);
         }
     }
 }

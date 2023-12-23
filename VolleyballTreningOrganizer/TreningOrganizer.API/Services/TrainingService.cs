@@ -31,12 +31,13 @@ namespace TreningOrganizer.API.Services
                 Date = training.Date,
                 Message = training.Message,
                 Price = training.Price,
-                participantDTOs = training.TrainingParticipants.Select(tp => new TrainingTrainingParticipantDTO
+                Location = training.Location,
+                ParticipantDTOs = training.TrainingParticipants.Select(tp => new TrainingTrainingParticipantDTO
                 {
                     Id = tp.TrainingParticipantId,
                     Name = tp.TrainingParticipant.Name,
-                    Presence = tp.Presence,
-                    MessageSent = tp.MessageSent
+                    Phone = tp.TrainingParticipant.Phone,
+                    Presence = tp.Presence
                 }).ToList()
             };
         }
@@ -46,7 +47,7 @@ namespace TreningOrganizer.API.Services
             return trainingRepository.GetTrainingsForTrainer(trainerId);
         }
 
-        public void InsertTraining(TrainingDTO trainingDTO, int trainerId)
+        public int InsertTraining(TrainingDTO trainingDTO, int trainerId)
         {
             Training training = new Training
             {
@@ -54,10 +55,11 @@ namespace TreningOrganizer.API.Services
                 Name = trainingDTO.Name,
                 Message = trainingDTO.Name,
                 Price = trainingDTO.Price,
+                Location = trainingDTO.Location,
                 TrainerId = trainerId
             };
             List<TrainingTrainingParticipant> trainingParticipants = new List<TrainingTrainingParticipant>();
-            foreach (TrainingTrainingParticipantDTO tp in trainingDTO.participantDTOs)
+            foreach (TrainingTrainingParticipantDTO tp in trainingDTO.ParticipantDTOs)
             {
                 TrainingParticipant participant = trainingParticipantRepository.GetTrainingParticipantByPhone(tp.Phone, trainerId);
                 if (participant == null)
@@ -76,7 +78,7 @@ namespace TreningOrganizer.API.Services
                 });
             }
             training.TrainingParticipants = trainingParticipants;
-            trainingRepository.InsertTraining(training);
+            return trainingRepository.InsertTraining(training);
         }
 
         public void UpdateTraining(TrainingDTO trainingDTO)
@@ -103,25 +105,29 @@ namespace TreningOrganizer.API.Services
             trainingRepository.UpdateTraining(training);
         }
 
-        public void SetParticipantPresence(int participantId, int trainingId, bool presence)
+        public void SetParticipantPresence(TrainingPresencesDTO trainingPresencesDTO)
         {
+            int trainingId = trainingPresencesDTO.TrainingId;
             Training training = trainingRepository.GetTrainingById(trainingId);
-            TrainingTrainingParticipant tp = trainingRepository.GetTrainingParticipant(participantId, trainingId);
-            if(tp != null)
+            foreach(var participant in trainingPresencesDTO.ParticipantDTOs)
             {
-                if(presence != tp.Presence)
+                TrainingTrainingParticipant tp = trainingRepository.GetTrainingParticipant(participant.Id, trainingId);
+                if (tp != null)
                 {
-                    if (presence)
+                    if (participant.Presence != tp.Presence)
                     {
-                        tp.TrainingParticipant.Balance -= training.Price;
+                        if (participant.Presence)
+                        {
+                            tp.TrainingParticipant.Balance -= training.Price;
+                        }
+                        else
+                        {
+                            tp.TrainingParticipant.Balance += training.Price;
+                        }
                     }
-                    else
-                    {
-                        tp.TrainingParticipant.Balance += training.Price;
-                    }
+                    tp.Presence = participant.Presence;
+                    trainingRepository.SaveChanges();
                 }
-                tp.Presence = presence;
-                trainingRepository.SaveChanges();
             }
         }
     }

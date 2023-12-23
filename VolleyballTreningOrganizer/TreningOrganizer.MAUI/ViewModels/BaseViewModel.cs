@@ -69,7 +69,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             }
 
             var responseContent = await responseMessage.Content.ReadFromJsonAsync<TrainingOrganizerResponse<object>>();
-            if (responseContent.Messages.Count > 0)
+            if (responseContent.Messages?.Count > 0)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", string.Join('\n', responseContent.Messages), "OK");
                 throw new Exception();

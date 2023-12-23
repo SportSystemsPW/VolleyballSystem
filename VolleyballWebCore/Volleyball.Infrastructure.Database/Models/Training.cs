@@ -13,6 +13,7 @@ namespace Volleyball.Infrastructure.Database.Models
         public string Message { get; set; } = string.Empty;
         public DateTime Date { get; set; }
         public double Price { get; set; }
+        public string Location { get; set; }
         public int TrainerId { get; set; }
         virtual public User Trainer { get; set; } = null!;
         virtual public ICollection<TrainingTrainingParticipant> TrainingParticipants { get; set; } = new List<TrainingTrainingParticipant>();

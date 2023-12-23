@@ -10,5 +10,6 @@ namespace TreningOrganizer.API.IRepositories
         public int InsertTrainingGroup(TrainingGroup group);
         public void UpdateTrainingGroup(TrainingGroup group);
         public void DeleteTrainingGroupById(int id);
+        public Dictionary<string, int> GetTrainingGroupDictionary(int trainerId);
     }
 }

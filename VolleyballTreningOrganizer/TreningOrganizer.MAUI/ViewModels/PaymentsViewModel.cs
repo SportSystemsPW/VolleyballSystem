@@ -55,22 +55,20 @@ namespace TreningOrganizer.MAUI.ViewModels
 
         private async void Appear()
         {
-            if (isInitialLoad)
+            TrainingParticipants.Clear(); //always refresh - data can be changed from trainings tab
+            try
             {
-                try
+                var trainingParticipantDTOs = await GetDataFromAPI<List<TrainingParticipantDTO>>("TrainingParticipant/GetTrainingParticipantsForTrainer");
+                foreach (var participantDTO in trainingParticipantDTOs)
                 {
-                    var trainingParticipantDTOs = await GetDataFromAPI<List<TrainingParticipantDTO>>("TrainingParticipant/GetTrainingParticipantsForTrainer");
-                    foreach (var participantDTO in trainingParticipantDTOs)
-                    {
-                        TrainingParticipants.Add(TrainingParticipant.MapDTOToModel(participantDTO));
-                    }
-                    isInitialLoad = false;
-                }
-                catch
-                {
-                    return;
+                    TrainingParticipants.Add(TrainingParticipant.MapDTOToModel(participantDTO));
                 }
             }
+            catch
+            {
+                return;
+            }
+            
         }
     }
 }

@@ -66,10 +66,10 @@ namespace TreningOrganizer.API.Controllers
         {
             return CreateResponse(messageTemplateService.GetMessageTemplateById(id));
         }
-        [HttpGet("GetMessageTemplateNames")]
-        public TrainingOrganizerResponse<List<string>> GetMessageTemplateNames()
+        [HttpGet("GetMessageTemplateDictionary")]
+        public TrainingOrganizerResponse<Dictionary<string, int>> GetMessageTemplateNames()
         {
-            return CreateResponse(messageTemplateService.GetMessageTemplateNames(GetTrainerId()));
+            return CreateResponse(messageTemplateService.GetMessageTemplateDictionary(GetTrainerId()));
         }
 
         private List<string> ValidateMessageTemplate(MessageTemplateDTO messageTemplate)

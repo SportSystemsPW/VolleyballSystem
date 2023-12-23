@@ -33,7 +33,7 @@
             <Frame CornerRadius="10" Padding="3" Margin="10,10,10,0">
                 <VerticalStackLayout>
 
-                    <Editor Text="{Binding Message,Mode=TwoWay}" IsEnabled="False" Margin="5,0,5,0" Placeholder="Message" 
+                    <Editor Text="{Binding FormTraining.Message,Mode=TwoWay}" IsEnabled="False" Margin="5,0,5,0" Placeholder="Message" 
                            FontSize="18" HeightRequest="300">
                     </Editor>
 
@@ -45,8 +45,9 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <DatePicker IsEnabled="False"/>
-                <TimePicker Grid.Column="1" IsEnabled="False"/>
+
+                <DatePicker Date="{Binding Date, Mode=TwoWay}" IsEnabled="False"/>
+                <TimePicker Grid.Column="1" Time="{Binding Time, Mode=TwoWay}" IsEnabled="False"/>
             </Grid>
             <Label FontFamily="Consolas" Text="Price:" Margin="10,5,0,0"/>
             <Frame CornerRadius="10" Padding="3" Margin="10,10,10,0">

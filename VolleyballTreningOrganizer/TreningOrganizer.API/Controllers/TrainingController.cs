@@ -15,49 +15,51 @@ namespace TreningOrganizer.API.Controllers
             this.trainingService = trainingService;
         }
         [HttpGet("GetTrainingsForTrainer")]
-        public List<TrainingDTO> GetTraingsForTrainer()
+        public TrainingOrganizerResponse<List<TrainingDTO>> GetTraingsForTrainer()
         {
-            return trainingService.GetTrainingsForTrainer(GetTrainerId());
+            return CreateResponse(trainingService.GetTrainingsForTrainer(GetTrainerId()));
         }
         [HttpGet("GetTrainingById")]
-        public TrainingDTO GetTrainingById(int id)
+        public TrainingOrganizerResponse<TrainingDTO> GetTrainingById(int id)
         {
-            return trainingService.GetTrainingById(id);
+            return CreateResponse(trainingService.GetTrainingById(id));
         }
         [HttpPost("CreateTrainig")]
-        public List<string> CreateTraining(TrainingDTO trainingDTO)
+        public TrainingOrganizerResponse<int> CreateTraining(TrainingDTO trainingDTO)
         {
+            int createdTrainingId = -1;
             List<string> errors = ValidateTraining(trainingDTO);
             if(errors.Count == 0)
             {
-                trainingService.InsertTraining(trainingDTO, GetTrainerId());
+                createdTrainingId = trainingService.InsertTraining(trainingDTO, GetTrainerId());
             }
-            return errors;
+            return CreateResponse(createdTrainingId, errors);
         }
-        [HttpPut("EditTraining")]
-        public List<string> EditTraining(TrainingDTO trainingDTO)
+        //[HttpPut("EditTraining")]
+        //public List<string> EditTraining(TrainingDTO trainingDTO)
+        //{
+        //    List<string> errors = ValidateTraining(trainingDTO);
+        //    if (errors.Count == 0)
+        //    {
+        //        trainingService.UpdateTraining(trainingDTO);
+        //    }
+        //    return errors;
+        //}
+        //[HttpDelete("RemoveTrainig")]
+        //public string RemoveTraining(int trainingId)
+        //{
+        //    if (!ValidateRemoveTraining(trainingId))
+        //    {
+        //        return MessageRepository.CannotRemoveTraining;
+        //    }
+        //    trainingService.DeleteTrainingById(trainingId);
+        //    return string.Empty;
+        //}
+        [HttpPut("SetParticipantsPresence")]
+        public TrainingOrganizerResponse<bool> SetParticipantPresence(TrainingPresencesDTO trainingPresencesDTO)
         {
-            List<string> errors = ValidateTraining(trainingDTO);
-            if (errors.Count == 0)
-            {
-                trainingService.UpdateTraining(trainingDTO);
-            }
-            return errors;
-        }
-        [HttpDelete("RemoveTrainig")]
-        public string RemoveTraining(int trainingId)
-        {
-            if (!ValidateRemoveTraining(trainingId))
-            {
-                return MessageRepository.CannotRemoveTraining;
-            }
-            trainingService.DeleteTrainingById(trainingId);
-            return string.Empty;
-        }
-        [HttpPost("SetParticipantPresence")]
-        public void SetParticipantPresence(int participantId, int trainingId, bool presence)
-        {
-            trainingService.SetParticipantPresence(participantId, trainingId, presence);
+            trainingService.SetParticipantPresence(trainingPresencesDTO);
+            return CreateResponse(true);
         }
 
         private List<string> ValidateTraining(TrainingDTO trainingDTO)

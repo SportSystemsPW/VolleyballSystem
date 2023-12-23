@@ -12,6 +12,7 @@ namespace TreningOrganizer.MAUI.Models
 {
     public class Contact : INotifyPropertyChanged
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         private bool selected;
         public bool Selected
@@ -55,7 +56,19 @@ namespace TreningOrganizer.MAUI.Models
             return new Contact
             {
                 Name = trainingParticipantDTO.Name,
-                Phone = trainingParticipantDTO.Phone
+                Phone = trainingParticipantDTO.Phone,
+                Id = trainingParticipantDTO.Id
+            };
+        }
+
+        public static Contact MapDTOToModel(TrainingTrainingParticipantDTO trainingParticipantDTO)
+        {
+            return new Contact
+            {
+                Name = trainingParticipantDTO.Name,
+                Phone = trainingParticipantDTO.Phone,
+                Id = trainingParticipantDTO.Id,
+                present = trainingParticipantDTO.Presence
             };
         }
 
@@ -64,7 +77,8 @@ namespace TreningOrganizer.MAUI.Models
             return new TrainingParticipantDTO
             {
                 Name = contact.Name,
-                Phone = contact.Phone
+                Phone = contact.Phone,
+                Id = contact.Id
             };
         }
 

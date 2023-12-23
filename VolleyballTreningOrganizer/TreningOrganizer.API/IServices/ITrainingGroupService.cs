@@ -10,5 +10,6 @@ namespace TreningOrganizer.API.IServices
         public int InsertTrainingGroup(TrainingGroupDTO groupDTO, int trainerId);
         public void UpdateTrainingGroup(TrainingGroupDTO groupDTO);
         public void DeleteTrainingGroupById(int id);
+        public Dictionary<string, int> GetTrainingGroupDictionary(int trainerId);
     }
 }

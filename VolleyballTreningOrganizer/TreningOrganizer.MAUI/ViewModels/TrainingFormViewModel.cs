@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TreningOrganizer.MAUI.Models;
+using Volleyball.DTO.TrainingOrganizer;
 
 namespace TreningOrganizer.MAUI.ViewModels
 {
@@ -22,7 +23,6 @@ namespace TreningOrganizer.MAUI.ViewModels
         public ObservableCollection<Models.Contact> Members { get; set; }
         public List<Models.Contact> members { get; set; }
         public bool IsDetailsView { get; set; }
-        public string Message { get; set; }
         public DateTime Date { get; set; } = DateTime.Now;
         public TimeSpan Time { get; set; } = DateTime.Now.TimeOfDay;
         public bool InformHowToRespond { get; set; } = false;
@@ -150,13 +150,13 @@ namespace TreningOrganizer.MAUI.ViewModels
                         recipients.Add(contact.Phone);
                     }
 
-                    Message = Message.Replace("{date}", FormTraining.DateString).Replace("{price}", FormTraining.Price.ToString()).Replace("{location}", FormTraining.Location);
+                    FormTraining.Message = FormTraining.Message.Replace("{date}", FormTraining.DateString).Replace("{price}", FormTraining.Price.ToString()).Replace("{location}", FormTraining.Location);
                     if (InformHowToRespond)
                     {
-                        Message += "\n\nTo confirm that you will attend this training reply YES to this message";
+                        FormTraining.Message += "\n\nTo confirm that you will attend this training reply YES to this message";
                     }
 
-                    var message = new SmsMessage(Message, recipients);
+                    var message = new SmsMessage(FormTraining.Message, recipients);
 
                     await Sms.Default.ComposeAsync(message);
                 }
@@ -166,6 +166,38 @@ namespace TreningOrganizer.MAUI.ViewModels
                 }               
             }
             FormTraining.ParticipantsTotal = Members.Count;
+
+            try
+            {
+                if (!IsDetailsView)
+                {
+                    int insertedTrainigId = await PostDataToAPI<int>("Training/CreateTrainig", Training.MapModelToDTO(FormTraining, Members));
+                    FormTraining.Id = insertedTrainigId;
+                }
+                else
+                {
+                    List<TrainingTrainingParticipantDTO> participantDTOs = new List<TrainingTrainingParticipantDTO>();
+                    foreach (var contact in Members)
+                    {
+                        participantDTOs.Add(new TrainingTrainingParticipantDTO
+                        {
+                            Id = contact.Id,
+                            Presence = contact.Present
+                        });
+                    }
+                    var presencesDTO = new TrainingPresencesDTO
+                    {
+                        TrainingId = FormTraining.Id,
+                        ParticipantDTOs = participantDTOs
+                    };
+                    await PutDataToAPI("Training/SetParticipantsPresence", presencesDTO);
+                }
+            }
+            catch
+            {
+                await Shell.Current.GoToAsync("..");
+            }
+
             var parameters = new Dictionary<string, object>
             {
                 { "FormTraining", FormTraining }
@@ -176,13 +208,13 @@ namespace TreningOrganizer.MAUI.ViewModels
         private async Task<bool> CheckMessageForVariables()
         {
             bool proceed = true;
-            if(Message != null)
+            if(FormTraining.Message != null)
             {
                 string[] variables = { "{date}", "{location}", "{price}" };
                 List<string> missingVariables = new List<string>();
                 foreach (string variable in variables)
                 {
-                    if (!Message.Contains(variable))
+                    if (!FormTraining.Message.Contains(variable))
                     {
                         missingVariables.Add(variable);
                     }
@@ -203,7 +235,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             return proceed;
         }
 
-        private void FillForm()
+        private async void FillForm()
         {
             IsDetailsView = Training != null;
             Title = Training == null ? "Create new training" : Training.Name;
@@ -218,23 +250,30 @@ namespace TreningOrganizer.MAUI.ViewModels
                 FormTraining.Name = Training.Name;
             }
 
-            if (members == null)
+            Members.Clear();
+            if (members == null && IsDetailsView)
             {
-                //pobrać członków z API
-                Members.Add(new Models.Contact
+                try
                 {
-                    Name = "Antek",
-                    Phone = "123123123",
-                    Present = true
-                });
-                Members.Add(new Models.Contact
+                    var trainingDTO = await GetDataFromAPI<TrainingDTO>("Training/GetTrainingById", FormTraining.Id);
+                    foreach(var participant in trainingDTO.ParticipantDTOs)
+                    {
+                        Members.Add(Models.Contact.MapDTOToModel(participant));
+                    }
+                    Date = trainingDTO.Date.Date;
+                    Time = trainingDTO.Date.TimeOfDay;
+                }
+                catch
                 {
-                    Name = "Antek2",
-                    Phone = "123123123",
-                    Present = false
-                });
+                    return;
+                }
             }
-            else
+            else if (!IsDetailsView)
+            {
+                MessageTemplatesDropdown = await GetDataFromAPI<Dictionary<string, int>>("MessageTemplate/GetMessageTemplateDictionary");
+                GroupsDropdown = await GetDataFromAPI<Dictionary<string, int>>("TrainingParticipant/GetTrainingGroupDictionary");
+            }
+            else if(members != null)
             {
                 Members.Clear();
                 foreach (var member in members)
@@ -243,38 +282,17 @@ namespace TreningOrganizer.MAUI.ViewModels
                 }
             }
 
-            if (IsDetailsView)
-            {
-                //pobrać uczestników zraz z obecnością
-            }
-            else
-            {
-                //pobrać dropdowny grup i templatek
-                MessageTemplatesDropdown = new Dictionary<string, int>()
-                {
-                    { "Template1", 1 },
-                    { "Template2", 2 },
-                    { "Template3", 3 },
-                };
-                GroupsDropdown = new Dictionary<string, int>()
-                {
-                    { "Group1", 1 },
-                    { "Group2", 2 },
-                    { "Group3", 3 },
-                };
-            }
-
         }
 
         private async void SelectTemplate()
         {
             string[] templateNames = MessageTemplatesDropdown.Keys.ToArray();
-            string selectedTemplate = await Application.Current.MainPage.DisplayActionSheet("Select template", "Cancel", null, templateNames);
+            string selectedTemplateName = await Application.Current.MainPage.DisplayActionSheet("Select template", "Cancel", null, templateNames);
             int selectedTemplateId;
-            if(MessageTemplatesDropdown.TryGetValue(selectedTemplate, out selectedTemplateId))
+            if(MessageTemplatesDropdown.TryGetValue(selectedTemplateName, out selectedTemplateId))
             {
-                //template selected
-                //todo download content
+                var selectedTemplate = await GetDataFromAPI<MessageTemplateDTO>("MessageTemplate/GetMessageTemplateById", selectedTemplateId);
+                FormTraining.Message = selectedTemplate.Content;
             }
             else
             {
@@ -289,7 +307,11 @@ namespace TreningOrganizer.MAUI.ViewModels
             int selectedGroupId;
             if (GroupsDropdown.TryGetValue(selectedTemplate, out selectedGroupId))
             {
-
+                var trainingGroupDTO = await GetDataFromAPI<TrainingGroupDTO>("TrainingParticipant/GetTrainingGroupById", selectedGroupId);
+                foreach (var participantDTO in trainingGroupDTO.TrainingParticipantDTOs)
+                {
+                    Members.Add(Models.Contact.MapDTOToModel(participantDTO));
+                }
             }
             else
             {

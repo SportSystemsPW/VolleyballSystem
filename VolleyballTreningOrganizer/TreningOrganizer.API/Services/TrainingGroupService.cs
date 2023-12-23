@@ -97,5 +97,10 @@ namespace TreningOrganizer.API.Services
             trainingGroup.TrainingGroupTrainingParticipants = groupTrainingParticipants;
             trainingGroupRepository.UpdateTrainingGroup(trainingGroup);
         }
+
+        public Dictionary<string, int> GetTrainingGroupDictionary(int trainerId)
+        {
+            return trainingGroupRepository.GetTrainingGroupDictionary(trainerId);
+        }
     }
 }

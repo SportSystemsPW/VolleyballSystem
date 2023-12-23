@@ -6,9 +6,9 @@ namespace TreningOrganizer.API.IServices
     {
         public List<TrainingDTO> GetTrainingsForTrainer(int trainerId);
         public TrainingDTO GetTrainingById(int id);
-        public void InsertTraining(TrainingDTO trainingDTO, int trainerId);
+        public int InsertTraining(TrainingDTO trainingDTO, int trainerId);
         public void UpdateTraining(TrainingDTO trainingDTO);
         public void DeleteTrainingById(int id);
-        public void SetParticipantPresence(int participantId, int trainingId, bool presence);
+        public void SetParticipantPresence(TrainingPresencesDTO trainingPresencesDTO);
     }
 }

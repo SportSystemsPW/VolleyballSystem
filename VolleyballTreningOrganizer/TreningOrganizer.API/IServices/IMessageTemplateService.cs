@@ -10,6 +10,6 @@ namespace TreningOrganizer.API.IServices
         public int InsertMessageTemplate(MessageTemplateDTO template, int trainerId);
         public void UpdateMessageTemplate(MessageTemplateDTO template);
         public void DeleteMessageTemplateById(int id);
-        public List<string> GetMessageTemplateNames(int trainerId);
+        public Dictionary<string, int> GetMessageTemplateDictionary(int trainerId);
     }
 }

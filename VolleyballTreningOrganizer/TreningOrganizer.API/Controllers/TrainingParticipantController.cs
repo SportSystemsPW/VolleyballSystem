@@ -4,6 +4,7 @@ using System.Reflection.Metadata.Ecma335;
 using Volleyball.DTO.TrainingOrganizer;
 using TreningOrganizer.API.IServices;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using TreningOrganizer.API.Services;
 
 namespace TreningOrganizer.API.Controllers
 {
@@ -24,21 +25,21 @@ namespace TreningOrganizer.API.Controllers
         {
             return CreateResponse(participantService.GetTrainingParticpantsForTrainer(GetTrainerId()));
         }
-        [HttpGet("GetTrainingParticipantById")]
-        public TrainingParticipantDTO GetTrainingParticipantById(int id)
-        {
-            return participantService.GetTrainingParticipantById(id);
-        }
-        [HttpPost("CreateTraingParticipant")]
-        public List<string> CreateTrainingParticipant(TrainingParticipantDTO trainingParticipantDTO)
-        {
-            List<string> errors = ValidateTrainingParticipant(trainingParticipantDTO);
-            if(errors.Count == 0)
-            {
-                participantService.InsertTrainingParticipant(trainingParticipantDTO, GetTrainerId());
-            }
-            return errors;
-        }
+        //[HttpGet("GetTrainingParticipantById")]
+        //public TrainingParticipantDTO GetTrainingParticipantById(int id)
+        //{
+        //    return participantService.GetTrainingParticipantById(id);
+        //}
+        //[HttpPost("CreateTraingParticipant")]
+        //public List<string> CreateTrainingParticipant(TrainingParticipantDTO trainingParticipantDTO)
+        //{
+        //    List<string> errors = ValidateTrainingParticipant(trainingParticipantDTO);
+        //    if(errors.Count == 0)
+        //    {
+        //        participantService.InsertTrainingParticipant(trainingParticipantDTO, GetTrainerId());
+        //    }
+        //    return errors;
+        //}
         [HttpPut("EditTraingParticipant")]
         public TrainingOrganizerResponse<bool> EditTrainingParticipant(TrainingParticipantDTO trainingParticipantDTO)
         {
@@ -51,16 +52,16 @@ namespace TreningOrganizer.API.Controllers
             }
             return CreateResponse(success, errors);
         }
-        [HttpDelete("RemoveTrainingParticipant")]
-        public string RemoveTrainingParticipant(int id)
-        {
-            if (!ValidateTrainingParticipantRemove(id))
-            {
-                return MessageRepository.CannotRemoveTrainingParticipant;
-            }
-            participantService.DeleteTrainingParticipantById(id);
-            return string.Empty;
-        }
+        //[HttpDelete("RemoveTrainingParticipant")]
+        //public string RemoveTrainingParticipant(int id)
+        //{
+        //    if (!ValidateTrainingParticipantRemove(id))
+        //    {
+        //        return MessageRepository.CannotRemoveTrainingParticipant;
+        //    }
+        //    participantService.DeleteTrainingParticipantById(id);
+        //    return string.Empty;
+        //}
 
 
         [HttpGet("GetTrainingGroupsForTrainer")]
@@ -110,15 +111,21 @@ namespace TreningOrganizer.API.Controllers
             return CreateResponse(success, errors);
         }
 
+        [HttpGet("GetTrainingGroupDictionary")]
+        public TrainingOrganizerResponse<Dictionary<string, int>> GetMessageTemplateNames()
+        {
+            return CreateResponse(trainingGroupService.GetTrainingGroupDictionary(GetTrainerId()));
+        }
+
 
         private List<string> ValidateTrainingParticipant(TrainingParticipantDTO trainingParticipantDTO)
         {
             return new List<string>();
         }
-        private bool ValidateTrainingParticipantRemove(int id)
-        {
-            return true;
-        }
+        //private bool ValidateTrainingParticipantRemove(int id)
+        //{
+        //    return true;
+        //}
 
 
         private List<string> ValidateTrainingGroup(TrainingGroupDTO trainingGroupDTO)

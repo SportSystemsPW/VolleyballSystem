@@ -52,5 +52,10 @@ namespace TreningOrganizer.API.Repositories
             trainingGroups.Update(group);
             context.SaveChanges();
         }
+
+        public Dictionary<string, int> GetTrainingGroupDictionary(int trainerId)
+        {
+            return trainingGroups.Where(mt => mt.TrainerId == trainerId).ToDictionary(mt => mt.Name, mt => mt.Id);
+        }
     }
 }

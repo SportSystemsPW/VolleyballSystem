@@ -29,9 +29,9 @@ namespace TreningOrganizer.API.Services
             };
         }
 
-        public List<string> GetMessageTemplateNames(int trainerId)
+        public Dictionary<string, int> GetMessageTemplateDictionary(int trainerId)
         {
-            return messageTemplateRepository.GetMessageTemplateNames(trainerId);
+            return messageTemplateRepository.GetMessageTemplateDictionary(trainerId);
         }
 
         public List<MessageTemplateDTO> GetMessageTemplatesForTrainer(int trainerId)

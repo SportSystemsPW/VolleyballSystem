@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TreningOrganizer.MAUI.Models;
@@ -50,33 +51,7 @@ namespace TreningOrganizer.MAUI.ViewModels
         public TrainingsViewModel(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            Trainings = new ObservableCollection<Training>
-            {
-                new Training()
-                {
-                    Id = 1,
-                    Name = "Test",
-                    Date = new DateTime(2023, 12, 10, 10, 0, 0),
-                    ParticipantsPresent = 0,
-                    ParticipantsTotal = 10
-                },
-                new Training()
-                {
-                    Id = 2,
-                    Name = "Test2",
-                    Date = new DateTime(2023, 12, 11, 12, 0, 0),
-                    ParticipantsPresent = 0,
-                    ParticipantsTotal = 15
-                },
-                new Training()
-                {
-                    Id = 3,
-                    Name = "Test3",
-                    Date = new DateTime(2023, 12, 12, 9, 0, 0),
-                    ParticipantsPresent = 0,
-                    ParticipantsTotal = 20
-                }
-            };
+            Trainings = new ObservableCollection<Training>();
         }
         private async void ShowDetails(Training training)
         {
@@ -92,8 +67,25 @@ namespace TreningOrganizer.MAUI.ViewModels
             await Shell.Current.GoToAsync("trainingForm");
         }
 
-        private void Apperar()
+        private async void Apperar()
         {
+            if (isInitialLoad)
+            {
+                try
+                {
+                    var trainingDTOs = await GetDataFromAPI<List<TrainingDTO>>("Training/GetTrainingsForTrainer");
+                    foreach (var trainingDTO in trainingDTOs)
+                    {
+                        Trainings.Add(Training.MapDTOToModel(trainingDTO));
+                    }
+                    isInitialLoad = false;
+                }
+                catch
+                {
+                    return;
+                }
+            }
+
             if (FormTraining == null)
             {
                 return;
@@ -105,10 +97,12 @@ namespace TreningOrganizer.MAUI.ViewModels
                 {
                     training.ParticipantsPresent = FormTraining.ParticipantsPresent;
                     training.ParticipantsTotal = FormTraining.ParticipantsTotal;
+                    FormTraining = null;
                     return;
                 }
             }
             Trainings.Add(FormTraining);
+            FormTraining = null;
         }
 
         private async void ScanSMSForResponses()
