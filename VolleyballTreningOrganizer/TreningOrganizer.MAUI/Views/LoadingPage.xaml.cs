@@ -9,7 +9,7 @@ public partial class LoadingPage : ContentPage
 
     protected override async void OnNavigatedTo(NavigatedToEventArgs args)
     {
-        if (await isAuthenticated())
+        if (await IsAuthenticated())
         {
             await Shell.Current.GoToAsync("///templateTab");
         }
@@ -20,7 +20,7 @@ public partial class LoadingPage : ContentPage
         base.OnNavigatedTo(args);
     }
 
-    async Task<bool> isAuthenticated()
+    async Task<bool> IsAuthenticated()
     {
         string password = Preferences.Get("Password", string.Empty);
         string username = Preferences.Get("Username", string.Empty);

@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TreningOrganizer.MAUI.Models;
+using Volleyball.DTO.TrainingOrganizer;
+using Communication = Microsoft.Maui.ApplicationModel.Communication;
 
 namespace TreningOrganizer.MAUI.ViewModels
 {
@@ -109,9 +111,54 @@ namespace TreningOrganizer.MAUI.ViewModels
             Trainings.Add(FormTraining);
         }
 
-        private void ScanSMSForResponses()
+        private async void ScanSMSForResponses()
         {
+            if (await Permissions.CheckStatusAsync<Permissions.Sms>() != PermissionStatus.Granted)
+            {
+                if (await Permissions.RequestAsync<Permissions.Sms>() != PermissionStatus.Granted)
+                    return;
+            }
+#if ANDROID
+            long lastTimeScaned = long.Parse(Preferences.Get("LastTimeScaned", "0")); //last time sms messages were scaned in long format
+            string now = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+            List<SMSResponse> responses = new List<SMSResponse>();
+            string INBOX = "content://sms/inbox";
+            string[] reqCols = new string[] { "address", "date", "body"};
+            Android.Net.Uri uri = Android.Net.Uri.Parse(INBOX);
+            Android.Database.ICursor cursor = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity.ContentResolver.Query(uri, reqCols, null, null, null);
 
+
+            if (cursor.MoveToFirst())
+            {
+                do
+                {
+                    string phone = cursor.GetString(cursor.GetColumnIndex(reqCols[0]));
+                    string dateString = cursor.GetString(cursor.GetColumnIndex(reqCols[1]));
+                    string body = cursor.GetString(cursor.GetColumnIndex(reqCols[2]));
+
+                    if(long.TryParse(dateString, out long dateLong))
+                    {
+                        if (body.Trim().ToLower() == "yes" && dateLong > lastTimeScaned)
+                        {
+                            responses.Add(new SMSResponse { Phone = phone, DateTime = new DateTime(dateLong) });
+                        }
+                    } 
+                } while (cursor.MoveToNext());
+            }
+
+            if(responses.Count > 0)
+            {
+                try
+                {
+                    await PostDataToAPI<AttendanceChangedResponse>("", responses);
+                    Preferences.Set("LastTimeScaned", now);
+                }
+                catch
+                {
+
+                }
+            }
+#endif
         }
     }
 }
