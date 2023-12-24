@@ -64,7 +64,11 @@ namespace TreningOrganizer.MAUI.ViewModels
 
         private async void CreateTraining()
         {
-            await Shell.Current.GoToAsync("trainingForm");
+            var parameters = new Dictionary<string, object>
+            {
+                { "Training", null }
+            };
+            await Shell.Current.GoToAsync("trainingForm", parameters);
         }
 
         private async void Apperar()
@@ -115,7 +119,7 @@ namespace TreningOrganizer.MAUI.ViewModels
 #if ANDROID
             long lastTimeScaned = long.Parse(Preferences.Get("LastTimeScaned", "0")); //last time sms messages were scaned in long format
             string now = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
-            List<SMSResponse> responses = new List<SMSResponse>();
+            List<SMSResponseDTO> responses = new List<SMSResponseDTO>();
             string INBOX = "content://sms/inbox";
             string[] reqCols = new string[] { "address", "date", "body"};
             Android.Net.Uri uri = Android.Net.Uri.Parse(INBOX);
@@ -132,9 +136,11 @@ namespace TreningOrganizer.MAUI.ViewModels
 
                     if(long.TryParse(dateString, out long dateLong))
                     {
-                        if (body.Trim().ToLower() == "yes" && dateLong > lastTimeScaned)
+                        if (body.Trim().ToLower() == "yes" && (dateLong / 1000) > lastTimeScaned)
                         {
-                            responses.Add(new SMSResponse { Phone = phone, DateTime = new DateTime(dateLong) });
+                            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc); //convert to normal date time from unix date
+                            dateTime = dateTime.AddMilliseconds(dateLong).ToLocalTime();
+                            responses.Add(new SMSResponseDTO { Phone = phone, DateTime = dateTime });
                         }
                     } 
                 } while (cursor.MoveToNext());
@@ -144,7 +150,15 @@ namespace TreningOrganizer.MAUI.ViewModels
             {
                 try
                 {
-                    await PostDataToAPI<AttendanceChangedResponse>("", responses);
+                    var response = await PostDataToAPI<List<AttendanceChangedResponseDTO>>("Training/ProcessSMSResponses", responses);
+                    foreach(var change in response)
+                    {
+                        var trainingChanged = Trainings.FirstOrDefault(t => t.Id == change.TrainingId);
+                        if(trainingChanged != null)
+                        {
+                            trainingChanged.ParticipantsPresent += change.AttendanceCountDelta;
+                        }
+                    }
                     Preferences.Set("LastTimeScaned", now);
                 }
                 catch

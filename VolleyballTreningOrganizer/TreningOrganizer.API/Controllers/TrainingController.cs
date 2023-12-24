@@ -62,6 +62,12 @@ namespace TreningOrganizer.API.Controllers
             return CreateResponse(true);
         }
 
+        [HttpPost("ProcessSMSResponses")]
+        public TrainingOrganizerResponse<List<AttendanceChangedResponseDTO>> ProcessSMSResponses(List<SMSResponseDTO> smsResponseDTOs)
+        {
+            return CreateResponse(trainingService.ProcessSMSResponses(smsResponseDTOs, GetTrainerId()));
+        }
+
         private List<string> ValidateTraining(TrainingDTO trainingDTO)
         {
             return new List<string>();

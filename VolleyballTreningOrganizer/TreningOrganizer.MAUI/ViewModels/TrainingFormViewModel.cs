@@ -268,7 +268,7 @@ namespace TreningOrganizer.MAUI.ViewModels
                     return;
                 }
             }
-            else if (!IsDetailsView)
+            else if (!IsDetailsView && members == null)
             {
                 MessageTemplatesDropdown = await GetDataFromAPI<Dictionary<string, int>>("MessageTemplate/GetMessageTemplateDictionary");
                 GroupsDropdown = await GetDataFromAPI<Dictionary<string, int>>("TrainingParticipant/GetTrainingGroupDictionary");

@@ -12,6 +12,7 @@ namespace Volleyball.Infrastructure.Database.Models
         public string Name { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
         public DateTime Date { get; set; }
+        public DateTime CreationDate { get; set; }
         public double Price { get; set; }
         public string Location { get; set; }
         public int TrainerId { get; set; }

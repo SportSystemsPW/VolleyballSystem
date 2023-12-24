@@ -3,6 +3,7 @@ using TreningOrganizer.API.IRepositories;
 using TreningOrganizer.API.IServices;
 using TreningOrganizer.API.Repositories;
 using Volleyball.Infrastructure.Database.Models;
+using Azure;
 
 namespace TreningOrganizer.API.Services
 {
@@ -16,10 +17,10 @@ namespace TreningOrganizer.API.Services
             this.trainingParticipantRepository = trainingParticipantRepository;
 
         }
-        public void DeleteTrainingById(int id)
-        {
-            trainingRepository.DeleteTrainingById(id);
-        }
+        //public void DeleteTrainingById(int id)
+        //{
+        //    trainingRepository.DeleteTrainingById(id);
+        //}
 
         public TrainingDTO GetTrainingById(int id)
         {
@@ -44,7 +45,7 @@ namespace TreningOrganizer.API.Services
 
         public List<TrainingDTO> GetTrainingsForTrainer(int trainerId)
         {
-            return trainingRepository.GetTrainingsForTrainer(trainerId);
+            return trainingRepository.GetTrainingDTOsForTrainer(trainerId);
         }
 
         public int InsertTraining(TrainingDTO trainingDTO, int trainerId)
@@ -56,7 +57,8 @@ namespace TreningOrganizer.API.Services
                 Message = trainingDTO.Name,
                 Price = trainingDTO.Price,
                 Location = trainingDTO.Location,
-                TrainerId = trainerId
+                TrainerId = trainerId,
+                CreationDate = DateTime.Now
             };
             List<TrainingTrainingParticipant> trainingParticipants = new List<TrainingTrainingParticipant>();
             foreach (TrainingTrainingParticipantDTO tp in trainingDTO.ParticipantDTOs)
@@ -81,29 +83,29 @@ namespace TreningOrganizer.API.Services
             return trainingRepository.InsertTraining(training);
         }
 
-        public void UpdateTraining(TrainingDTO trainingDTO)
-        {
-            Training training = trainingRepository.GetTrainingById(trainingDTO.Id);
-            if(training == null)
-            {
-                throw new Exception();
-            }
+        //public void UpdateTraining(TrainingDTO trainingDTO)
+        //{
+        //    Training training = trainingRepository.GetTrainingById(trainingDTO.Id);
+        //    if(training == null)
+        //    {
+        //        throw new Exception();
+        //    }
 
-            int trainerId = training.TrainerId;
-            double oldPrice = training.Price;
+        //    int trainerId = training.TrainerId;
+        //    double oldPrice = training.Price;
 
-            training.Price = trainingDTO.Price;
-            training.Name = trainingDTO.Name;
-            training.Date = trainingDTO.Date;
-            training.Message = trainingDTO.Message;
+        //    training.Price = trainingDTO.Price;
+        //    training.Name = trainingDTO.Name;
+        //    training.Date = trainingDTO.Date;
+        //    training.Message = trainingDTO.Message;
 
-            //TODO zmiana uczestników treningu
-            foreach(var tp in training.TrainingParticipants)
-            {
-                if (tp.Presence) tp.TrainingParticipant.Balance += oldPrice - training.Price;
-            }
-            trainingRepository.UpdateTraining(training);
-        }
+        //    //TODO zmiana uczestników treningu
+        //    foreach(var tp in training.TrainingParticipants)
+        //    {
+        //        if (tp.Presence) tp.TrainingParticipant.Balance += oldPrice - training.Price;
+        //    }
+        //    trainingRepository.UpdateTraining(training);
+        //}
 
         public void SetParticipantPresence(TrainingPresencesDTO trainingPresencesDTO)
         {
@@ -129,6 +131,52 @@ namespace TreningOrganizer.API.Services
                     trainingRepository.SaveChanges();
                 }
             }
+        }
+
+        public List<AttendanceChangedResponseDTO> ProcessSMSResponses(List<SMSResponseDTO> smsResponseDTOs, int trainerId)
+        {
+            Dictionary<int, int> trainingAttendancesChanged = new Dictionary<int, int>();
+            List<AttendanceChangedResponseDTO> result = new List<AttendanceChangedResponseDTO>();
+            List<Training> trainings = trainingRepository.GetTrainingsForTrainer(trainerId);
+            smsResponseDTOs = smsResponseDTOs.OrderByDescending(r => r.DateTime).ToList();
+
+            foreach (Training training in trainings)
+            {
+                for(int i = 0; i < smsResponseDTOs.Count; i++)
+                {
+                    if (smsResponseDTOs.ElementAt(i).DateTime > training.CreationDate)
+                    {
+                        var participant = training.TrainingParticipants.FirstOrDefault(p => p.TrainingParticipant.Phone == smsResponseDTOs.ElementAt(i).Phone);
+                        if (participant != null && !participant.Presence)
+                        {
+                            participant.TrainingParticipant.Balance -= training.Price;
+                            participant.Presence = true;
+                            if (trainingAttendancesChanged.ContainsKey(training.Id))
+                            {
+                                trainingAttendancesChanged[training.Id] += 1;
+                            }
+                            else
+                            {
+                                trainingAttendancesChanged[training.Id] = 1;
+                            }
+                            smsResponseDTOs.RemoveAt(i);
+                            break;
+                        }
+                    }
+                }
+            }
+            trainingRepository.SaveChanges();
+
+            foreach(var entry in trainingAttendancesChanged)
+            {
+                result.Add(new AttendanceChangedResponseDTO
+                {
+                    TrainingId = entry.Key,
+                    AttendanceCountDelta = entry.Value
+                });
+            }
+
+            return result;
         }
     }
 }

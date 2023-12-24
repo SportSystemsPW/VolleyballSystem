@@ -26,7 +26,7 @@ namespace TreningOrganizer.API.Repositories
             }
         }
 
-        public List<TrainingDTO> GetTrainingsForTrainer(int trainerId)
+        public List<TrainingDTO> GetTrainingDTOsForTrainer(int trainerId)
         {
             return trainings.Where(t => t.TrainerId == trainerId).Select(t => new TrainingDTO
             {
@@ -45,6 +45,11 @@ namespace TreningOrganizer.API.Repositories
         public Training GetTrainingById(int id)
         {
             return trainings.Include(t => t.TrainingParticipants).ThenInclude(tp => tp.TrainingParticipant).FirstOrDefault(t => t.Id == id);
+        }
+
+        public List<Training> GetTrainingsForTrainer(int trainerId)
+        {
+            return trainings.Include(t => t.TrainingParticipants).ThenInclude(tp => tp.TrainingParticipant).Where(t => t.TrainerId == trainerId).OrderByDescending(t => t.Date).ToList();
         }
 
         public int InsertTraining(Training training)

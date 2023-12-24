@@ -5,8 +5,9 @@ namespace TreningOrganizer.API.IRepositories
 {
     public interface ITrainingRepository
     {
-        public List<TrainingDTO> GetTrainingsForTrainer(int trainerId);
+        public List<TrainingDTO> GetTrainingDTOsForTrainer(int trainerId);
         public Training GetTrainingById(int id);
+        public List<Training> GetTrainingsForTrainer(int trainerId);
         public int InsertTraining(Training training);
         public void UpdateTraining(Training training);
         public void DeleteTrainingById(int id);
