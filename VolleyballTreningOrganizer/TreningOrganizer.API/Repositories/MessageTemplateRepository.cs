@@ -15,11 +15,13 @@ namespace TreningOrganizer.API.Repositories
             this.context = context;
             messageTemplates = context.MessageTemplates;
         }
-        public void DeleteMessageTemplateById(int id)
+        public void DeleteMessageTemplateById(int id, int trainerId)
         {
             MessageTemplate messageTemplate = messageTemplates.FirstOrDefault(mt => mt.Id == id);
             if (messageTemplate != null)
             {
+                if (trainerId != messageTemplate.TrainerId)
+                    throw new TrainerNotAuthorizedException(MessageRepository.CannotRemoveMessageTemplate);
                 messageTemplates.Remove(messageTemplate);
                 context.SaveChanges();
             }

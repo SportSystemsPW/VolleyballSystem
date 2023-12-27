@@ -16,7 +16,7 @@
         <Frame CornerRadius="10" Padding="3" Margin="10,10,10,0">
             <VerticalStackLayout>
 
-                <Entry Text="{Binding FormTemplate.TemplateName,Mode=TwoWay}" Margin="5,0,0,0" Placeholder="Message template name" FontSize="18">
+                <Entry Text="{Binding FormTemplate.TemplateName,Mode=TwoWay}" MaxLength="{Binding NameMaxLength}" Margin="5,0,0,0" Placeholder="Message template name" FontSize="18">
                 </Entry>
 
             </VerticalStackLayout>
@@ -25,7 +25,7 @@
         <Frame CornerRadius="10" Padding="3" Margin="10,10,10,0">
             <VerticalStackLayout>
 
-                <Editor Text="{Binding FormTemplate.Content,Mode=TwoWay}" Margin="5,0,5,0" Placeholder="Message template" 
+                <Editor Text="{Binding FormTemplate.Content,Mode=TwoWay}" MaxLength="{Binding ContentMaxLength}" Margin="5,0,5,0" Placeholder="Message template" 
                        FontSize="18" HeightRequest="300">
                 </Editor>
 

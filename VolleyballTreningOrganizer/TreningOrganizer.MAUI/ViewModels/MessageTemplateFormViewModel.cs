@@ -15,6 +15,8 @@ namespace TreningOrganizer.MAUI.ViewModels
         public string Title { get; set; }
         public MessageTemplate Template { get; set; }
         public MessageTemplate FormTemplate { get; set; } = new MessageTemplate();
+        public int NameMaxLength { get; } = 50;
+        public int ContentMaxLength { get; } = 300;
         public ICommand CancelCommand
         {
             get
@@ -50,7 +52,29 @@ namespace TreningOrganizer.MAUI.ViewModels
 
         private async void Save()
         {
+            List<string> errors = new List<string>();
             bool validate = true;
+            if (string.IsNullOrEmpty(FormTemplate.TemplateName))
+            {
+                validate = false;
+                errors.Add("Message template name can't be empty");
+            }
+            else if(FormTemplate.TemplateName.Length > NameMaxLength)
+            {
+                validate = false;
+                errors.Add($"Message template name can't be longer than {NameMaxLength} characters");
+            }
+            if (string.IsNullOrEmpty(FormTemplate.Content))
+            {
+                validate = false;
+                errors.Add("Message template content can't be empty");
+            }
+            else if (FormTemplate.Content.Length > ContentMaxLength)
+            {
+                validate = false;
+                errors.Add($"Message template content can't be longer than {ContentMaxLength} characters");
+            }
+
             if (validate)
             {
                 try
@@ -72,7 +96,8 @@ namespace TreningOrganizer.MAUI.ViewModels
             }
             else
             {
-                //todo popup
+                await Application.Current.MainPage.DisplayAlert("Error", string.Join('\n', errors), "OK");
+                return;
             }
             //to do API call + refresh
             var parameters = new Dictionary<string, object>

@@ -3,6 +3,7 @@ using Volleyball.DTO.TrainingOrganizer;
 using TreningOrganizer.API.IServices;
 using TreningOrganizer.API.Services;
 using Volleyball.Infrastructure.Database.Models;
+using Microsoft.IdentityModel.Tokens;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -34,12 +35,21 @@ namespace TreningOrganizer.API.Controllers
         public TrainingOrganizerResponse<bool> EditMessageTemplate([FromBody] MessageTemplateDTO editedMessageTemplate)
         {
             List<string> errors = ValidateMessageTemplate(editedMessageTemplate);
-            bool success = false;
+            bool success = true;
             if (errors.Count == 0)
             {
-                messageTemplateService.UpdateMessageTemplate(editedMessageTemplate);
-                success = true;
+                try
+                {
+                    messageTemplateService.UpdateMessageTemplate(editedMessageTemplate, GetTrainerId());
+                }
+                catch (TrainerNotAuthorizedException e)
+                {
+                    success = false;
+                    errors.Add(e.Message);
+                }
+                
             }
+            
             return CreateResponse(success, errors);
         }
 
@@ -48,12 +58,15 @@ namespace TreningOrganizer.API.Controllers
         {
             bool success = true;
             var errors = new List<string>();
-            if (!ValidateMessageTemplateRemove(id))
+            try
             {
-                errors.Add(MessageRepository.CannotRemoveMessageTemplate);
-                success = false;
+                messageTemplateService.DeleteMessageTemplateById(id, GetTrainerId());
             }
-            messageTemplateService.DeleteMessageTemplateById(id);
+            catch (TrainerNotAuthorizedException e)
+            {
+                success = false;
+                errors.Add(e.Message);
+            }
             return CreateResponse(success, errors);
         }
         [HttpGet("GetMessageTemplatesForTrainer")]
@@ -74,12 +87,16 @@ namespace TreningOrganizer.API.Controllers
 
         private List<string> ValidateMessageTemplate(MessageTemplateDTO messageTemplate)
         {
+            var errors = new List<string>();
+            if (messageTemplate.TemplateName.IsNullOrEmpty())
+                errors.Add(MessageRepository.MessageTemplateNameEmpty);
+            else if (messageTemplate.TemplateName.Length > 50)
+                errors.Add(MessageRepository.MessageTemplateNameTooLong);
+            if (messageTemplate.Content.IsNullOrEmpty())
+                errors.Add(MessageRepository.MessageTemplateEmpty);
+            else if (messageTemplate.Content.Length > 300)
+                errors.Add(MessageRepository.MessageTemplateTooLong);
             return new List<string>();
-        }
-
-        private bool ValidateMessageTemplateRemove(int id)
-        {
-            return true;
         }
     }
 }

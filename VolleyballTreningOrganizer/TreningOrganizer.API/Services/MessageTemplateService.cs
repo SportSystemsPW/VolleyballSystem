@@ -13,9 +13,9 @@ namespace TreningOrganizer.API.Services
         {
             this.messageTemplateRepository = messageTemplateRepository;
         }
-        public void DeleteMessageTemplateById(int id)
+        public void DeleteMessageTemplateById(int id, int trainerId)
         {
-            messageTemplateRepository.DeleteMessageTemplateById(id);
+            messageTemplateRepository.DeleteMessageTemplateById(id, trainerId);
         }
 
         public MessageTemplateDTO GetMessageTemplateById(int id)
@@ -50,9 +50,11 @@ namespace TreningOrganizer.API.Services
             return messageTemplateRepository.InsertMessageTemplate(messageTemplate);
         }
 
-        public void UpdateMessageTemplate(MessageTemplateDTO templateDTO)
+        public void UpdateMessageTemplate(MessageTemplateDTO templateDTO, int trainerId)
         {
             MessageTemplate template = messageTemplateRepository.GetMessageTemplateById(templateDTO.Id);
+            if (template.TrainerId != trainerId)
+                throw new TrainerNotAuthorizedException(MessageRepository.CannotEditMessageTemplate);
             template.TemplateName = templateDTO.TemplateName;
             template.Content = templateDTO.Content;
             messageTemplateRepository.UpdateMessageTemplate(template);
