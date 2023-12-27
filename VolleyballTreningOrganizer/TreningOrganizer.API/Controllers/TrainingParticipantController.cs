@@ -5,6 +5,7 @@ using Volleyball.DTO.TrainingOrganizer;
 using TreningOrganizer.API.IServices;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using TreningOrganizer.API.Services;
+using Microsoft.IdentityModel.Tokens;
 
 namespace TreningOrganizer.API.Controllers
 {
@@ -88,12 +89,23 @@ namespace TreningOrganizer.API.Controllers
         [HttpPut("EditTrainingGroup")]
         public TrainingOrganizerResponse<bool> EditTrainingGroup(TrainingGroupDTO trainingGroupDTO)
         {
-            bool success = false;
+            bool success = true;
             List<string> errors = ValidateTrainingGroup(trainingGroupDTO);
             if (errors.Count == 0)
             {
-                success = true;
-                trainingGroupService.UpdateTrainingGroup(trainingGroupDTO);
+                try
+                {
+                    trainingGroupService.UpdateTrainingGroup(trainingGroupDTO, GetTrainerId());
+                }
+                catch (TrainerNotAuthorizedException e)
+                {
+                    success = false;
+                    errors.Add(e.Message);
+                }
+            }
+            else
+            {
+                success = false;
             }
             return CreateResponse(success, errors);
         }
@@ -102,12 +114,16 @@ namespace TreningOrganizer.API.Controllers
         {
             bool success = true;
             List<string> errors = new List<string>();
-            if (!ValidateTrainingGroupRemove(id))
+            try
+            {
+                trainingGroupService.DeleteTrainingGroupById(id, GetTrainerId());
+            }
+            catch(TrainerNotAuthorizedException e)
             {
                 success = false;
-                errors.Add(MessageRepository.CannotRemoveTrainingGroup);
+                errors.Add(e.Message);
             }
-            trainingGroupService.DeleteTrainingGroupById(id);
+            
             return CreateResponse(success, errors);
         }
 
@@ -122,19 +138,17 @@ namespace TreningOrganizer.API.Controllers
         {
             return new List<string>();
         }
-        //private bool ValidateTrainingParticipantRemove(int id)
-        //{
-        //    return true;
-        //}
-
 
         private List<string> ValidateTrainingGroup(TrainingGroupDTO trainingGroupDTO)
         {
-            return new List<string>();
-        }
-        private bool ValidateTrainingGroupRemove(int id)
-        {
-            return true;
+            var errors = new List<string>();
+            if (trainingGroupDTO.Name.IsNullOrEmpty())
+                errors.Add(MessageRepository.FieldEmpty("Group name"));
+            else if (trainingGroupDTO.Name.Length > 50)
+                errors.Add(MessageRepository.FieldTooLong("Group name", 50));
+            if (trainingGroupDTO.TrainingParticipantDTOs.Count == 0)
+                errors.Add(MessageRepository.EmptyGroup);
+            return errors;
         }
     }
 }

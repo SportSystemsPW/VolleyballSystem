@@ -9,7 +9,7 @@ namespace TreningOrganizer.API.IRepositories
         public TrainingGroup GetTrainingGroupById(int id);
         public int InsertTrainingGroup(TrainingGroup group);
         public void UpdateTrainingGroup(TrainingGroup group);
-        public void DeleteTrainingGroupById(int id);
+        public void DeleteTrainingGroupById(int id, int trainerId);
         public Dictionary<string, int> GetTrainingGroupDictionary(int trainerId);
     }
 }

@@ -21,7 +21,7 @@ namespace TreningOrganizer.API.Repositories
             if (messageTemplate != null)
             {
                 if (trainerId != messageTemplate.TrainerId)
-                    throw new TrainerNotAuthorizedException(MessageRepository.CannotRemoveMessageTemplate);
+                    throw new TrainerNotAuthorizedException(MessageRepository.CannotRemoveObject("message template"));
                 messageTemplates.Remove(messageTemplate);
                 context.SaveChanges();
             }

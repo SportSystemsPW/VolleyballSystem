@@ -17,7 +17,7 @@
         <Frame CornerRadius="10" Padding="3" Margin="10,10,10,0">
             <VerticalStackLayout>
 
-                <Entry Text="{Binding FormGroup.Name,Mode=TwoWay}" Margin="5,0,0,0" Placeholder="Training group name" FontSize="18">
+                <Entry Text="{Binding FormGroup.Name,Mode=TwoWay}" MaxLength="{Binding NameMaxLength}" Margin="5,0,0,0" Placeholder="Training group name" FontSize="18">
                 </Entry>
 
             </VerticalStackLayout>

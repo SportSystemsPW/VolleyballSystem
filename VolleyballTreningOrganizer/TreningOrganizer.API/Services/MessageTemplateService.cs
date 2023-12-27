@@ -54,7 +54,7 @@ namespace TreningOrganizer.API.Services
         {
             MessageTemplate template = messageTemplateRepository.GetMessageTemplateById(templateDTO.Id);
             if (template.TrainerId != trainerId)
-                throw new TrainerNotAuthorizedException(MessageRepository.CannotEditMessageTemplate);
+                throw new TrainerNotAuthorizedException(MessageRepository.CannotEditObject("message template"));
             template.TemplateName = templateDTO.TemplateName;
             template.Content = templateDTO.Content;
             messageTemplateRepository.UpdateMessageTemplate(template);

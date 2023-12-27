@@ -2,15 +2,23 @@
 {
     public static class MessageRepository
     {
-        public static string MessageTemplateTooLong = "Message template content can't be longer than 300 characters";
-        public static string MessageTemplateNameTooLong = "Message template name can't be longer than 50 characters";
-        public static string MessageTemplateEmpty = "Message template content can't be empty";
-        public static string MessageTemplateNameEmpty = "Message template name can't be empty";
-        public static string CannotRemoveMessageTemplate = "You can't remove this message template";
-        public static string CannotEditMessageTemplate = "You can't edit this message template";
+        public static string EmptyGroup = "Group must have at least one member";
 
-        public static string CannotRemoveTrainingParticipant = "";
-        public static string CannotRemoveTrainingGroup = "";
-        public static string CannotRemoveTraining = "";
+        public static string CannotEditObject(string objectType)
+        {
+            return $"You can't edit this {objectType}";
+        }
+        public static string CannotRemoveObject(string objectType)
+        {
+            return $"You can't remove this {objectType}";
+        }
+        public static string FieldTooLong(string fieldName, int maxLength)
+        {
+            return $"{fieldName} can't be longer than {maxLength} characters";
+        }
+        public static string FieldEmpty(string fieldName)
+        {
+            return $"{fieldName} can't be empty";
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace TreningOrganizer.MAUI.ViewModels
         public TrainingGroup formGroup { get; set; }
         public ObservableCollection<Models.Contact> Members { get; set; }
         public List<Models.Contact> members { get; set; }
+        public int NameMaxLength { get; } = 50;
         private bool isEdit;
         public TrainingGroupFormViewModel(HttpClient httpClient)
         {
@@ -95,6 +96,23 @@ namespace TreningOrganizer.MAUI.ViewModels
         private async void Save()
         {
             bool validate = true;
+            List<string> errors = new List<string>();
+            if (string.IsNullOrEmpty(FormGroup.Name))
+            {
+                validate = false;
+                errors.Add("Group name can't be empty");
+            }
+            else if (FormGroup.Name.Length > NameMaxLength)
+            {
+                validate = false;
+                errors.Add($"Message template name can't be longer than {NameMaxLength} characters");
+            }
+            if (Members.Count == 0)
+            {
+                validate = false;
+                errors.Add("Group must have at least one member");
+            }
+            
             if (validate)
             {
                 try
@@ -116,7 +134,8 @@ namespace TreningOrganizer.MAUI.ViewModels
             }
             else
             {
-                //todo popup
+                await Application.Current.MainPage.DisplayAlert("Error", string.Join('\n', errors), "OK");
+                return;
             }
             FormGroup.MembersCount = Members.Count;
             var parameters = new Dictionary<string, object>

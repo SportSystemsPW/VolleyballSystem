@@ -14,11 +14,13 @@ namespace TreningOrganizer.API.Repositories
             this.context = context;
             trainingGroups = context.TrainingGroups;
         }
-        public void DeleteTrainingGroupById(int id)
+        public void DeleteTrainingGroupById(int id, int trainerId)
         {
             TrainingGroup trainingGroup = trainingGroups.Include(tg => tg.TrainingGroupTrainingParticipants).FirstOrDefault(tg => tg.Id == id);
             if(trainingGroup != null)
             {
+                if (trainingGroup.TrainerId != trainerId)
+                    throw new TrainerNotAuthorizedException(MessageRepository.CannotRemoveObject("group"));
                 context.TrainingGroupTrainingParticipants.RemoveRange(trainingGroup.TrainingGroupTrainingParticipants);
                 trainingGroups.Remove(trainingGroup);
                 context.SaveChanges();

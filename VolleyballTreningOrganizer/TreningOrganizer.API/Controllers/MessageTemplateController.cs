@@ -49,6 +49,10 @@ namespace TreningOrganizer.API.Controllers
                 }
                 
             }
+            else
+            {
+                success = false;
+            }
             
             return CreateResponse(success, errors);
         }
@@ -89,13 +93,13 @@ namespace TreningOrganizer.API.Controllers
         {
             var errors = new List<string>();
             if (messageTemplate.TemplateName.IsNullOrEmpty())
-                errors.Add(MessageRepository.MessageTemplateNameEmpty);
+                errors.Add(MessageRepository.FieldEmpty("Message template name"));
             else if (messageTemplate.TemplateName.Length > 50)
-                errors.Add(MessageRepository.MessageTemplateNameTooLong);
+                errors.Add(MessageRepository.FieldTooLong("Message template name", 50));
             if (messageTemplate.Content.IsNullOrEmpty())
-                errors.Add(MessageRepository.MessageTemplateEmpty);
+                errors.Add(MessageRepository.FieldEmpty("Message template content"));
             else if (messageTemplate.Content.Length > 300)
-                errors.Add(MessageRepository.MessageTemplateTooLong);
+                errors.Add(MessageRepository.FieldTooLong("Message template content", 300));
             return new List<string>();
         }
     }

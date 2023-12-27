@@ -15,9 +15,9 @@ namespace TreningOrganizer.API.Services
             this.trainingGroupRepository = trainingGroupRepository;
             this.trainingParticipantRepository = trainingParticipantRepository;
         }
-        public void DeleteTrainingGroupById(int id)
+        public void DeleteTrainingGroupById(int id, int trainerId)
         {
-            trainingGroupRepository.DeleteTrainingGroupById(id);
+            trainingGroupRepository.DeleteTrainingGroupById(id, trainerId);
         }
         public TrainingGroupDTO GetTrainingGroupById(int id)
         {
@@ -67,14 +67,15 @@ namespace TreningOrganizer.API.Services
             trainingGroup.TrainingGroupTrainingParticipants = groupTrainingParticipants;
             return trainingGroupRepository.InsertTrainingGroup(trainingGroup);
         }
-        public void UpdateTrainingGroup(TrainingGroupDTO groupDTO)
+        public void UpdateTrainingGroup(TrainingGroupDTO groupDTO, int trainerId)
         {
             TrainingGroup trainingGroup = trainingGroupRepository.GetTrainingGroupById(groupDTO.Id);
             if (trainingGroup == null)
             {
                 throw new Exception();
             }
-            int trainerId = trainingGroup.TrainerId;
+            if (trainingGroup.TrainerId != trainerId)
+                throw new TrainerNotAuthorizedException(MessageRepository.CannotEditObject("group"));
             List<TrainingGroupTrainingParticipant> groupTrainingParticipants = new List<TrainingGroupTrainingParticipant>();
             foreach (TrainingParticipantDTO tp in groupDTO.TrainingParticipantDTOs)
             {
