@@ -204,7 +204,7 @@ namespace TreningOrganizer.MAUI.Models
                 Location = training.Location,
                 Price = training.Price,
                 ParticipantDTOs = participantDTOs,
-                Message = training.Message
+                Message = training.Message ?? string.Empty
             };
         }
 

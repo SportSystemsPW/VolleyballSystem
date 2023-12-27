@@ -9,7 +9,7 @@ namespace TreningOrganizer.API.IServices
         public int InsertTraining(TrainingDTO trainingDTO, int trainerId);
         //public void UpdateTraining(TrainingDTO trainingDTO);
         //public void DeleteTrainingById(int id);
-        public void SetParticipantPresence(TrainingPresencesDTO trainingPresencesDTO);
+        public void SetParticipantPresence(TrainingPresencesDTO trainingPresencesDTO, int trainerId);
         public List<AttendanceChangedResponseDTO> ProcessSMSResponses(List<SMSResponseDTO> smsResponseDTOs, int trainerId);
     }
 }

@@ -108,10 +108,12 @@ namespace TreningOrganizer.API.Services
         //    trainingRepository.UpdateTraining(training);
         //}
 
-        public void SetParticipantPresence(TrainingPresencesDTO trainingPresencesDTO)
+        public void SetParticipantPresence(TrainingPresencesDTO trainingPresencesDTO, int trainerId)
         {
             int trainingId = trainingPresencesDTO.TrainingId;
             Training training = trainingRepository.GetTrainingById(trainingId);
+            if (training.TrainerId != trainingId)
+                throw new TrainerNotAuthorizedException(MessageRepository.CannotEditObject("training participant"));
             foreach(var participant in trainingPresencesDTO.ParticipantDTOs)
             {
                 TrainingTrainingParticipant tp = trainingRepository.GetTrainingParticipant(participant.Id, trainingId);

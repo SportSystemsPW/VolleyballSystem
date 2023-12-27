@@ -18,7 +18,7 @@
             <Frame CornerRadius="10" Padding="3" Margin="10,10,10,0">
                 <VerticalStackLayout>
 
-                    <Entry Text="{Binding FormTraining.Name,Mode=TwoWay}" Margin="5,0,0,0" Placeholder="Training name" FontSize="18">
+                    <Entry Text="{Binding FormTraining.Name,Mode=TwoWay}" MaxLength="{Binding NameMaxLength}" Margin="5,0,0,0" Placeholder="Training name" FontSize="18">
                     </Entry>
 
                 </VerticalStackLayout>
@@ -77,7 +77,7 @@
             <Frame CornerRadius="10" Padding="3" Margin="10,10,10,0">
                 <VerticalStackLayout>
 
-                    <Entry Text="{Binding FormTraining.Location,Mode=TwoWay}" Margin="5,0,0,0" Placeholder="Training location" FontSize="18">
+                    <Entry Text="{Binding FormTraining.Location,Mode=TwoWay}" MaxLength="{Binding LocationMaxLength}" Margin="5,0,0,0" Placeholder="Training location" FontSize="18">
                     </Entry>
 
                 </VerticalStackLayout>

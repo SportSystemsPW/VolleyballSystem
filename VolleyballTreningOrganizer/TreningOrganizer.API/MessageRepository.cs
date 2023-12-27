@@ -3,6 +3,7 @@
     public static class MessageRepository
     {
         public static string EmptyGroup = "Group must have at least one member";
+        public static string EmptyTraining = "Training must have at least one participant";
 
         public static string CannotEditObject(string objectType)
         {

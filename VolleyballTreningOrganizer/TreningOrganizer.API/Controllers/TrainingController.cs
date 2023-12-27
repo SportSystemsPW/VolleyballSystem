@@ -58,8 +58,19 @@ namespace TreningOrganizer.API.Controllers
         [HttpPut("SetParticipantsPresence")]
         public TrainingOrganizerResponse<bool> SetParticipantPresence(TrainingPresencesDTO trainingPresencesDTO)
         {
-            trainingService.SetParticipantPresence(trainingPresencesDTO);
-            return CreateResponse(true);
+            List<string> errors = new List<string>();
+            bool success = true;
+            try
+            {
+                trainingService.SetParticipantPresence(trainingPresencesDTO, GetTrainerId());
+            }
+            catch(TrainerNotAuthorizedException e)
+            {
+                errors.Add(e.Message);
+                success = false;
+            }
+            
+            return CreateResponse(success, errors);
         }
 
         [HttpPost("ProcessSMSResponses")]
@@ -70,11 +81,19 @@ namespace TreningOrganizer.API.Controllers
 
         private List<string> ValidateTraining(TrainingDTO trainingDTO)
         {
-            return new List<string>();
-        }
-        private bool ValidateRemoveTraining(int id)
-        {
-            return true;
+            var errors = new List<string>();
+            if (string.IsNullOrEmpty(trainingDTO.Location))
+                errors.Add(MessageRepository.FieldEmpty("location"));
+            else if (trainingDTO.Location.Length > 50)
+                errors.Add(MessageRepository.FieldTooLong("location", 50));
+            if (string.IsNullOrEmpty(trainingDTO.Name))
+                errors.Add(MessageRepository.FieldEmpty("name"));
+            else if (trainingDTO.Name.Length > 50)
+                errors.Add(MessageRepository.FieldTooLong("name", 50));
+            if (trainingDTO.ParticipantDTOs.Count == 0)
+                errors.Add(MessageRepository.EmptyTraining);
+
+            return errors;
         }
     }
 }

@@ -100,7 +100,7 @@ namespace TreningOrganizer.API.Controllers
                 errors.Add(MessageRepository.FieldEmpty("Message template content"));
             else if (messageTemplate.Content.Length > 300)
                 errors.Add(MessageRepository.FieldTooLong("Message template content", 300));
-            return new List<string>();
+            return errors;
         }
     }
 }

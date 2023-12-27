@@ -26,6 +26,8 @@ namespace TreningOrganizer.MAUI.ViewModels
         public DateTime Date { get; set; } = DateTime.Now;
         public TimeSpan Time { get; set; } = DateTime.Now.TimeOfDay;
         public bool InformHowToRespond { get; set; } = false;
+        public int NameMaxLength { get; } = 50;
+        public int LocationMaxLength { get; } = 50;
         private Dictionary<string, int> MessageTemplatesDropdown { get; set; }
         private Dictionary<string, int> GroupsDropdown { get; set; }
         public TrainingFormViewModel(HttpClient httpClient)
@@ -119,15 +121,41 @@ namespace TreningOrganizer.MAUI.ViewModels
             if (IsDetailsView)
             {
                 var presentMembers = Members.Where(m => m.Present);
-                //todo call api to update present list
                 FormTraining.ParticipantsPresent = presentMembers.Count();
             }
             else
             {
                 bool validate = true;
+                List<string> errors = new List<string>();
+                if (string.IsNullOrEmpty(FormTraining.Name))
+                {
+                    validate = false;
+                    errors.Add("Training name can't be empty");
+                }
+                else if (FormTraining.Name.Length > NameMaxLength)
+                {
+                    validate = false;
+                    errors.Add($"Training name can't be longer than {NameMaxLength} characters");
+                }
+                if (string.IsNullOrEmpty(FormTraining.Location))
+                {
+                    validate = false;
+                    errors.Add("Location can't be empty");
+                }
+                else if (FormTraining.Location.Length > LocationMaxLength)
+                {
+                    validate = false;
+                    errors.Add($"Location can't be longer than {LocationMaxLength} characters");
+                }
+                if (Members.Count == 0)
+                {
+                    validate = false;
+                    errors.Add("Training must have at least one participant");
+                }
                 if (!validate)
                 {
-                    //todo popup
+                    await Application.Current.MainPage.DisplayAlert("Error", string.Join('\n', errors), "OK");
+                    return;
                 }
 
                 if (await Permissions.CheckStatusAsync<Permissions.Sms>() != PermissionStatus.Granted)
@@ -208,7 +236,7 @@ namespace TreningOrganizer.MAUI.ViewModels
         private async Task<bool> CheckMessageForVariables()
         {
             bool proceed = true;
-            if(FormTraining.Message != null)
+            if(string.IsNullOrEmpty(FormTraining.Message))
             {
                 string[] variables = { "{date}", "{location}", "{price}" };
                 List<string> missingVariables = new List<string>();
