@@ -44,12 +44,16 @@ namespace TreningOrganizer.API.Controllers
         [HttpPut("EditTraingParticipant")]
         public TrainingOrganizerResponse<bool> EditTrainingParticipant(TrainingParticipantDTO trainingParticipantDTO)
         {
-            bool success = false;
-            List<string> errors = ValidateTrainingParticipant(trainingParticipantDTO);
-            if (errors.Count == 0)
+            bool success = true;
+            List<string> errors = new List<string>();
+            try
             {
-                success = true;
-                participantService.UpdateTrainingParticipant(trainingParticipantDTO);
+                participantService.UpdateTrainingParticipant(trainingParticipantDTO, GetTrainerId());
+            }
+            catch(TrainerNotAuthorizedException e)
+            {
+                errors.Add(e.Message);
+                success = false;
             }
             return CreateResponse(success, errors);
         }
@@ -131,12 +135,6 @@ namespace TreningOrganizer.API.Controllers
         public TrainingOrganizerResponse<Dictionary<string, int>> GetMessageTemplateNames()
         {
             return CreateResponse(trainingGroupService.GetTrainingGroupDictionary(GetTrainerId()));
-        }
-
-
-        private List<string> ValidateTrainingParticipant(TrainingParticipantDTO trainingParticipantDTO)
-        {
-            return new List<string>();
         }
 
         private List<string> ValidateTrainingGroup(TrainingGroupDTO trainingGroupDTO)

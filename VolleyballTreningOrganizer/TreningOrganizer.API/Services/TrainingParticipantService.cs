@@ -45,13 +45,15 @@ namespace TreningOrganizer.API.Services
             trainingParticipantRepository.InsertTrainingParticipant(trainingParticipant);
         }
 
-        public void UpdateTrainingParticipant(TrainingParticipantDTO trainingParticipantDTO)
+        public void UpdateTrainingParticipant(TrainingParticipantDTO trainingParticipantDTO, int trainerId)
         {
             TrainingParticipant trainingParticipant = trainingParticipantRepository.GetTrainingParticipantById(trainingParticipantDTO.Id);
             if(trainingParticipant == null)
             {
                 throw new Exception();
             }
+            if (trainingParticipant.TrainerId != trainerId)
+                throw new TrainerNotAuthorizedException(MessageRepository.CannotEditObject("training participant"));
             trainingParticipant.Name = trainingParticipantDTO.Name;
             trainingParticipant.Phone = trainingParticipantDTO.Phone;
             trainingParticipant.Balance = trainingParticipantDTO.Balance;
