@@ -4,6 +4,7 @@ using TreningOrganizer.API.IServices;
 using TreningOrganizer.API.Repositories;
 using Volleyball.Infrastructure.Database.Models;
 using Azure;
+using System.Text.RegularExpressions;
 
 namespace TreningOrganizer.API.Services
 {
@@ -146,7 +147,7 @@ namespace TreningOrganizer.API.Services
                 {
                     if (smsResponseDTOs.ElementAt(i).DateTime > training.CreationDate)
                     {
-                        var participant = training.TrainingParticipants.FirstOrDefault(p => p.TrainingParticipant.Phone == smsResponseDTOs.ElementAt(i).Phone);
+                        var participant = training.TrainingParticipants.FirstOrDefault(p => p.TrainingParticipant.Phone.ComparePhoneNumber(smsResponseDTOs.ElementAt(i).Phone));
                         if (participant != null && !participant.Presence)
                         {
                             participant.TrainingParticipant.Balance -= training.Price;
@@ -177,6 +178,16 @@ namespace TreningOrganizer.API.Services
             }
 
             return result;
+        }
+    }
+
+    public static class PhoneNumberComparer
+    {
+        //numbers read from contacts can have whitespcaes or some other divider used eg. 123-123-123
+        //numbers read from sms have different formating, so compare only digits
+        public static bool ComparePhoneNumber(this string phoneNumberA, string phoneNumberB)
+        {
+            return Regex.Replace(phoneNumberA, @"[^\d]", "") == Regex.Replace(phoneNumberB, @"[^\d]", "");
         }
     }
 }
