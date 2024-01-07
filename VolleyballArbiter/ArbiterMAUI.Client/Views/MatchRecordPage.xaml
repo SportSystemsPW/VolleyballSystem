@@ -5,20 +5,21 @@
              xmlns:viewmodel="clr-namespace:ArbiterMAUI.Client.ViewModels"
              x:DataType="viewmodel:MatchRecordViewModel"
              x:Class="ArbiterMAUI.Client.Views.MatchRecordPage"
+             Shell.BackgroundColor="#4a4a4b"
              Title="{Binding Title}">
 
     <ScrollView>
-        <VerticalStackLayout BackgroundColor="{StaticResource Secondary}">
-            <VerticalStackLayout BackgroundColor="{StaticResource White}">
-                <Grid ColumnDefinitions="150,*,150">
+        <VerticalStackLayout BackgroundColor="#cdcdd5">
+            <VerticalStackLayout BackgroundColor="White">
+                <Grid ColumnDefinitions="125,*,125">
 
                     <VerticalStackLayout Grid.Column="0"
                                              Padding ="3"
                                              VerticalOptions="Center">
                         <Image Aspect="AspectFill"
                                    Source="{Binding MatchDetails.HomeTeamLogo}"
-                                   WidthRequest="135"
-                                   HeightRequest="135"></Image>
+                                   WidthRequest="120"
+                                   HeightRequest="120"></Image>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Grid.Column="1"         
@@ -41,17 +42,17 @@
                                              VerticalOptions="Center">
                         <Image Aspect="AspectFill"
                                    Source="{Binding MatchDetails.GuestTeamLogo}"
-                                   WidthRequest="135"
-                                   HeightRequest="135"></Image>
+                                   WidthRequest="120"
+                                   HeightRequest="120"></Image>
                     </VerticalStackLayout>
                 </Grid>
-                <Grid ColumnDefinitions="150,*,150">
+                <Grid ColumnDefinitions="125,*,125" Margin="0,0,0,10">
                     <Label Grid.Column="0"
                         Text="{Binding MatchDetails.HomeTeam}"
                         Style="{StaticResource LargeLabel}"
                         HorizontalOptions="Center"></Label>
 
-                    <VerticalStackLayout Grid.Column="1"
+                    <!--<VerticalStackLayout Grid.Column="1"
                                          Padding="3"
                                          VerticalOptions="Center">
                         <Label Text="0:0"
@@ -63,7 +64,7 @@
                         <Label Text="0:0"
                                    Style="{StaticResource MediumLabel}"
                                    HorizontalOptions="Center"></Label>
-                    </VerticalStackLayout>
+                    </VerticalStackLayout>-->
                     
                     <Label Grid.Column="2"
                         Text="{Binding MatchDetails.GuestTeam}"
@@ -72,19 +73,225 @@
                 </Grid>
             </VerticalStackLayout>
 
-            <Label Text="{Binding TextFromSpeech}"
-                   HeightRequest="400"></Label>
-            
-            <Button Text="Start recording"
-                    HorizontalOptions="Center"
-                    Padding="10"
-                    IsEnabled="{Binding IsNotBusy}"
-                    Command="{Binding ListenCommand}"></Button>
+            <Grid ColumnDefinitions="*,*,*,*,*" IsVisible="{Binding MatchInProgress}">
+                <Button Text="Set 1" BackgroundColor="{Binding Set1Color}" Grid.Column="0" CornerRadius="0" Command="{Binding GoToSet1DetailsCommand}"></Button>
+                <Button Text="Set 2" BackgroundColor="{Binding Set2Color}" Grid.Column="1" CornerRadius="0" Command="{Binding GoToSet2DetailsCommand}"></Button>
+                <Button Text="Set 3" BackgroundColor="{Binding Set3Color}" Grid.Column="2" CornerRadius="0" Command="{Binding GoToSet3DetailsCommand}"></Button>
+                <Button Text="Set 4" BackgroundColor="{Binding Set4Color}" Grid.Column="3" CornerRadius="0" Command="{Binding GoToSet4DetailsCommand}"></Button>
+                <Button Text="Set 5" BackgroundColor="{Binding Set5Color}" Grid.Column="4" CornerRadius="0" Command="{Binding GoToSet5DetailsCommand}"></Button>
+            </Grid>
 
-            <Button Text="Stop recording"
-                    HorizontalOptions="Center"
-                    Padding="10"
-                    Command="{Binding ListenCancelCommand}"></Button>
+            <VerticalStackLayout IsVisible="{Binding MatchHasNotStarted}">
+                <Label IsVisible="{Binding MatchHasNotStarted}"
+                       Text="Mecz nie rozpoczął się" VerticalOptions="Center" HorizontalOptions="Center" FontSize="24"
+                       BackgroundColor="#cdcdd5"
+                       HeightRequest="350"></Label>
+            
+                <Button IsVisible="{Binding MatchHasNotStarted}" Text="Rozpocznij mecz" Command="{Binding StartMatchCommand}" TextColor="White" BorderColor="#4a4a4b" 
+                        CornerRadius="30" FontFamily="Constantia"
+                        BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" 
+                        HorizontalOptions="Center" FontSize="19" IsEnabled="{Binding IsNotBusy}"/> 
+            </VerticalStackLayout>
+
+            <Label IsVisible="{Binding MatchEnded}"
+                       Text="Mecz zakończył się" VerticalOptions="Center" HorizontalOptions="Center" FontSize="24"
+                       BackgroundColor="#cdcdd5"
+                       HeightRequest="350"></Label>
+
+            <VerticalStackLayout  IsVisible="{Binding Set1Selected}">
+                <ScrollView HeightRequest="300">
+                   <Label Text="{Binding Set1TextFromSpeech}"
+                          BackgroundColor="#cdcdd5"></Label> 
+                </ScrollView>
+
+                <BoxView BackgroundColor="Black"
+                    HeightRequest="1"
+                    Margin="0,5"/>
+
+                <Button IsVisible="{Binding Set1NotStarted}" Text="Rozpocznij set" Command="{Binding StartSetCommand}" TextColor="White" BorderColor="#4a4a4b" 
+                        CornerRadius="30" FontFamily="Constantia"
+                        BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" 
+                        HorizontalOptions="Center" FontSize="19"/>
+
+                <Grid ColumnDefinitions="*,*">
+                    <ImageButton IsVisible="{Binding Set1InProgress}" Command="{Binding ListenCommand}" BorderColor="Green" 
+                            CornerRadius="30" Source="micro_icon.png"
+                            BackgroundColor="Green" BorderWidth="2" HeightRequest="70" WidthRequest="70" Margin="60,0,0,5" 
+                            HorizontalOptions="Center" IsEnabled="{Binding IsNotBusy}" Grid.Column="0"/>
+
+                    <ImageButton IsVisible="{Binding Set1InProgress}" Command="{Binding ListenCancelCommand}" BorderColor="Red" 
+                            CornerRadius="30" Source="micro_off_icon.png"
+                            BackgroundColor="Red" BorderWidth="2" HeightRequest="70" WidthRequest="70" Margin="0,0,60,5" 
+                            HorizontalOptions="Center" IsEnabled="{Binding IsBusy}" Grid.Column="1"/>
+                </Grid>
+
+                <Button IsVisible="{Binding Set1InProgress}" Text="Zakończ set" Command="{Binding FinishSetCommand}" TextColor="White" BorderColor="#4a4a4b" 
+                        CornerRadius="30" FontFamily="Constantia"
+                        BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" 
+                        HorizontalOptions="Center" FontSize="19"/>
+
+                <Label IsVisible="{Binding Set1Finished}" Text="Set zakończył się" VerticalOptions="Center" HorizontalOptions="Center" FontSize="24"></Label>
+                <Label IsVisible="{Binding Set1CannotStart}" Text="Set nie rozpoczął się" VerticalOptions="Center" HorizontalOptions="Center" FontSize="24"></Label>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout  IsVisible="{Binding Set2Selected}">
+                <ScrollView HeightRequest="300">
+                    <Label Text="{Binding Set2TextFromSpeech}"
+                          BackgroundColor="#cdcdd5"></Label>
+                </ScrollView>
+
+                <BoxView BackgroundColor="Black"
+                    HeightRequest="1"
+                    Margin="0,5"/>
+
+                <Button IsVisible="{Binding Set2NotStarted}" Text="Rozpocznij set" Command="{Binding StartSetCommand}" TextColor="White" BorderColor="#4a4a4b" 
+                        CornerRadius="30" FontFamily="Constantia"
+                        BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" 
+                        HorizontalOptions="Center" FontSize="19"/>
+
+                <Grid ColumnDefinitions="*,*">
+                    <ImageButton IsVisible="{Binding Set2InProgress}" Command="{Binding ListenCommand}" BorderColor="Green" 
+                            CornerRadius="30" Source="micro_icon.png"
+                            BackgroundColor="Green" BorderWidth="2" HeightRequest="70" WidthRequest="70" Margin="60,0,0,5" 
+                            HorizontalOptions="Center" IsEnabled="{Binding IsNotBusy}" Grid.Column="0"/>
+
+                    <ImageButton IsVisible="{Binding Set2InProgress}" Command="{Binding ListenCancelCommand}" BorderColor="Red" 
+                            CornerRadius="30" Source="micro_off_icon.png"
+                            BackgroundColor="Red" BorderWidth="2" HeightRequest="70" WidthRequest="70" Margin="0,0,60,5" 
+                            HorizontalOptions="Center" IsEnabled="{Binding IsBusy}" Grid.Column="1"/>
+                </Grid>
+
+                <Button IsVisible="{Binding Set2InProgress}" Text="Zakończ set" Command="{Binding FinishSetCommand}" TextColor="White" BorderColor="#4a4a4b" 
+                        CornerRadius="30" FontFamily="Constantia"
+                        BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" 
+                        HorizontalOptions="Center" FontSize="19"/>
+
+                <Label IsVisible="{Binding Set2Finished}" Text="Set zakończył się" VerticalOptions="Center" HorizontalOptions="Center" FontSize="24"></Label>
+                <Label IsVisible="{Binding Set2CannotStart}" Text="Set nie rozpoczął się" VerticalOptions="Center" HorizontalOptions="Center" FontSize="24"></Label>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout  IsVisible="{Binding Set3Selected}">
+                <ScrollView HeightRequest="300">
+                    <Label Text="{Binding Set3TextFromSpeech}"
+                          BackgroundColor="#cdcdd5"></Label>
+                </ScrollView>
+
+                <BoxView BackgroundColor="Black"
+                    HeightRequest="1"
+                    Margin="0,5"/>
+
+                <Button IsVisible="{Binding Set3NotStarted}" Text="Rozpocznij set" Command="{Binding StartSetCommand}" TextColor="White" BorderColor="#4a4a4b" 
+                        CornerRadius="30" FontFamily="Constantia"
+                        BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" 
+                        HorizontalOptions="Center" FontSize="19"/>
+
+                <Grid ColumnDefinitions="*,*">
+                    <ImageButton IsVisible="{Binding Set3InProgress}" Command="{Binding ListenCommand}" BorderColor="Green" 
+                            CornerRadius="30" Source="micro_icon.png"
+                            BackgroundColor="Green" BorderWidth="2" HeightRequest="70" WidthRequest="70" Margin="60,0,0,5" 
+                            HorizontalOptions="Center" IsEnabled="{Binding IsNotBusy}" Grid.Column="0"/>
+
+                    <ImageButton IsVisible="{Binding Set3InProgress}" Command="{Binding ListenCancelCommand}" BorderColor="Red" 
+                            CornerRadius="30" Source="micro_off_icon.png"
+                            BackgroundColor="Red" BorderWidth="2" HeightRequest="70" WidthRequest="70" Margin="0,0,60,5" 
+                            HorizontalOptions="Center" IsEnabled="{Binding IsBusy}" Grid.Column="1"/>
+                </Grid>
+
+                <Button IsVisible="{Binding Set3InProgress}" Text="Zakończ set" Command="{Binding FinishSetCommand}" TextColor="White" BorderColor="#4a4a4b" 
+                        CornerRadius="30" FontFamily="Constantia"
+                        BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" 
+                        HorizontalOptions="Center" FontSize="19"/>
+
+                <Label IsVisible="{Binding Set3Finished}" Text="Set zakończył się" VerticalOptions="Center" HorizontalOptions="Center" FontSize="24"></Label>
+                <Button IsVisible="{Binding Set3Finished}" Text="Zakończ mecz" Command="{Binding FinishMatchCommand}" TextColor="White" BorderColor="#4a4a4b" 
+                        CornerRadius="30" FontFamily="Constantia"
+                        BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" 
+                        HorizontalOptions="Center" FontSize="19"/>
+                
+                <Label IsVisible="{Binding Set3CannotStart}" Text="Set nie rozpoczął się" VerticalOptions="Center" HorizontalOptions="Center" FontSize="24"></Label>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout  IsVisible="{Binding Set4Selected}">
+                <ScrollView HeightRequest="300">
+                    <Label Text="{Binding Set4TextFromSpeech}"
+                          BackgroundColor="#cdcdd5"></Label>
+                </ScrollView>
+
+                <BoxView BackgroundColor="Black"
+                    HeightRequest="1"
+                    Margin="0,5"/>
+
+                <Button IsVisible="{Binding Set4NotStarted}" Text="Rozpocznij set" Command="{Binding StartSetCommand}" TextColor="White" BorderColor="#4a4a4b" 
+                        CornerRadius="30" FontFamily="Constantia"
+                        BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" 
+                        HorizontalOptions="Center" FontSize="19"/>
+
+                <Grid ColumnDefinitions="*,*">
+                    <ImageButton IsVisible="{Binding Set4InProgress}" Command="{Binding ListenCommand}" BorderColor="Green" 
+                            CornerRadius="30" Source="micro_icon.png"
+                            BackgroundColor="Green" BorderWidth="2" HeightRequest="70" WidthRequest="70" Margin="60,0,0,5" 
+                            HorizontalOptions="Center" IsEnabled="{Binding IsNotBusy}" Grid.Column="0"/>
+
+                    <ImageButton IsVisible="{Binding Set4InProgress}" Command="{Binding ListenCancelCommand}" BorderColor="Red" 
+                            CornerRadius="30" Source="micro_off_icon.png"
+                            BackgroundColor="Red" BorderWidth="2" HeightRequest="70" WidthRequest="70" Margin="0,0,60,5" 
+                            HorizontalOptions="Center" IsEnabled="{Binding IsBusy}" Grid.Column="1"/>
+                </Grid>
+
+                <Button IsVisible="{Binding Set4InProgress}" Text="Zakończ set" Command="{Binding FinishSetCommand}" TextColor="White" BorderColor="#4a4a4b" 
+                        CornerRadius="30" FontFamily="Constantia"
+                        BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" 
+                        HorizontalOptions="Center" FontSize="19"/>
+
+                <Label IsVisible="{Binding Set4Finished}" Text="Set zakończył się" VerticalOptions="Center" HorizontalOptions="Center" FontSize="24"></Label>
+                <Button IsVisible="{Binding Set4Finished}" Text="Zakończ mecz" Command="{Binding FinishMatchCommand}" TextColor="White" BorderColor="#4a4a4b" 
+                        CornerRadius="30" FontFamily="Constantia"
+                        BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" 
+                        HorizontalOptions="Center" FontSize="19"/>
+                
+                <Label IsVisible="{Binding Set4CannotStart}" Text="Set nie rozpoczął się" VerticalOptions="Center" HorizontalOptions="Center" FontSize="24"></Label>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout  IsVisible="{Binding Set5Selected}">
+                <ScrollView HeightRequest="300">
+                    <Label Text="{Binding Set5TextFromSpeech}"
+                          BackgroundColor="#cdcdd5"></Label>
+                </ScrollView>
+
+                <BoxView BackgroundColor="Black"
+                    HeightRequest="1"
+                    Margin="0,5"/>
+
+                <Button IsVisible="{Binding Set5NotStarted}" Text="Rozpocznij set" Command="{Binding StartSetCommand}" TextColor="White" BorderColor="#4a4a4b" 
+                        CornerRadius="30" FontFamily="Constantia"
+                        BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" 
+                        HorizontalOptions="Center" FontSize="19"/>
+
+                <Grid ColumnDefinitions="*,*">
+                    <ImageButton IsVisible="{Binding Set5InProgress}" Command="{Binding ListenCommand}" BorderColor="Green" 
+                            CornerRadius="30" Source="micro_icon.png"
+                            BackgroundColor="Green" BorderWidth="2" HeightRequest="70" WidthRequest="70" Margin="60,0,0,5" 
+                            HorizontalOptions="Center" IsEnabled="{Binding IsNotBusy}" Grid.Column="0"/>
+
+                    <ImageButton IsVisible="{Binding Set5InProgress}" Command="{Binding ListenCancelCommand}" BorderColor="Red" 
+                            CornerRadius="30" Source="micro_off_icon.png"
+                            BackgroundColor="Red" BorderWidth="2" HeightRequest="70" WidthRequest="70" Margin="0,0,60,5" 
+                            HorizontalOptions="Center" IsEnabled="{Binding IsBusy}" Grid.Column="1"/>
+                </Grid>
+
+                <Button IsVisible="{Binding Set5InProgress}" Text="Zakończ set" Command="{Binding FinishSetCommand}" TextColor="White" BorderColor="#4a4a4b" 
+                        CornerRadius="30" FontFamily="Constantia"
+                        BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" 
+                        HorizontalOptions="Center" FontSize="19"/>
+
+                <Label IsVisible="{Binding Set5Finished}" Text="Set zakończył się" VerticalOptions="Center" HorizontalOptions="Center" FontSize="24"></Label>
+                <Button IsVisible="{Binding Set5Finished}" Text="Zakończ mecz" Command="{Binding FinishMatchCommand}" TextColor="White" BorderColor="#4a4a4b" 
+                        CornerRadius="30" FontFamily="Constantia"
+                        BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" 
+                        HorizontalOptions="Center" FontSize="19"/>
+                
+                <Label IsVisible="{Binding Set5CannotStart}" Text="Set nie rozpoczął się" VerticalOptions="Center" HorizontalOptions="Center" FontSize="24"></Label>
+            </VerticalStackLayout>
 
         </VerticalStackLayout>
     </ScrollView>

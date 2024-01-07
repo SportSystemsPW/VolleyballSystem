@@ -1,0 +1,357 @@
+﻿@page "/MatchReport/{matchId}"
+
+@using Microsoft.AspNetCore.SignalR.Client
+@inject IMatchService MatchService
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="8">
+        <MudPaper Class="align-center justify-center mud-width-full py-8" Style="margin-top: 10px; height: 35vh">
+            <MudItem Class="d-flex align-center justify-center mud-width-full" Style="text-align: center">
+                    <MudText Typo="Typo.h6">@_match.LeagueName, @_match.MatchDate, @_match.MatchTime</MudText>
+            </MudItem>
+            <MudGrid Justify="Justify.SpaceBetween">
+                <MudItem xs="4">
+                    <MudItem Class="d-flex align-center justify-center mud-width-full">
+                        <MudImage Src="@_match.HomeTeamLogoURL" Width="200" Height="200" Alt="HomeTeamLogo" Elevation="25" Class="rounded-lg ma-4" Style="margin-left: 30px" />
+                    </MudItem>
+                    <MudItem Class="d-flex align-center justify-center mud-width-full">
+                        <MudText Typo="Typo.h5">@_match.HomeTeam</MudText>
+                    </MudItem>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudItem Class="align-center justify-center mud-width-full" Style="text-align: center; margin-top: 50px">
+                        <MudText Typo="Typo.h2">@(_matchInfo.MatchScore ?? "0:0")</MudText>
+                        <MudText Typo="Typo.h6">@(_matchInfo.Set1Score ?? "0:0") | @(_matchInfo.Set2Score ?? "0:0") | @(_matchInfo.Set3Score ?? "0:0") | @(_matchInfo.Set4Score ?? "0:0") | @(_matchInfo.Set5Score ?? "0:0")</MudText>
+                        @if (_matchInfo.MatchStatus == (int)Statuses.UPCOMING)
+                        {
+                            <MudChip Color="Color.Warning" Style="margin-top: 20px">MECZ NIE ROZPOCZĄŁ SIĘ</MudChip>
+                        }
+                        @if (_matchInfo.MatchStatus == (int)Statuses.IN_PROGRESS)
+                        {
+                            <MudChip Color="Color.Success" Style="margin-top: 20px">MECZ W TRAKCIE</MudChip>
+                        }
+                        @if (_matchInfo.MatchStatus == (int)Statuses.FINISHED)
+                        {
+                            <MudChip Color="Color.Dark" Style="margin-top: 20px">MECZ ZAKOŃCZONY</MudChip>
+                        }
+                    </MudItem>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudItem Class="d-flex align-center justify-center mud-width-full">
+                        <MudImage Src="@_match.GuestTeamLogoURL" Width="200" Height="200" Alt="GuestTeamLogo" Elevation="25" Class="rounded-lg ma-4" Style="margin-left: 30px" />
+                    </MudItem>
+                    <MudItem Class="d-flex align-center justify-center mud-width-full">
+                        <MudText Typo="Typo.h5">@_match.GuestTeam</MudText>
+                    </MudItem>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="8">
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" Centered="true" Color="@Color.Dark"
+                 PanelClass="pa-6" Class="mud-width-full" Style="margin-top: 10px; height: 55vh; overflow: scroll">
+            <MudTabPanel Text="Set 1">
+                <MudTimeline>
+                    @foreach(var action in _matchReport.Where(x => x.Set == 1))
+                    {
+                        @if(action.Action == "HOME_TEAM_POINT")
+                        {
+                            <MudTimelineItem Color="Color.Info" TimelineAlign="TimelineAlign.Start">
+                                <ItemContent>
+                                    <MudText Align="Align.End">
+                                        @((_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.HOME_TEAM_POINT && x.Set == 1).Count() + 1).ToString()
+                                            + ":" + (_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.GUEST_TEAM_POINT && x.Set == 1).Count()).ToString())
+                                    </MudText>
+                                </ItemContent>
+                                <ItemDot>
+                                    <MudIcon Icon="@Icons.Material.Outlined.SportsVolleyball"></MudIcon>
+                                </ItemDot>
+                            </MudTimelineItem>
+                        }
+                        else if (action.Action == "GUEST_TEAM_POINT")
+                        {
+                            <MudTimelineItem Color="Color.Warning" TimelineAlign="TimelineAlign.End">
+                                <ItemContent>
+                                    <MudText>
+                                        @((_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.HOME_TEAM_POINT && x.Set == 1).Count()).ToString()
+                                            + ":" + (_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.GUEST_TEAM_POINT && x.Set == 1).Count() + 1).ToString())
+                                    </MudText>
+                                </ItemContent>
+                                <ItemDot>
+                                    <MudIcon Icon="@Icons.Material.Outlined.SportsVolleyball"></MudIcon>
+                                </ItemDot>
+                            </MudTimelineItem>
+                        }
+                    }
+                </MudTimeline>
+            </MudTabPanel>
+            <MudTabPanel Text="Set 2">
+                <MudTimeline>
+                    @foreach (var action in _matchReport.Where(x => x.Set == 2))
+                    {
+                        @if (action.Action == "HOME_TEAM_POINT")
+                        {
+                            <MudTimelineItem Color="Color.Info" TimelineAlign="TimelineAlign.Start">
+                                <ItemContent>
+                                    <MudText Align="Align.End">
+                                        @((_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.HOME_TEAM_POINT && x.Set == 2).Count() + 1).ToString()
+                                            + ":" + (_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.GUEST_TEAM_POINT && x.Set == 2).Count()).ToString())
+                                    </MudText>
+                                </ItemContent>
+                                <ItemDot>
+                                    <MudIcon Icon="@Icons.Material.Outlined.SportsVolleyball"></MudIcon>
+                                </ItemDot>
+                            </MudTimelineItem>
+                        }
+                        else if (action.Action == "GUEST_TEAM_POINT")
+                        {
+                            <MudTimelineItem Color="Color.Warning" TimelineAlign="TimelineAlign.End">
+                                <ItemContent>
+                                    <MudText>
+                                        @((_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.HOME_TEAM_POINT && x.Set == 2).Count()).ToString()
+                                            + ":" + (_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.GUEST_TEAM_POINT && x.Set == 2).Count() + 1).ToString())
+                                    </MudText>
+                                </ItemContent>
+                                <ItemDot>
+                                    <MudIcon Icon="@Icons.Material.Outlined.SportsVolleyball"></MudIcon>
+                                </ItemDot>
+                            </MudTimelineItem>
+                        }
+                    }
+                </MudTimeline>
+            </MudTabPanel>
+            <MudTabPanel Text="Set 3">
+                <MudTimeline>
+                    @foreach (var action in _matchReport.Where(x => x.Set == 3))
+                    {
+                        @if (action.Action == "HOME_TEAM_POINT")
+                        {
+                            <MudTimelineItem Color="Color.Info" TimelineAlign="TimelineAlign.Start">
+                                <ItemContent>
+                                    <MudText Align="Align.End">
+                                        @((_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.HOME_TEAM_POINT && x.Set == 3).Count() + 1).ToString()
+                                            + ":" + (_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.GUEST_TEAM_POINT && x.Set == 3).Count()).ToString())
+                                    </MudText>
+                                </ItemContent>
+                                <ItemDot>
+                                    <MudIcon Icon="@Icons.Material.Outlined.SportsVolleyball"></MudIcon>
+                                </ItemDot>
+                            </MudTimelineItem>
+                        }
+                        else if (action.Action == "GUEST_TEAM_POINT")
+                        {
+                            <MudTimelineItem Color="Color.Warning" TimelineAlign="TimelineAlign.End">
+                                <ItemContent>
+                                    <MudText>
+                                        @((_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.HOME_TEAM_POINT && x.Set == 3).Count()).ToString()
+                                            + ":" + (_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.GUEST_TEAM_POINT && x.Set == 3).Count() + 1).ToString())
+                                    </MudText>
+                                </ItemContent>
+                                <ItemDot>
+                                    <MudIcon Icon="@Icons.Material.Outlined.SportsVolleyball"></MudIcon>
+                                </ItemDot>
+                            </MudTimelineItem>
+                        }
+                    }
+                </MudTimeline>
+            </MudTabPanel>
+            <MudTabPanel Text="Set 4">
+                <MudTimeline>
+                    @foreach (var action in _matchReport.Where(x => x.Set == 4))
+                    {
+                        @if (action.Action == "HOME_TEAM_POINT")
+                        {
+                            <MudTimelineItem Color="Color.Info" TimelineAlign="TimelineAlign.Start">
+                                <ItemContent>
+                                    <MudText Align="Align.End">
+                                        @((_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.HOME_TEAM_POINT && x.Set == 4).Count() + 1).ToString()
+                                            + ":" + (_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.GUEST_TEAM_POINT && x.Set == 4).Count()).ToString())
+                                    </MudText>
+                                </ItemContent>
+                                <ItemDot>
+                                    <MudIcon Icon="@Icons.Material.Outlined.SportsVolleyball"></MudIcon>
+                                </ItemDot>
+                            </MudTimelineItem>
+                        }
+                        else if (action.Action == "GUEST_TEAM_POINT")
+                        {
+                            <MudTimelineItem Color="Color.Warning" TimelineAlign="TimelineAlign.End">
+                                <ItemContent>
+                                    <MudText>
+                                        @((_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.HOME_TEAM_POINT && x.Set == 4).Count()).ToString()
+                                            + ":" + (_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.GUEST_TEAM_POINT && x.Set == 4).Count() + 1).ToString())
+                                    </MudText>
+                                </ItemContent>
+                                <ItemDot>
+                                    <MudIcon Icon="@Icons.Material.Outlined.SportsVolleyball"></MudIcon>
+                                </ItemDot>
+                            </MudTimelineItem>
+                        }
+                    }
+                </MudTimeline>
+            </MudTabPanel>
+            <MudTabPanel Text="Set 5">
+                <MudTimeline>
+                    @foreach (var action in _matchReport.Where(x => x.Set == 5))
+                    {
+                        @if (action.Action == "HOME_TEAM_POINT")
+                        {
+                            <MudTimelineItem Color="Color.Info" TimelineAlign="TimelineAlign.Start">
+                                <ItemContent>
+                                    <MudText Align="Align.End">
+                                        @((_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.HOME_TEAM_POINT && x.Set == 5).Count() + 1).ToString()
+                                            + ":" + (_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.GUEST_TEAM_POINT && x.Set == 5).Count()).ToString())
+                                    </MudText>
+                                </ItemContent>
+                                <ItemDot>
+                                    <MudIcon Icon="@Icons.Material.Outlined.SportsVolleyball"></MudIcon>
+                                </ItemDot>
+                            </MudTimelineItem>
+                        }
+                        else if (action.Action == "GUEST_TEAM_POINT")
+                        {
+                            <MudTimelineItem Color="Color.Warning" TimelineAlign="TimelineAlign.End">
+                                <ItemContent>
+                                    <MudText>
+                                        @((_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.HOME_TEAM_POINT && x.Set == 5).Count()).ToString()
+                                            + ":" + (_matchReport.Where(x => x.Timestamp < action.Timestamp && x.Action == AppStrings.Actions.GUEST_TEAM_POINT && x.Set == 5).Count() + 1).ToString())
+                                    </MudText>
+                                </ItemContent>
+                                <ItemDot>
+                                    <MudIcon Icon="@Icons.Material.Outlined.SportsVolleyball"></MudIcon>
+                                </ItemDot>
+                            </MudTimelineItem>
+                        }
+                    }
+                </MudTimeline>
+            </MudTabPanel>
+        </MudTabs>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public string MatchId { get; set; } = "";
+
+    private int _matchId;
+    private MatchInfoModel _matchInfo = new();
+    private List<MatchReportModel> _matchReport = new();
+    private MatchModel _match = new();
+    private int? _activeSet;
+
+    private HubConnection? _hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _matchId = Int32.Parse(MatchId);
+        _matchInfo = await MatchService.GetMatchInfo(_matchId);
+        _matchReport = (await MatchService.GetMatchReport(_matchId)).OrderBy(x => x.Timestamp).ToList();
+        _match = await MatchService.GetMatch(_matchId);
+        GetActiveSet();
+
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(AppStrings.SignalRHub.BaseUrl + "/match-report-text-anaylzer", options =>
+            {
+                options.WebSocketConfiguration = conf =>
+                {
+                    conf.RemoteCertificateValidationCallback = (message, cert, chain, errors) => { return true; };
+                };
+                options.HttpMessageHandlerFactory = factory => new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
+                };
+            })
+            .Build();
+
+        _hubConnection.On<int, string>("NewPoint", async (matchId, action) =>
+        {
+            if(matchId == _matchId)
+            {
+                if (action == AppStrings.Actions.HOME_TEAM_POINT && _matchInfo.MatchStatus == (int)Statuses.IN_PROGRESS && _activeSet is not null)
+                { 
+                    _matchReport.Add(new MatchReportModel()
+                    {
+                        MatchId = matchId,
+                        Action = AppStrings.Actions.HOME_TEAM_POINT,
+                        Set = _activeSet.Value,
+                        Timestamp = DateTime.Now
+                    });
+                }
+                else if (action == AppStrings.Actions.GUEST_TEAM_POINT && _matchInfo.MatchStatus == (int)Statuses.IN_PROGRESS && _activeSet is not null)
+                {
+                    _matchReport.Add(new MatchReportModel()
+                    {
+                        MatchId = matchId,
+                        Action = AppStrings.Actions.GUEST_TEAM_POINT,
+                        Set = _activeSet.Value,
+                        Timestamp = DateTime.Now
+                    });
+                }
+            }
+            await InvokeAsync(() => StateHasChanged());
+        });
+
+        _hubConnection.On<int>("SetHasBeenFinished", async (matchId) =>
+        {
+            if (matchId == _matchId)
+            {
+                _activeSet = null;
+                _matchInfo.MatchScore = await MatchService.GetMatchScore(_matchId);
+            }
+            await InvokeAsync(() => StateHasChanged());
+        });
+
+        _hubConnection.On<int, int>("SetHasBeenStarted", async (matchId, setNumber) =>
+        {
+            if (matchId == _matchId)
+            {
+                _activeSet = setNumber;
+            }
+            await InvokeAsync(() => StateHasChanged());
+        });
+
+        _hubConnection.On<int>("MatchHasBeenFinished", async (matchId) =>
+        {
+            if (matchId == _matchId)
+            {
+                _matchInfo.MatchStatus = (int)Statuses.FINISHED;
+            }
+            await InvokeAsync(() => StateHasChanged());
+        });
+
+        _hubConnection.On<int>("MatchHasBeenStarted", async (matchId) =>
+        {
+            if (matchId == _matchId)
+            {
+                _matchInfo.MatchStatus = (int)Statuses.IN_PROGRESS;
+            }
+            await InvokeAsync(() => StateHasChanged());
+        });
+
+        await _hubConnection.StartAsync();
+    }
+
+    private void GetActiveSet()
+    {
+        if (_matchInfo.Set1Status == (int)Statuses.IN_PROGRESS)
+        {
+            _activeSet = 1;
+        }
+        else if (_matchInfo.Set2Status == (int)Statuses.IN_PROGRESS)
+        {
+            _activeSet = 2;
+        }
+        else if (_matchInfo.Set3Status == (int)Statuses.IN_PROGRESS)
+        {
+            _activeSet = 3;
+        }
+        else if (_matchInfo.Set4Status == (int)Statuses.IN_PROGRESS)
+        {
+            _activeSet = 4;
+        }
+        else if (_matchInfo.Set5Status == (int)Statuses.IN_PROGRESS)
+        {
+            _activeSet = 5;
+        }
+    }
+}

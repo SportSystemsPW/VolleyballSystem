@@ -10,7 +10,7 @@ namespace ArbiterMAUI.Client.Views
         public MatchListPage(MatchListViewModel viewModel)
         {
             InitializeComponent();
-            BindingContext= viewModel;
+            BindingContext = viewModel;
         }
 
         protected override void OnNavigatedTo(NavigatedToEventArgs args)

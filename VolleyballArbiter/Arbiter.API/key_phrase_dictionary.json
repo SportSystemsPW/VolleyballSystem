@@ -1,0 +1,21 @@
+{
+  "HOME_TEAM": [
+    "gospodarze",
+    "gospodarzy",
+    "miejscowi",
+    "miejscowych",
+    "gospodarzach"
+  ],
+  "GUEST_TEAM": [
+    "goście",
+    "gości",
+    "przyjezdni",
+    "przyjezdnych",
+    "gościach"
+  ],
+  "POINT": [
+    "punkt",
+    "punkty",
+    "punktach"
+  ]
+}

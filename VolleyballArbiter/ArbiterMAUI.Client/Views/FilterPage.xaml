@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ArbiterMAUI.Client.Views.FilterPage"
+             Title="Filtruj spotkania"
+             Background="White"
+             Shell.BackgroundColor="#4a4a4b">
+    <VerticalStackLayout>
+        <Grid Margin="15,15,15,5">
+            <Frame Padding="10"
+                    CornerRadius="15"
+                    BorderColor="Black"
+                    HasShadow="False"
+                    BackgroundColor="Transparent">
+                <StackLayout>
+                    <DatePicker Date="{Binding StartDate}" BackgroundColor="Transparent" TextColor="Black" Format="yyyy-MM-dd"/>
+                </StackLayout>
+            </Frame>
+            <Label Text=" Data rozpoczęcia "
+                    FontSize="15"
+                    TextColor="Black"
+                    BackgroundColor="White"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Start"
+                    Margin="20,-10,0,0"/>
+        </Grid>
+        <Grid Margin="15,15,15,5">
+            <Frame Padding="10"
+                    CornerRadius="15"
+                    BorderColor="Black"
+                    HasShadow="False"
+                    BackgroundColor="Transparent">
+                <StackLayout>
+                    <DatePicker Date="{Binding EndDate}" BackgroundColor="Transparent" TextColor="Black" Format="yyyy-MM-dd"/>
+                </StackLayout>
+            </Frame>
+            <Label Text=" Data zakończenia "
+                    FontSize="15"
+                    TextColor="Black"
+                    BackgroundColor="White"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Start"
+                    Margin="20,-10,0,0"/>
+        </Grid>
+        
+        <StackLayout Margin="50">
+
+            <Button Text="Zapisz filtry" Command="{Binding SaveFiltersCommand}" TextColor="White" BorderColor="#4a4a4b" CornerRadius="30" FontFamily="Constantia"
+                    BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" HorizontalOptions="Center" FontSize="19"/>
+        </StackLayout>
+    </VerticalStackLayout>
+</ContentPage>

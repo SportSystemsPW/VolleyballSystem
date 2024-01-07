@@ -1,0 +1,68 @@
+﻿@page "/"
+
+@using VolleyballArbiterWeb.Shared.Dialogs;
+@using VolleyballArbiterWeb.DTOs;
+@inject IMatchService MatchService
+@inject NavigationManager NavigationManager
+@inject IDialogService DialogService
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="6">
+        @foreach(var match in _matchList)
+        {
+            <MudPaper Class="d-flex align-center justify-center mud-width-full py-8" Style="margin-top: 10px; height: 30vh">
+                <MudGrid Justify="Justify.SpaceBetween">
+                    <MudItem xs="4">
+                        <MudItem Class="d-flex align-center justify-center mud-width-full">
+                            <MudImage Src="@match.HomeTeamLogoURL" Width="200" Height="200" Alt="HomeTeamLogo" Elevation="25" Class="rounded-lg ma-4" Style="margin-left: 30px" />
+                        </MudItem>
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudItem Class="align-center justify-center mud-width-full" Style="text-align: center">
+                            <MudText Typo="Typo.h6">@match.LeagueName</MudText>
+                            <MudText Typo="Typo.h5">@match.HomeTeam - @match.GuestTeam</MudText>
+                            <MudText Typo="Typo.h6">@match.MatchDate</MudText>
+                            <MudText Typo="Typo.h6">@match.MatchTime</MudText>
+                            <MudButton Variant="Variant.Filled" Color="Color.Dark" Style="margin-top: 10px" @onclick="() => GoToMatchReport(match.Id)">POKAŻ RELACJĘ</MudButton>
+                        </MudItem>
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudItem Class="d-flex align-center justify-center mud-width-full">
+                            <MudImage Src="@match.GuestTeamLogoURL" Width="200" Height="200" Alt="GuestTeamLogo" Elevation="25" Class="rounded-lg ma-4" Style="margin-right: 30px" />
+                        </MudItem>
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        }
+    </MudItem>
+</MudGrid>
+
+<MudItem Style="position:fixed; bottom: 0; right: 0; z-index: 999; cursor: pointer; margin-right: 15px; margin-bottom: 15px">
+    <MudFab Color="Color.Dark" Size="Size.Large" StartIcon="@Icons.Material.Filled.FilterList" OnClick="Filter"></MudFab>
+</MudItem>
+
+@code
+{
+    private List<MatchModel> _matchList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _matchList = await MatchService.GetMatches(DateTime.Today.AddDays(-230), DateTime.Today.AddDays(1)); 
+    }
+
+    private void GoToMatchReport(int matchId)
+    {
+        NavigationManager.NavigateTo($"/MatchReport/{matchId}");
+    }
+
+    private async Task Filter()
+    {
+        var dialog = await DialogService.ShowAsync<FilterMatchesDialog>();
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            _matchList = await MatchService.GetMatches(((DatesDto)result.Data).FromDate, ((DatesDto)result.Data).ToDate);
+        }
+    }
+}

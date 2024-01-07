@@ -5,17 +5,30 @@
              xmlns:viewmodel="clr-namespace:ArbiterMAUI.Client.ViewModels"
              x:Class="ArbiterMAUI.Client.Views.MatchListPage"
              x:DataType="viewmodel:MatchListViewModel"
+             Background="White"
+             Shell.BackgroundColor="#4a4a4b"
              Title="{Binding Title}">
+
+    <RefreshView
+        Command="{Binding GetMatchesCommand}"
+        IsRefreshing="{Binding IsBusy}">
 
     <Grid ColumnDefinitions="*,*"
           ColumnSpacing="5"
           RowDefinitions="*,Auto"
           RowSpacing="0">
 
-        <CollectionView BackgroundColor="Transparent"
+            <StackLayout Margin="2" Grid.Column="1">
+
+                <Button Text="Filtry" Command="{Binding GoToFiltersCommand}" TextColor="White" BorderColor="#4a4a4b" CornerRadius="30" FontFamily="Constantia"
+                    BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="45" WidthRequest="70" Margin="50,0,0,5" HorizontalOptions="Center" FontSize="19"/>
+            </StackLayout>
+
+            <CollectionView BackgroundColor="Transparent"
                         Grid.ColumnSpan="2"
                         ItemsSource="{Binding Matches}"
-                        SelectionMode="None">
+                        SelectionMode="None"
+                        Margin="0,48,0,0">
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:Match">
@@ -81,19 +94,25 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button Text="Get Matches"
+        <!--<Button Text="Pobierz spotkania" Command="{Binding GetMatchesCommand}" TextColor="White" BorderColor="#4a4a4b" CornerRadius="30" FontFamily="Constantia"
+                    BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" HorizontalOptions="Center" 
+                    FontSize="19" IsEnabled="{Binding IsNotBusy}" Grid.Row="1" Grid.ColumnSpan="2"/>-->
+
+            <!--<Button Text="Get Matches"
                 Style="{StaticResource ButtonOutline}"
                 Command="{Binding GetMatchesCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 Grid.Row="1"
-                Margin="8"></Button>
+                Margin="8"></Button>-->
 
-        <ActivityIndicator IsVisible="{Binding IsBusy}"
+        <!--<ActivityIndicator IsVisible="{Binding IsBusy}"
                            IsRunning="{Binding IsBusy}"
                            HorizontalOptions="FillAndExpand"
                            VerticalOptions="CenterAndExpand"
                            Grid.RowSpan="2"
-                           Grid.ColumnSpan="2"></ActivityIndicator>
+                           Grid.ColumnSpan="2"
+                           Color="Black"></ActivityIndicator>-->
 
     </Grid>
+    </RefreshView>
 </ContentPage>

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ArbiterMAUI.Client.Views.LoginPage"
+             Shell.NavBarIsVisible="False"
+             Background="White">
+
+    <StackLayout>
+        <Grid Margin="35,50,35,5" VerticalOptions="Center" HorizontalOptions="Center">
+            <Label FontSize="32" HorizontalOptions="Center">Asystent sędziego siatkarskiego</Label>
+        </Grid>
+
+        <Grid Margin="35,50,35,5">
+            <Frame Padding="10"
+                    WidthRequest="300"
+                    BorderColor="#887f6e"
+                    HasShadow="True"
+                    BackgroundColor="Transparent"
+                    CornerRadius="15">
+
+                <Entry Text="{Binding RefereeKey}" Placeholder="Klucz sędziego" 
+                        BackgroundColor="Transparent" PlaceholderColor="Gray" TextColor="Black" IsPassword="True"/>
+            </Frame>
+
+        </Grid>
+
+        <Grid Margin="35,250,35,5" VerticalOptions="Center" HorizontalOptions="Center">
+        </Grid>
+
+        <StackLayout Margin="50">
+
+            <Button Text="Zaloguj się" Command="{Binding GoToMatchListCommand}" TextColor="White" BorderColor="#4a4a4b" CornerRadius="30" FontFamily="Constantia"
+                    BackgroundColor="#4a4a4b" BorderWidth="2" HeightRequest="50" WidthRequest="300" Margin="0,0,0,5" HorizontalOptions="Center" FontSize="19"/>
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

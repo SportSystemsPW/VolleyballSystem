@@ -1,0 +1,44 @@
+﻿@using VolleyballArbiterWeb.DTOs;
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            Filtruj spotkania
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudDatePicker @bind-Date="_fromDate" Label="Data początkowa"></MudDatePicker>
+        <MudDatePicker @bind-Date="_toDate" Label="Data końcowa"></MudDatePicker>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Wróć</MudButton>
+        <MudButton Color="Color.Dark" OnClick="PassDates">Zapisz filtry</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private DateTime? _fromDate;
+    private DateTime? _toDate;
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private void PassDates()
+    {
+        if (_fromDate.HasValue && _toDate.HasValue)
+        {
+            Snackbar.Add("Filtry zostały zapisane", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(new DatesDto() { FromDate = _fromDate.Value, ToDate = _toDate.Value }));
+        }
+        else
+        {
+            Snackbar.Add("Należy wprowadzić dwie daty", Severity.Error);
+        }
+    }
+}
+

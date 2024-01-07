@@ -9,7 +9,7 @@ namespace ArbiterMAUI.Client.Platforms.Services
     {
         public async Task<string> Listen(CultureInfo culture, IProgress<string> recognitionResult, CancellationToken cancellationToken)
         {
-            var speechConfig = SpeechConfig.FromSubscription("-", "-");
+            var speechConfig = SpeechConfig.FromSubscription("", "");
             speechConfig.SpeechRecognitionLanguage = culture.Name;
 
             var audioConfig = AudioConfig.FromDefaultMicrophoneInput();
@@ -20,8 +20,6 @@ namespace ArbiterMAUI.Client.Platforms.Services
 
             recognizer.Recognizing += (sender, e) =>
             {
-                //recognizedText += e.Result.Text + " ";
-                //recognitionResult.Report(e.Result.Text);
             };
 
             recognizer.Recognized += (sender, e) =>
@@ -31,17 +29,13 @@ namespace ArbiterMAUI.Client.Platforms.Services
                     recognizedText += e.Result.Text + " ";
                     recognitionResult.Report(e.Result.Text);
                 }
-                else if (e.Result.Reason == ResultReason.NoMatch)
-                {
-                    // Can't be recognized
-                }
             };
 
             recognizer.Canceled += (sender, e) =>
             {
                 if (e.Reason == CancellationReason.Error)
                 {
-                    // Handle error
+                    throw new Exception("Exception in Azure speech to text service");
                 }
 
                 stopRecognitionTask.TrySetResult(0);
@@ -49,21 +43,16 @@ namespace ArbiterMAUI.Client.Platforms.Services
 
             recognizer.SessionStarted += (sender, e) =>
             {
-                // Recognition session started
             };
 
             recognizer.SessionStopped += (sender, e) =>
             {
-                // Recognition session stopped
                 stopRecognitionTask.TrySetResult(0);
             };
 
             await recognizer.StartContinuousRecognitionAsync();
 
-            // Wait for recognition to finish or cancellation token to be triggered
             await Task.WhenAny(stopRecognitionTask.Task, Task.Delay(Timeout.Infinite, cancellationToken));
-
-            // Stop recognition
             await recognizer.StopContinuousRecognitionAsync();
 
             return recognizedText.Trim();

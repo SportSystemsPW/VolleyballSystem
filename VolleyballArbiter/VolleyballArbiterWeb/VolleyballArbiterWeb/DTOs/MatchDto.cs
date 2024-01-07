@@ -1,4 +1,4 @@
-﻿namespace Arbiter.Shared.DTOs
+﻿namespace VolleyballArbiterWeb.DTOs
 {
     public class MatchDto
     {

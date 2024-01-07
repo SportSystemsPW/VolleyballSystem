@@ -34,6 +34,10 @@ public partial class DatabaseContext : DbContext
 
     public virtual DbSet<Match> Matches { get; set; }
 
+    public virtual DbSet<MatchReport> MatchReports { get; set; }
+
+    public virtual DbSet<MatchStatus> MatchStatuses { get; set; }
+
     public virtual DbSet<PersonalLog> PersonalLogs { get; set; }
 
     public virtual DbSet<Position> Positions { get; set; }
@@ -54,7 +58,6 @@ public partial class DatabaseContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:VolleyballDB");
-                         //.UseLazyLoadingProxies(true);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -183,6 +186,55 @@ public partial class DatabaseContext : DbContext
             entity.HasOne(d => d.Round).WithMany(p => p.Matches).HasForeignKey(d => d.RoundId);
 
             entity.HasOne(d => d.Venue).WithMany(p => p.Matches).HasForeignKey(d => d.VenueId);
+        });
+
+        modelBuilder.Entity<MatchReport>(entity =>
+        {
+            entity
+                .ToTable("ArbiterMatchReports", "res_osk_arbiter");
+
+            entity.Property(e => e.Action)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ArbiterSentence).IsUnicode(false);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.HasOne(d => d.Match).WithMany()
+                .HasForeignKey(d => d.MatchId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__MatchRela__Match__52593CB8");
+        });
+
+        modelBuilder.Entity<MatchStatus>(entity =>
+        {
+            entity
+                .ToTable("ArbiterMatchStatuses", "res_osk_arbiter");
+
+            entity.Property(e => e.MatchScore)
+                .HasMaxLength(3)
+                .IsUnicode(false);
+            entity.Property(e => e.MatchStatus1).HasColumnName("MatchStatus");
+            entity.Property(e => e.Set1Score)
+                .HasMaxLength(5)
+                .IsUnicode(false);
+            entity.Property(e => e.Set2Score)
+                .HasMaxLength(5)
+                .IsUnicode(false);
+            entity.Property(e => e.Set3Score)
+                .HasMaxLength(5)
+                .IsUnicode(false);
+            entity.Property(e => e.Set4Score)
+                .HasMaxLength(5)
+                .IsUnicode(false);
+            entity.Property(e => e.Set5Score)
+                .HasMaxLength(5)
+                .IsUnicode(false);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.HasOne(d => d.Match).WithMany()
+                .HasForeignKey(d => d.MatchId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__MatchStat__Match__5070F446");
         });
 
         modelBuilder.Entity<PersonalLog>(entity =>

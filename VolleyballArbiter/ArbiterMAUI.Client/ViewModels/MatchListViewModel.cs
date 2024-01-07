@@ -1,6 +1,8 @@
-﻿using ArbiterMAUI.Client.Models;
+﻿using ArbiterMAUI.Client.Messages;
+using ArbiterMAUI.Client.Models;
 using ArbiterMAUI.Client.Services.Interfaces;
 using ArbiterMAUI.Client.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -12,10 +14,14 @@ namespace ArbiterMAUI.Client.ViewModels
         private readonly IMatchService _matchService;
         public ObservableCollection<Match> Matches { get; } = new();
 
+        [Obsolete]
         public MatchListViewModel(IMatchService matchService) 
         {
+            MessagingCenter.Subscribe<FiltersChangedMessage>(this, "ChangedSuccessfully", async (x) => await GetMatchesAsync());
+
             Title = "Lista meczów";
             _matchService = matchService;
+            Task.Run(async () => await GetMatchesAsync());
         }
 
         [RelayCommand]
@@ -34,7 +40,13 @@ namespace ArbiterMAUI.Client.ViewModels
                 }
 
                 IsBusy = true;
-                var matches = new ObservableCollection<Match>(await _matchService.DownloadMatches());
+                var matches = new ObservableCollection<Match>();
+                if (!App._fromDateSearch.HasValue && !App._toDateSearch.HasValue)
+                {
+                    App._fromDateSearch = DateTime.Today.AddDays(-30);
+                    App._toDateSearch = DateTime.Today.AddDays(1);
+                }
+                matches = new ObservableCollection<Match>(await _matchService.DownloadMatches(App._fromDateSearch.Value, App._toDateSearch.Value));
 
                 if (Matches.Count != 0)
                     Matches.Clear();
@@ -63,6 +75,12 @@ namespace ArbiterMAUI.Client.ViewModels
                 {
                     { "MatchDetails", match }
                 });
+        }
+
+        [RelayCommand]
+        async Task GoToFilters()
+        {
+            await Shell.Current.GoToAsync(nameof(FilterPage));
         }
     }
 }

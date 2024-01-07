@@ -11,7 +11,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<!-- Display name -->
-		<ApplicationTitle>ArbiterMAUI.Client</ApplicationTitle>
+		<ApplicationTitle>Arbiter Assistant</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.arbitermaui.client</ApplicationId>
@@ -31,10 +31,10 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.png" BaseSize="100,100" Color="#49474f" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\volleyball.png" Color="#49474f" BaseSize="256,256" Resize="true" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -48,14 +48,31 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\micro_icon.png" />
+	  <None Remove="Resources\Images\micro_off_icon.png" />
+	  <None Remove="Resources\Images\volleyball.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.16.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.0" />
 		<PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.30.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Arbiter.Shared\Arbiter.Shared.csproj" />
+	  <Compile Update="Views\LoginPage.xaml.cs">
+	    <DependentUpon>LoginPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Views\FilterPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 	<!--<ItemGroup>
