@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Volleyball.DTO.TrainingOrganizer;
 
 namespace TreningOrganizer.API.Controllers
@@ -10,7 +11,7 @@ namespace TreningOrganizer.API.Controllers
     {
         protected int GetTrainerId()
         {
-            return 4;
+            return int.Parse(User.Claims.First(c => c.Type == "UserId").Value ?? "-1");
         }
 
         protected TrainingOrganizerResponse<T> CreateResponse<T>(T content, List<string>? errors = null)

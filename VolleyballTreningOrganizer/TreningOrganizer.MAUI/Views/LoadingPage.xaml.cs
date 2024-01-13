@@ -1,37 +1,14 @@
+using TreningOrganizer.MAUI.ViewModels;
+
 namespace TreningOrganizer.MAUI.Views;
 
 public partial class LoadingPage : ContentPage
 {
-	public LoadingPage()
+	public LoadingPage(LoginViewModel loginViewModel)
 	{
+        BindingContext = loginViewModel;
 		InitializeComponent();
 	}
-
-    protected override async void OnNavigatedTo(NavigatedToEventArgs args)
-    {
-        if (await IsAuthenticated())
-        {
-            await Shell.Current.GoToAsync("///templateTab");
-        }
-        else
-        {
-            await Shell.Current.GoToAsync("login");
-        }
-        base.OnNavigatedTo(args);
-    }
-
-    async Task<bool> IsAuthenticated()
-    {
-        string password = Preferences.Get("Password", string.Empty);
-        string username = Preferences.Get("Username", string.Empty);
-        if(password == string.Empty || username == string.Empty)
-        {
-            return false;
-        }
-        //TODO api call to get jwt and save jwt
-        await Task.Delay(2000);
-        return true;
-    }
 
     protected override bool OnBackButtonPressed()
     {

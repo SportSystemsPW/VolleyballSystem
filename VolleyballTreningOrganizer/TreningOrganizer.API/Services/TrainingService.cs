@@ -140,7 +140,7 @@ namespace TreningOrganizer.API.Services
         {
             Dictionary<int, int> trainingAttendancesChanged = new Dictionary<int, int>();
             List<AttendanceChangedResponseDTO> result = new List<AttendanceChangedResponseDTO>();
-            List<Training> trainings = trainingRepository.GetTrainingsForTrainer(trainerId);
+            List<Training> trainings = trainingRepository.GetTrainingsForTrainer(trainerId).OrderByDescending(t => t.CreationDate).ToList();
             smsResponseDTOs = smsResponseDTOs.OrderByDescending(r => r.DateTime).ToList();
 
             foreach (Training training in trainings)

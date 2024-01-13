@@ -6,6 +6,7 @@ using TreningOrganizer.API.IServices;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using TreningOrganizer.API.Services;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TreningOrganizer.API.Controllers
 {
@@ -21,26 +22,14 @@ namespace TreningOrganizer.API.Controllers
             this.trainingGroupService = trainingGroupService;
         }
 
+        [Authorize]
         [HttpGet("GetTrainingParticipantsForTrainer")]
         public TrainingOrganizerResponse<List<TrainingParticipantDTO>> GetTrainingParticipantsForTrainer()
         {
             return CreateResponse(participantService.GetTrainingParticpantsForTrainer(GetTrainerId()));
         }
-        //[HttpGet("GetTrainingParticipantById")]
-        //public TrainingParticipantDTO GetTrainingParticipantById(int id)
-        //{
-        //    return participantService.GetTrainingParticipantById(id);
-        //}
-        //[HttpPost("CreateTraingParticipant")]
-        //public List<string> CreateTrainingParticipant(TrainingParticipantDTO trainingParticipantDTO)
-        //{
-        //    List<string> errors = ValidateTrainingParticipant(trainingParticipantDTO);
-        //    if(errors.Count == 0)
-        //    {
-        //        participantService.InsertTrainingParticipant(trainingParticipantDTO, GetTrainerId());
-        //    }
-        //    return errors;
-        //}
+
+        [Authorize]
         [HttpPut("EditTraingParticipant")]
         public TrainingOrganizerResponse<bool> EditTrainingParticipant(TrainingParticipantDTO trainingParticipantDTO)
         {
@@ -57,28 +46,20 @@ namespace TreningOrganizer.API.Controllers
             }
             return CreateResponse(success, errors);
         }
-        //[HttpDelete("RemoveTrainingParticipant")]
-        //public string RemoveTrainingParticipant(int id)
-        //{
-        //    if (!ValidateTrainingParticipantRemove(id))
-        //    {
-        //        return MessageRepository.CannotRemoveTrainingParticipant;
-        //    }
-        //    participantService.DeleteTrainingParticipantById(id);
-        //    return string.Empty;
-        //}
 
-
+        [Authorize]
         [HttpGet("GetTrainingGroupsForTrainer")]
         public TrainingOrganizerResponse<List<TrainingGroupDTO>> GetTrainingGroupsForTrainer()
         {
             return CreateResponse(trainingGroupService.GetTrainingGroupsForTrainer(GetTrainerId()));
         }
+        [Authorize]
         [HttpGet("GetTrainingGroupById")]
         public TrainingOrganizerResponse<TrainingGroupDTO> GetTrainingGroupById(int id)
         {
             return CreateResponse(trainingGroupService.GetTrainingGroupById(id));
         }
+        [Authorize]
         [HttpPost("CreateTrainingGroup")]
         public TrainingOrganizerResponse<int> CreateTrainingGroup(TrainingGroupDTO trainingGroupDTO)
         {
@@ -90,6 +71,7 @@ namespace TreningOrganizer.API.Controllers
             }
             return CreateResponse(insertedGroupId, errors);
         }
+        [Authorize]
         [HttpPut("EditTrainingGroup")]
         public TrainingOrganizerResponse<bool> EditTrainingGroup(TrainingGroupDTO trainingGroupDTO)
         {
@@ -113,6 +95,7 @@ namespace TreningOrganizer.API.Controllers
             }
             return CreateResponse(success, errors);
         }
+        [Authorize]
         [HttpDelete("RemoveTrainingGroup")]
         public TrainingOrganizerResponse<bool> RemoveTrainingGroup(int id)
         {
@@ -131,6 +114,7 @@ namespace TreningOrganizer.API.Controllers
             return CreateResponse(success, errors);
         }
 
+        [Authorize]
         [HttpGet("GetTrainingGroupDictionary")]
         public TrainingOrganizerResponse<Dictionary<string, int>> GetMessageTemplateNames()
         {

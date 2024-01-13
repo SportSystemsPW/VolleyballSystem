@@ -46,7 +46,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="150"/>
+                <RowDefinition Height="450"/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
             <Button Text="Cancel"

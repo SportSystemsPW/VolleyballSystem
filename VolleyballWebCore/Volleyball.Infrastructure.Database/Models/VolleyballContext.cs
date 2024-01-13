@@ -66,6 +66,7 @@ public partial class VolleyballContext : DbContext
     public virtual DbSet<TrainingGroup> TrainingGroups { get; set; }
     public virtual DbSet<TrainingTrainingParticipant> TrainingTrainingParticipants { get; set; }
     public virtual DbSet<TrainingGroupTrainingParticipant> TrainingGroupTrainingParticipants { get; set; }
+    public virtual DbSet<Trainer> Trainers { get; set; }
  
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

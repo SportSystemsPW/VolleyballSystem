@@ -81,11 +81,11 @@ namespace TreningOrganizer.MAUI.ViewModels
                 {
                     if (isEdit)
                     {
-                        await PutDataToAPI("MessageTemplate/EditMessageTemplate", MessageTemplate.MapModelToDTO(FormTemplate));
+                        await PutRequest("MessageTemplate/EditMessageTemplate", MessageTemplate.MapModelToDTO(FormTemplate));
                     }
                     else
                     {
-                        int id = await PostDataToAPI<int>("MessageTemplate/CreateMessageTemplate", MessageTemplate.MapModelToDTO(FormTemplate));
+                        int id = await PostRequest<int>("MessageTemplate/CreateMessageTemplate", MessageTemplate.MapModelToDTO(FormTemplate));
                         FormTemplate.Id = id;
                     }
                 }

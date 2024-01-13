@@ -44,7 +44,7 @@ namespace TreningOrganizer.MAUI.ViewModels
 
                 try
                 {
-                    await PutDataToAPI("TrainingParticipant/EditTraingParticipant", TrainingParticipant.MapModelToDTO(participant));
+                    await PutRequest("TrainingParticipant/EditTraingParticipant", TrainingParticipant.MapModelToDTO(participant));
                 }
                 catch
                 {
@@ -58,7 +58,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             TrainingParticipants.Clear(); //always refresh - data can be changed from trainings tab
             try
             {
-                var trainingParticipantDTOs = await GetDataFromAPI<List<TrainingParticipantDTO>>("TrainingParticipant/GetTrainingParticipantsForTrainer");
+                var trainingParticipantDTOs = await GetRequest<List<TrainingParticipantDTO>>("TrainingParticipant/GetTrainingParticipantsForTrainer");
                 foreach (var participantDTO in trainingParticipantDTOs)
                 {
                     TrainingParticipants.Add(TrainingParticipant.MapDTOToModel(participantDTO));

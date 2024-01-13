@@ -16,7 +16,7 @@ namespace Volleyball.Infrastructure.Database.Models
         public double Price { get; set; }
         public string Location { get; set; }
         public int TrainerId { get; set; }
-        virtual public User Trainer { get; set; } = null!;
+        virtual public Trainer Trainer { get; set; } = null!;
         virtual public ICollection<TrainingTrainingParticipant> TrainingParticipants { get; set; } = new List<TrainingTrainingParticipant>();
     }
 }

@@ -5,6 +5,9 @@
         public static string EmptyGroup = "Group must have at least one member";
         public static string EmptyTraining = "Training must have at least one participant";
 
+        public static string UserAlreadyExists = "Trainer with this email already exists!";
+        public static string IncorrectEmailOrPassword = "Incorrect email or password.";
+
         public static string CannotEditObject(string objectType)
         {
             return $"You can't edit this {objectType}";

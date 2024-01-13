@@ -4,6 +4,7 @@ using TreningOrganizer.API.IServices;
 using TreningOrganizer.API.Services;
 using Volleyball.Infrastructure.Database.Models;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,6 +20,7 @@ namespace TreningOrganizer.API.Controllers
             this.messageTemplateService = messageTemplateService;
         }
 
+        [Authorize]
         [HttpPost("CreateMessageTemplate")]
         public TrainingOrganizerResponse<int> CreateMessageTemplate([FromBody] MessageTemplateDTO newMessageTemplate)
         {
@@ -31,6 +33,7 @@ namespace TreningOrganizer.API.Controllers
             return CreateResponse(insertedTemplateId, errors);
         }
 
+        [Authorize]
         [HttpPut("EditMessageTemplate")]
         public TrainingOrganizerResponse<bool> EditMessageTemplate([FromBody] MessageTemplateDTO editedMessageTemplate)
         {
@@ -56,7 +59,7 @@ namespace TreningOrganizer.API.Controllers
             
             return CreateResponse(success, errors);
         }
-
+        [Authorize]
         [HttpDelete("RemoveMessageTemplate")]
         public TrainingOrganizerResponse<bool> RemoveMessageTemplate(int id)
         {
@@ -73,16 +76,19 @@ namespace TreningOrganizer.API.Controllers
             }
             return CreateResponse(success, errors);
         }
+        [Authorize]
         [HttpGet("GetMessageTemplatesForTrainer")]
         public TrainingOrganizerResponse<List<MessageTemplateDTO>> GetMessageTemplatesForTrainer()
         {
             return CreateResponse(messageTemplateService.GetMessageTemplatesForTrainer(GetTrainerId()));
         }
+        [Authorize]
         [HttpGet("GetMessageTemplateById")]
         public TrainingOrganizerResponse<MessageTemplateDTO> GetMessageTemplateById(int id)
         {
             return CreateResponse(messageTemplateService.GetMessageTemplateById(id));
         }
+        [Authorize]
         [HttpGet("GetMessageTemplateDictionary")]
         public TrainingOrganizerResponse<Dictionary<string, int>> GetMessageTemplateNames()
         {

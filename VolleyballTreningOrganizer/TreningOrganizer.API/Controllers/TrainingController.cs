@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Volleyball.DTO.TrainingOrganizer;
 using TreningOrganizer.API.IServices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TreningOrganizer.API.Controllers
 {
@@ -14,16 +15,19 @@ namespace TreningOrganizer.API.Controllers
         {
             this.trainingService = trainingService;
         }
+        [Authorize]
         [HttpGet("GetTrainingsForTrainer")]
         public TrainingOrganizerResponse<List<TrainingDTO>> GetTraingsForTrainer()
         {
             return CreateResponse(trainingService.GetTrainingsForTrainer(GetTrainerId()));
         }
+        [Authorize]
         [HttpGet("GetTrainingById")]
         public TrainingOrganizerResponse<TrainingDTO> GetTrainingById(int id)
         {
             return CreateResponse(trainingService.GetTrainingById(id));
         }
+        [Authorize]
         [HttpPost("CreateTrainig")]
         public TrainingOrganizerResponse<int> CreateTraining(TrainingDTO trainingDTO)
         {
@@ -35,26 +39,7 @@ namespace TreningOrganizer.API.Controllers
             }
             return CreateResponse(createdTrainingId, errors);
         }
-        //[HttpPut("EditTraining")]
-        //public List<string> EditTraining(TrainingDTO trainingDTO)
-        //{
-        //    List<string> errors = ValidateTraining(trainingDTO);
-        //    if (errors.Count == 0)
-        //    {
-        //        trainingService.UpdateTraining(trainingDTO);
-        //    }
-        //    return errors;
-        //}
-        //[HttpDelete("RemoveTrainig")]
-        //public string RemoveTraining(int trainingId)
-        //{
-        //    if (!ValidateRemoveTraining(trainingId))
-        //    {
-        //        return MessageRepository.CannotRemoveTraining;
-        //    }
-        //    trainingService.DeleteTrainingById(trainingId);
-        //    return string.Empty;
-        //}
+        [Authorize]
         [HttpPut("SetParticipantsPresence")]
         public TrainingOrganizerResponse<bool> SetParticipantPresence(TrainingPresencesDTO trainingPresencesDTO)
         {
@@ -72,7 +57,7 @@ namespace TreningOrganizer.API.Controllers
             
             return CreateResponse(success, errors);
         }
-
+        [Authorize]
         [HttpPost("ProcessSMSResponses")]
         public TrainingOrganizerResponse<List<AttendanceChangedResponseDTO>> ProcessSMSResponses(List<SMSResponseDTO> smsResponseDTOs)
         {

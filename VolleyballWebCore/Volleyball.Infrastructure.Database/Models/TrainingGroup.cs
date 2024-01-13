@@ -11,7 +11,7 @@ namespace Volleyball.Infrastructure.Database.Models
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public int TrainerId { get; set; }
-        virtual public User Trainer { get; set; } = null!;
+        virtual public Trainer Trainer { get; set; } = null!;
         virtual public ICollection<TrainingGroupTrainingParticipant> TrainingGroupTrainingParticipants { get; set; } = new List<TrainingGroupTrainingParticipant>();
     }
 }

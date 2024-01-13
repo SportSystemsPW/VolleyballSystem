@@ -13,7 +13,7 @@ namespace Volleyball.Infrastructure.Database.Models
         public string Phone { get; set; } = string.Empty;
         public double Balance { get; set; }
         public int TrainerId { get; set; }
-        virtual public User Trainer { get; set; } = null!;
+        virtual public Trainer Trainer { get; set; } = null!;
         virtual public ICollection<TrainingGroupTrainingParticipant> TrainingGroupTrainingParticipants { get; set; } = new List<TrainingGroupTrainingParticipant>();
     }
 }

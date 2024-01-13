@@ -67,7 +67,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             {
                 try
                 {
-                    await DeleteDataToAPI("MessageTemplate/RemoveMessageTemplate", template.Id);
+                    await DeleteRequest("MessageTemplate/RemoveMessageTemplate", template.Id);
                 }
                 catch
                 {
@@ -88,7 +88,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             {
                 try
                 {
-                    var templateDTOs = await GetDataFromAPI<List<MessageTemplateDTO>>("MessageTemplate/GetMessageTemplatesForTrainer");
+                    var templateDTOs = await GetRequest<List<MessageTemplateDTO>>("MessageTemplate/GetMessageTemplatesForTrainer");
                     foreach (var templateDTO in templateDTOs)
                     {
                         Templates.Add(MessageTemplate.MapDTOToModel(templateDTO));

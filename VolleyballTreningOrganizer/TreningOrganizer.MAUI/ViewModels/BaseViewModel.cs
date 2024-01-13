@@ -15,28 +15,28 @@ namespace TreningOrganizer.MAUI.ViewModels
         protected HttpClient _httpClient;
         protected bool isInitialLoad = true;
 
-        protected async Task<T> GetDataFromAPI<T>(string url, int id = -1)
+        protected async Task<T> GetRequest<T>(string url, int id = -1)
         {
             url = id == -1 ? url : url + $"?id={id}";
             var responseMessage = await _httpClient.GetAsync(url);
             return await ProcessAPIResponse<T>(responseMessage);
         }
 
-        protected async Task<T> PostDataToAPI<T>(string url, object content)
+        protected async Task<T> PostRequest<T>(string url, object content)
         {
             HttpContent httpContent = PrepareHTTPContent(content);
             var responseMessage = await _httpClient.PostAsync(url, httpContent);
             return await ProcessAPIResponse<T>(responseMessage);
         }
 
-        protected async Task PutDataToAPI(string url, object content)
+        protected async Task PutRequest(string url, object content)
         {
             HttpContent httpContent = PrepareHTTPContent(content);
             var responseMessage = await _httpClient.PutAsync(url, httpContent);
             await ProcessAPIResponse(responseMessage);
         }
 
-        protected async Task DeleteDataToAPI(string url, int id)
+        protected async Task DeleteRequest(string url, int id)
         {
             var responseMessage = await _httpClient.DeleteAsync(url + $"?id={id}");
             await ProcessAPIResponse(responseMessage);

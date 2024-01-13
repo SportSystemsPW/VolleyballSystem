@@ -66,7 +66,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             {
                 try
                 {
-                    await DeleteDataToAPI("TrainingParticipant/RemoveTrainingGroup", group.Id);
+                    await DeleteRequest("TrainingParticipant/RemoveTrainingGroup", group.Id);
                 }
                 catch
                 {
@@ -87,7 +87,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             {
                 try
                 {
-                    var trainingGroupsDTOs = await GetDataFromAPI<List<TrainingGroupDTO>>("TrainingParticipant/GetTrainingGroupsForTrainer");
+                    var trainingGroupsDTOs = await GetRequest<List<TrainingGroupDTO>>("TrainingParticipant/GetTrainingGroupsForTrainer");
                     foreach (var groupDTO in trainingGroupsDTOs)
                     {
                         Groups.Add(TrainingGroup.MapDTOToModel(groupDTO));

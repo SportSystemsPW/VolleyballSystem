@@ -77,7 +77,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             {
                 try
                 {
-                    var trainingDTOs = await GetDataFromAPI<List<TrainingDTO>>("Training/GetTrainingsForTrainer");
+                    var trainingDTOs = await GetRequest<List<TrainingDTO>>("Training/GetTrainingsForTrainer");
                     foreach (var trainingDTO in trainingDTOs)
                     {
                         Trainings.Add(Training.MapDTOToModel(trainingDTO));
@@ -118,7 +118,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             }
 #if ANDROID
             long lastTimeScaned = long.Parse(Preferences.Get("LastTimeScaned", "0")); //last time sms messages were scaned in long format
-            string now = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+            string now = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
             List<SMSResponseDTO> responses = new List<SMSResponseDTO>();
             string INBOX = "content://sms/inbox";
             string[] reqCols = new string[] { "address", "date", "body"};
@@ -136,7 +136,7 @@ namespace TreningOrganizer.MAUI.ViewModels
 
                     if(long.TryParse(dateString, out long dateLong))
                     {
-                        if (body.Trim().ToLower() == "yes" && (dateLong / 1000) > lastTimeScaned)
+                        if (body.Trim().ToLower() == "yes" && dateLong > lastTimeScaned)
                         {
                             DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc); //convert to normal date time from unix date
                             dateTime = dateTime.AddMilliseconds(dateLong).ToLocalTime();
@@ -150,7 +150,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             {
                 try
                 {
-                    var response = await PostDataToAPI<List<AttendanceChangedResponseDTO>>("Training/ProcessSMSResponses", responses);
+                    var response = await PostRequest<List<AttendanceChangedResponseDTO>>("Training/ProcessSMSResponses", responses);
                     foreach(var change in response)
                     {
                         var trainingChanged = Trainings.FirstOrDefault(t => t.Id == change.TrainingId);

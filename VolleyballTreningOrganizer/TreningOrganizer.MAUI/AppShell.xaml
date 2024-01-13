@@ -19,7 +19,11 @@
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="login" />
 
-    <!--Main Page-->
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate views:RegisterPage}"
+        Route="register" />
+
     <TabBar>
         <!--Message templates-->
         <Tab Title="Templates" Icon="email.svg" Route="templateTab">

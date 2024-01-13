@@ -13,6 +13,6 @@ namespace Volleyball.Infrastructure.Database.Models
         public string Content { get; set; } = string.Empty;
         public string TemplateName { get; set; } = string.Empty;
         public int TrainerId { get; set; }
-        public virtual User Trainer { get; set; } = null!;
+        public virtual Trainer Trainer { get; set; } = null!;
     }
 }

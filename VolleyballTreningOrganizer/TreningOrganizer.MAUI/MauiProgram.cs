@@ -19,13 +19,16 @@ namespace TreningOrganizer.MAUI
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
-
+            string url;
 #if DEBUG
 		builder.Logging.AddDebug();
+            url = "http://10.0.2.2:5204/api/";
+#else
+            url = "aaaaa";
 #endif
             builder.Services.AddScoped(sp => new HttpClient
             {
-                BaseAddress = new Uri("http://10.0.2.2:5204/api/")
+                BaseAddress = new Uri(url)
             });
 
             builder.Services.AddSingleton<MessageTemplatesPage>();
@@ -49,6 +52,11 @@ namespace TreningOrganizer.MAUI
 
             builder.Services.AddSingleton<TrainingGroupFormPage>();
             builder.Services.AddSingleton<TrainingGroupFormViewModel>();
+
+            builder.Services.AddSingleton<LoadingPage>();
+            builder.Services.AddSingleton<LoginPage>();
+            builder.Services.AddSingleton<RegisterPage>();
+            builder.Services.AddSingleton<LoginViewModel>();
 
             return builder.Build();
         }

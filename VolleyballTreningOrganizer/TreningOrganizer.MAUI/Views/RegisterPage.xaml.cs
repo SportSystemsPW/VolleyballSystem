@@ -2,9 +2,9 @@ using TreningOrganizer.MAUI.ViewModels;
 
 namespace TreningOrganizer.MAUI.Views;
 
-public partial class LoginPage : ContentPage
+public partial class RegisterPage : ContentPage
 {
-	public LoginPage(LoginViewModel loginViewModel)
+	public RegisterPage(LoginViewModel loginViewModel)
 	{
 		BindingContext = loginViewModel;
 		InitializeComponent();

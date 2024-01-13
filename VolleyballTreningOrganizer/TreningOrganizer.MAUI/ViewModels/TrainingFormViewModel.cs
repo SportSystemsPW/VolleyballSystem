@@ -199,7 +199,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             {
                 if (!IsDetailsView)
                 {
-                    int insertedTrainigId = await PostDataToAPI<int>("Training/CreateTrainig", Training.MapModelToDTO(FormTraining, Members));
+                    int insertedTrainigId = await PostRequest<int>("Training/CreateTrainig", Training.MapModelToDTO(FormTraining, Members));
                     FormTraining.Id = insertedTrainigId;
                 }
                 else
@@ -218,7 +218,7 @@ namespace TreningOrganizer.MAUI.ViewModels
                         TrainingId = FormTraining.Id,
                         ParticipantDTOs = participantDTOs
                     };
-                    await PutDataToAPI("Training/SetParticipantsPresence", presencesDTO);
+                    await PutRequest("Training/SetParticipantsPresence", presencesDTO);
                 }
             }
             catch
@@ -236,7 +236,7 @@ namespace TreningOrganizer.MAUI.ViewModels
         private async Task<bool> CheckMessageForVariables()
         {
             bool proceed = true;
-            if(string.IsNullOrEmpty(FormTraining.Message))
+            if(!string.IsNullOrEmpty(FormTraining.Message))
             {
                 string[] variables = { "{date}", "{location}", "{price}" };
                 List<string> missingVariables = new List<string>();
@@ -283,7 +283,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             {
                 try
                 {
-                    var trainingDTO = await GetDataFromAPI<TrainingDTO>("Training/GetTrainingById", FormTraining.Id);
+                    var trainingDTO = await GetRequest<TrainingDTO>("Training/GetTrainingById", FormTraining.Id);
                     foreach(var participant in trainingDTO.ParticipantDTOs)
                     {
                         Members.Add(Models.Contact.MapDTOToModel(participant));
@@ -298,8 +298,8 @@ namespace TreningOrganizer.MAUI.ViewModels
             }
             else if (!IsDetailsView && members == null)
             {
-                MessageTemplatesDropdown = await GetDataFromAPI<Dictionary<string, int>>("MessageTemplate/GetMessageTemplateDictionary");
-                GroupsDropdown = await GetDataFromAPI<Dictionary<string, int>>("TrainingParticipant/GetTrainingGroupDictionary");
+                MessageTemplatesDropdown = await GetRequest<Dictionary<string, int>>("MessageTemplate/GetMessageTemplateDictionary");
+                GroupsDropdown = await GetRequest<Dictionary<string, int>>("TrainingParticipant/GetTrainingGroupDictionary");
             }
             else if(members != null)
             {
@@ -319,7 +319,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             int selectedTemplateId;
             if(MessageTemplatesDropdown.TryGetValue(selectedTemplateName, out selectedTemplateId))
             {
-                var selectedTemplate = await GetDataFromAPI<MessageTemplateDTO>("MessageTemplate/GetMessageTemplateById", selectedTemplateId);
+                var selectedTemplate = await GetRequest<MessageTemplateDTO>("MessageTemplate/GetMessageTemplateById", selectedTemplateId);
                 FormTraining.Message = selectedTemplate.Content;
             }
             else
@@ -335,7 +335,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             int selectedGroupId;
             if (GroupsDropdown.TryGetValue(selectedTemplate, out selectedGroupId))
             {
-                var trainingGroupDTO = await GetDataFromAPI<TrainingGroupDTO>("TrainingParticipant/GetTrainingGroupById", selectedGroupId);
+                var trainingGroupDTO = await GetRequest<TrainingGroupDTO>("TrainingParticipant/GetTrainingGroupById", selectedGroupId);
                 foreach (var participantDTO in trainingGroupDTO.TrainingParticipantDTOs)
                 {
                     Members.Add(Models.Contact.MapDTOToModel(participantDTO));

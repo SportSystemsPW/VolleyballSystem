@@ -119,11 +119,11 @@ namespace TreningOrganizer.MAUI.ViewModels
                 {
                     if (isEdit)
                     {
-                        await PutDataToAPI("TrainingParticipant/EditTrainingGroup", TrainingGroup.MapModelToDTO(FormGroup, Members));
+                        await PutRequest("TrainingParticipant/EditTrainingGroup", TrainingGroup.MapModelToDTO(FormGroup, Members));
                     }
                     else
                     {
-                        int id = await PostDataToAPI<int>("TrainingParticipant/CreateTrainingGroup", TrainingGroup.MapModelToDTO(FormGroup, Members));
+                        int id = await PostRequest<int>("TrainingParticipant/CreateTrainingGroup", TrainingGroup.MapModelToDTO(FormGroup, Members));
                         FormGroup.Id = id;
                     }
                 }
@@ -166,7 +166,7 @@ namespace TreningOrganizer.MAUI.ViewModels
             {
                 try
                 {
-                    var trainingGroupDTO = await GetDataFromAPI<TrainingGroupDTO>("TrainingParticipant/GetTrainingGroupById", group.Id);
+                    var trainingGroupDTO = await GetRequest<TrainingGroupDTO>("TrainingParticipant/GetTrainingGroupById", group.Id);
                     foreach (var participantDTO in trainingGroupDTO.TrainingParticipantDTOs)
                     {
                         Members.Add(Models.Contact.MapDTOToModel(participantDTO));
