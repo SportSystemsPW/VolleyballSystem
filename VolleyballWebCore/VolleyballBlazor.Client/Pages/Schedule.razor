@@ -1,0 +1,213 @@
+﻿@page "/schedule"
+@inject IMatchService matchService
+@using System.ComponentModel.DataAnnotations;
+
+<div>
+    @if (pageReady)
+    {
+        <h3>Terminarz</h3>
+        <div class="card m-2 p-2">
+            <EditForm @onchange="ApplyFilter" Model="Filter">
+                <GenericForm ModelChanged="ApplyFilter" TModel="ScheduleFilter" Model="Filter" EditorClass="form-control">
+                    <FieldTemplate Context="field">
+                        <div class="form-group">
+                            <label for="@field.EditorId">@field.DisplayName</label>
+                            @field.EditorTemplate
+                            <p class="text-danger">@field.FieldValidationTemplate</p>
+                        </div>
+                    </FieldTemplate>
+
+
+                </GenericForm>
+            </EditForm>
+        </div>
+
+        @if (scheduleLoading)
+        {
+            <div class="d-flex justify-content-center">
+                <LoadingIcon />
+            </div>
+        }
+        else if (Games.Count == 0)
+        {
+            <div class="alert alert-info" role="alert">
+                Brak meczów do wyświetlenia
+            </div>
+        }
+        else if (Games.Count > 0)
+        {
+            <div class="p-2 card mt-4 mb-5 table-responsive-lg">
+                <table class="table text-left" style="max-width:800px">
+                    <thead>
+                        <tr>
+                            <th>Termin</th>
+                            <th>Gospodarz</th>
+                            <th>Wynik</th>
+                            <th>Gość</th>
+                            <th>Miejsce</th>
+                            <th>Sędzia</th>
+                            <th>Dodatkowe informacje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Games != null)
+                        {
+                            @foreach (var game in Games)
+                            {
+                                <tr>
+                                    <td>
+                                        <NavLink href=@{
+                                 "/match/" + game.Id
+                                 }>@game.Schedule</NavLink>
+                                    </td>
+                                    <td>
+                                        <NavLink href=@{
+                                 "/team/" + game.HomeTeam.Id
+                                 }>@game.HomeTeam.Name</NavLink>
+                                    </td>
+                                    <td>@game.Team1Score : @game.Team2Score</td>
+                                    <td>
+                                        <NavLink href=@{
+                                 "/team/" + game.GuestTeam.Id
+                                 }>@game.GuestTeam.Name</NavLink>
+                                    </td>
+                                    <td>@game.VenueName</td>
+                                    <td>
+                                        <NavLink href=@{
+                                 "/user-profile/" + game.Referee.Id
+                                 }>@game.Referee.FirstName @game.Referee.LastName</NavLink>
+                                    </td>
+                                    <td>
+                                        @game.MatchInfo
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    }
+    else
+    {
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger" role="alert">
+                @errorMessage
+            </div>
+        }
+        else
+        {
+            <div class="d-flex justify-content-center">
+                <LoadingIcon />
+            </div>
+        }
+    }
+
+</div>
+
+
+
+@code {
+    private bool scheduleLoading = false;
+    private static List<RoundDto> AllRounds { get; set; } = new List<RoundDto>();
+
+    private List<MatchSummaryDto> Games { get; set; } = new List<MatchSummaryDto>();
+
+    private ScheduleFilter Filter { get; set; } = new ScheduleFilter();
+
+    private bool pageReady = false;
+    private string errorMessage = string.Empty;
+
+    private class ScheduleFilter
+    {
+        private int seasonId;
+        [Display(Name = "Sezon")]
+        public int SeasonId
+        {
+            get
+            {
+                return seasonId;
+            }
+            set
+            {
+                RoundList = AllRounds.Where(x => x.SeasonId == value).ToList();
+                RoundId = RoundList.FirstOrDefault()?.Id ?? 0;
+                seasonId = value;
+            }
+        }
+
+        [Display(Name = "Kolejka")]
+        public int RoundId { get; set; }
+
+        [Display(Name = "Liga")]
+        public int LeagueId { get; set; }
+
+        [ExcludeFromForm]
+        public List<SeasonDto> SeasonList { get; set; } = new List<SeasonDto>();
+
+        [ExcludeFromForm]
+        public List<RoundDto> RoundList { get; set; } = new List<RoundDto>();
+
+        [ExcludeFromForm]
+        public List<LeagueDto> LeagueList { get; set; } = new List<LeagueDto>();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var seasonsResult = await matchService.GetSeasons();
+        if (seasonsResult.Success)
+        {
+            Filter.SeasonList = seasonsResult.Data!;
+        }
+        else
+        {
+            errorMessage = seasonsResult.Message;
+            return;
+        }
+
+        var roundsResult = await matchService.GetRounds();
+        if (roundsResult.Success)
+        {
+            AllRounds = roundsResult.Data!;
+        }
+        else
+        {
+            errorMessage = seasonsResult.Message;
+            return;
+        }
+
+        var leaguesResult = await matchService.GetLeagues();
+        if (leaguesResult.Success)
+        {
+            Filter.LeagueList = leaguesResult.Data!;
+        }
+        else
+        {
+            errorMessage = seasonsResult.Message;
+            return;
+        }
+
+        pageReady = true;
+    }
+
+    private async Task ApplyFilter()
+    {
+        if (Filter.SeasonId == 0 || Filter.RoundId == 0 || Filter.LeagueId == 0)
+        {
+            return;
+        }
+        scheduleLoading = true;
+        var result = await matchService.GetMatches(Filter.SeasonId, Filter.LeagueId, Filter.RoundId);
+        if (result.Success)
+        {
+            Games = result.Data!;
+        }
+        else
+        {
+            errorMessage = result.Message;
+        }
+        scheduleLoading = false;
+    }
+}

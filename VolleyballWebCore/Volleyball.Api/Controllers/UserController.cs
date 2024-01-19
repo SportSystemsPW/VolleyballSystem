@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -166,6 +167,21 @@ namespace Volleyball.Api.Controllers
 
         }
 
+        // get current user profile
+        [Route("myprofile")]
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetMyProfile()
+        {
+            string? id = User.Identity?.Name;
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return NotFound();
+            }
+            var result = await userDbService.GetUserProfileByEmailAsync(id);
+            return Ok(result);
+        }
+
 
 
         [HttpGet]
@@ -185,6 +201,5 @@ namespace Volleyball.Api.Controllers
             }
             return BadRequest(result);
         }
-
     }
 }

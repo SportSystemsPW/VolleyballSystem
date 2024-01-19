@@ -26,6 +26,7 @@ namespace Volleyball.DTO.Users
         public string? VolleyballIdol { get; set; }
         public string? Hobby { get; set; }
         public string? PositionName { get; set; }
+        public int? PositionId { get; set; }
 
         // cast operator User to UserProfileDto
         public static explicit operator UserProfileDto(User user)
@@ -48,6 +49,7 @@ namespace Volleyball.DTO.Users
                 VolleyballIdol = user.VolleyballIdol,
                 Hobby = user.Hobby,
                 PositionName = user.Position?.Name,
+                PositionId = user.PositionId
             };
         }
 

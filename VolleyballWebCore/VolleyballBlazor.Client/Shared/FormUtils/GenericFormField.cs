@@ -129,6 +129,20 @@ namespace VolleyballBlazor.Client.Shared.FormUtils
                 var propertyType = Property.PropertyType;
                 var propertyName = Property.Name;
 
+
+                // () => Owner.Property
+                var access = Expression.Property(Expression.Constant(Owner, typeof(TModel)), Property);
+                var lambda = Expression.Lambda(typeof(Func<>).MakeGenericType(PropertyType), access);
+
+                // Create(object receiver, Action<object> callback
+                var method = s_eventCallbackFactoryCreate.MakeGenericMethod(PropertyType);
+
+                // value => Field.Value = value;
+                var changeHandlerParameter = Expression.Parameter(PropertyType);
+                var body = Expression.Assign(Expression.Property(Expression.Constant(this), nameof(Value)), Expression.Convert(changeHandlerParameter, typeof(object)));
+                var changeHandlerLambda = Expression.Lambda(typeof(Action<>).MakeGenericType(PropertyType), body, changeHandlerParameter);
+                var changeHandler = method.Invoke(EventCallback.Factory, new object[] { this, changeHandlerLambda.Compile() });
+
                 if (propertyType == typeof(byte[]))
                 {
                     return builder =>
@@ -159,9 +173,9 @@ namespace VolleyballBlazor.Client.Shared.FormUtils
                         {
                             builder.OpenElement(0, "select");
                             builder.AddAttribute(1, "value", BindConverter.FormatValue(Value));
-                            builder.AddAttribute(2, "onchange", EventCallback.Factory.Create<string>(this, async value =>
+                            builder.AddAttribute(2, "onchange", EventCallback.Factory.Create<ChangeEventArgs>(this, async value =>
                             {
-                                Value = value;
+                                Value = int.Parse(value.Value?.ToString());
                                 await Task.CompletedTask; // Add this line to ensure a Task is returned
                             }));
                             builder.AddAttribute(3, "class", _form.EditorClass);
@@ -177,18 +191,7 @@ namespace VolleyballBlazor.Client.Shared.FormUtils
                         };
                     }
                 }
-                // () => Owner.Property
-                var access = Expression.Property(Expression.Constant(Owner, typeof(TModel)), Property);
-                var lambda = Expression.Lambda(typeof(Func<>).MakeGenericType(PropertyType), access);
 
-                // Create(object receiver, Action<object> callback
-                var method = s_eventCallbackFactoryCreate.MakeGenericMethod(PropertyType);
-
-                // value => Field.Value = value;
-                var changeHandlerParameter = Expression.Parameter(PropertyType);
-                var body = Expression.Assign(Expression.Property(Expression.Constant(this), nameof(Value)), Expression.Convert(changeHandlerParameter, typeof(object)));
-                var changeHandlerLambda = Expression.Lambda(typeof(Action<>).MakeGenericType(PropertyType), body, changeHandlerParameter);
-                var changeHandler = method.Invoke(EventCallback.Factory, new object[] { this, changeHandlerLambda.Compile() });
 
                 return _editorTemplate ??= builder =>
                 {
@@ -305,7 +308,6 @@ namespace VolleyballBlazor.Client.Shared.FormUtils
 
                 return (typeof(InputText), null);
             }
-
             if (property.PropertyType == typeof(short))
                 return (typeof(InputNumber<short>), null);
 
@@ -324,6 +326,7 @@ namespace VolleyballBlazor.Client.Shared.FormUtils
             if (property.PropertyType == typeof(decimal))
                 return (typeof(InputNumber<decimal>), null);
 
+            Console.WriteLine("OK");
             if (property.PropertyType == typeof(DateTime))
             {
                 var dataType = property.GetCustomAttribute<DataTypeAttribute>();

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Volleyball.DbServices.Services;
 using Volleyball.DTO.Teams;
@@ -15,12 +16,16 @@ namespace Volleyball.Api.Controllers
         {
             return Ok(await seasonDbService.GetAllSeasonsAsync());
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateSeason(SeasonDto season)
         {
             await seasonDbService.CreateSeason(season);
             return Ok();
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSeason(SeasonDto updatedSeason)
         {

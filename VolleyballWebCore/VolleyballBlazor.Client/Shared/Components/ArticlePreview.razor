@@ -1,15 +1,14 @@
 ﻿<div class="blog-box row">
     <div class="col-md-4">
         <div class="post-media">
-            <a href="tech-single.html" title="">
-                <img src="~/images/user.png" alt="" class="img-fluid">
-                <div class="hovereffect"></div>
-            </a>
+            <NavLink href="@($"/article/{Article.Id}")">
+                <TeamLogo Image="Article.Image"></TeamLogo>
+            </NavLink>
         </div><!-- end media -->
     </div><!-- end col -->
 
     <div class="blog-meta big-meta col-md-8">
-        <h4><NavLink href="@($"/article/{Article.Id}")" title="">@Article.Title</NavLink></h4>
+        <h5><NavLink href="@($"/article/{Article.Id}")" title="">@Article.Title</NavLink></h5>
         <p>@ContentPreview</p>
         <small><a href="tech-single.html" title="">@Article.CreationDate</a></small>
     </div><!-- end meta -->
@@ -19,17 +18,17 @@
     [Parameter]
     public ArticleDto Article { get; set; }
 
-    public string ContentPreview
+    public MarkupString ContentPreview
     {
         get
         {
-            if (Article.Content.Length > 100)
+            if (Article.Content.Length > 70)
             {
-                return Article.Content.Substring(0, 100) + "...";
+                return new MarkupString(Article.Content.Substring(0, 70) + "...");
             }
             else
             {
-                return Article.Content;
+                return new MarkupString(Article.Content);
             }
         }
     }

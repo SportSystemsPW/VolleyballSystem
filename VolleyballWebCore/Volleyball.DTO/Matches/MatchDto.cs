@@ -19,6 +19,8 @@ namespace Volleyball.DTO.Matches
 
         public string? VenueName { get; set; }
 
+        public VenueDto? Venue { get; set; }
+
         public LeagueDto League { get; set; } = null!;
 
         public int Sector { get; set; }
@@ -93,6 +95,7 @@ namespace Volleyball.DTO.Matches
                 MatchLeague = match.MatchLeague,
                 HomeTeam = (TeamDto)match.HomeTeam,
                 GuestTeam = (TeamDto)match.GuestTeam,
+                Venue = match.Venue == null ? null : (VenueDto)match.Venue
             };
         }
     }

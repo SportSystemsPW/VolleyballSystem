@@ -411,7 +411,7 @@ namespace Volleyball.DbServices.Services
                 return response;
             }
 
-            response.Data = seasons.Select(s => (SeasonDto)s).ToList();
+            response.Data = seasons.OrderByDescending(s => s.Id).Select(s => (SeasonDto)s).ToList();
 
             return response;
         }

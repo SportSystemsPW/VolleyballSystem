@@ -12,13 +12,32 @@
             <li class="page-item">
                 <button class="page-link" @onclick="(() => ChangePage(-1))">&laquo;</button>
             </li>
-            @for (int i = 1; i <= TotalPages; i++)
+
+            @if (TotalPages <= 10)
             {
-                var pageNumber = i; // Capture the value of i
-                <li class="page-item @(pageNumber == CurrentPage ? "active" : "")">
-                    <button class="page-link " @onclick="(() => ChangePage(pageNumber))">@i</button>
-                </li>
+                @for (int i = 1; i <= TotalPages; i++)
+                {
+                    var pageNumber = i; // Capture the value of i
+                    <li class="page-item @(pageNumber == CurrentPage ? "active" : "")">
+                        <button class="page-link " @onclick="(() => ChangePage(pageNumber))">@i</button>
+                    </li>
+                }
             }
+            else
+            {
+                // Display a maximum of 10 page numbers, centered around the current page
+                var startPage = Math.Max(1, CurrentPage - 5);
+                var endPage = Math.Min(startPage + 9, TotalPages);
+
+                for (int i = startPage; i <= endPage; i++)
+                {
+                    var pageNumber = i; // Capture the value of i
+                    <li class="page-item @(pageNumber == CurrentPage ? "active" : "")">
+                        <button class="page-link " @onclick="(() => ChangePage(pageNumber))">@i</button>
+                    </li>
+                }
+            }
+
             <li class="page-item">
                 <button class="page-link" @onclick="(() => ChangePage(-2))">&raquo;</button>
             </li>

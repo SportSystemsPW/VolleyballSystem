@@ -18,9 +18,14 @@ namespace Volleyball.DbServices.Services
             _context = new VolleyballContext();
         }
 
-        public async Task<ServiceResponse<List<RoundDto>>> GetAllRoundsAsync()
+        public async Task<ServiceResponse<List<RoundDto>>> GetAllRoundsAsync(int? seasonId)
         {
             var response = new ServiceResponse<List<RoundDto>>();
+            if (seasonId != null)
+            {
+                response.Data = (await _context.Rounds.OrderDescending().Where(r => r.Season.Id == seasonId).ToListAsync()).Select(r => (RoundDto)r).ToList();
+                return response;
+            }
             response.Data = (await _context.Rounds.ToListAsync()).Select(r => (RoundDto)r).ToList();
             return response;
         }

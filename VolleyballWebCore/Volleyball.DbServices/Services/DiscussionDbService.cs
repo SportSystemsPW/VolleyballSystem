@@ -69,6 +69,16 @@ namespace Volleyball.DbServices.Services
             return await AddComment(newCommentDto, authorEmail, CommentLocations.PrivateMessage);
         }
 
+
+        public async Task<ServiceResponse<List<LogDto>>> GetRecentLogs(int amount)
+        {
+            var response = new ServiceResponse<List<LogDto>>();
+            var logs = await context.Logs.Include(l => l.PersonalLogs).ThenInclude(l => l.User).OrderByDescending(l => l.Date).Take(amount).ToListAsync();
+            response.Data = logs.Select(l => (LogDto)l).ToList();
+            return response;
+        }
+
+
         private async Task<ServiceResponse<List<CommentDto>>> GetComments(int locationId, CommentLocations location)
         {
             var response = new ServiceResponse<List<CommentDto>>();

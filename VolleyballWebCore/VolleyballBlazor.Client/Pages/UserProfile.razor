@@ -120,25 +120,30 @@
                         </div>
                     </ItemTemplate>
                 </Pagination>
-                <div class="mb-4">
-                    <EditForm Model="@commentModel" OnValidSubmit="HandleValidSubmit">
-                        <DataAnnotationsValidator />
-                        <div class="form-group">
-                            <label class="row-form-label" for="Comment">Dodaj komentarz:</label>
-                            <InputTextArea class="form-control" id="Comment" @bind-Value="commentModel.Content" />
-                            <ValidationMessage class="text-danger" For="@(() => commentModel.Content)" />
+
+                <AuthorizeView Context="authContext">
+                    <Authorized>
+                        <div class="mb-4">
+                            <EditForm Model="@commentModel" OnValidSubmit="HandleValidSubmit">
+                                <DataAnnotationsValidator />
+                                <div class="form-group">
+                                    <label class="row-form-label" for="Comment">Dodaj komentarz:</label>
+                                    <InputTextArea class="form-control" id="Comment" @bind-Value="commentModel.Content" />
+                                    <ValidationMessage class="text-danger" For="@(() => commentModel.Content)" />
+                                </div>
+                                <p class="text-danger">@NewCommentError</p>
+                                @if (SubmitLoading)
+                                {
+                                    <LoadingIcon />
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-primary">Dodaj</button>
+                                }
+                            </EditForm>
                         </div>
-                        <p class="text-danger">@NewCommentError</p>
-                        @if (SubmitLoading)
-                        {
-                            <LoadingIcon />
-                        }
-                        else
-                        {
-                            <button type="submit" class="btn btn-primary">Dodaj</button>
-                        }
-                    </EditForm>
-                </div>
+                    </Authorized>
+                </AuthorizeView>
             </div>
         </div>
     }
@@ -178,7 +183,6 @@
 
     protected override async void OnParametersSet()
     {
-        Console.WriteLine("OnParametersSet");
         UserProfileData = await GetUserProfile();
         if (UserProfileData != null)
         {

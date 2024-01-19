@@ -17,13 +17,16 @@ public partial class VolleyballContext : DbContext
     {
     }
 
+    public static string SchemaName = "tomasz1_voladmin";
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder builder)
     {
         // development
-        string connectionString = "Data Source=.;Initial Catalog=VolleyballDatabase;Integrated Security=True;TrustServerCertificate=True;";
+        //string connectionString = "Data Source=.;Initial Catalog=VolleyballDatabase1;Integrated Security=True;TrustServerCertificate=True;";
+        // production
+        string connectionString = "Data Source=mssql4.webio.pl,2401;Initial Catalog=tomasz1_VolleyballDatabase;Persist Security Info=True;User ID=tomasz1_student;Password=sdikjf#o3D;TrustServerCertificate=true";
         builder.UseSqlServer(connectionString);
-
     }
 
     public virtual DbSet<Article> Articles { get; set; }
@@ -77,6 +80,8 @@ public partial class VolleyballContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema(SchemaName);
+
         modelBuilder.Entity<Article>(entity =>
         {
             entity.Property(e => e.IsActive)
@@ -139,10 +144,6 @@ public partial class VolleyballContext : DbContext
 
         modelBuilder.Entity<Match>(entity =>
         {
-
-            entity.Property(e => e.MvpId)
-                .HasDefaultValueSql("((39))");
-
             entity.HasOne(d => d.Mvp).WithMany(p => p.MVPMatches)
               .HasForeignKey(d => d.MvpId);
 

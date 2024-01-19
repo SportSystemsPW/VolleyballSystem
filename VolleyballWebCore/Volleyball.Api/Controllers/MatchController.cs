@@ -11,12 +11,8 @@ namespace Volleyball.Api.Controllers
     public class MatchController : ControllerBase
     {
         private readonly MatchDbService matchDbService = new MatchDbService();
-        [HttpGet]
-        public async Task<IActionResult> GetAllMatches()
-        {
-            return Ok(await matchDbService.GetAllMatchesAsync());
-        }
-        [HttpGet("id/{id}")]
+
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetMatchById(int id)
         {
             var result = await matchDbService.GetMatchByIdAsync(id);
@@ -87,6 +83,22 @@ namespace Volleyball.Api.Controllers
                 return Unauthorized();
             }
             return Ok(await matchDbService.GetReferees());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMatches([FromQuery]int leagueId, [FromQuery]int seasonId, [FromQuery]int roundId, [FromQuery]int teamId)
+        {
+            if(leagueId == 0 && seasonId == 0 && roundId == 0 && teamId == 0)
+            {
+                return Ok(await matchDbService.GetAllMatchesAsync());
+            }
+
+            if(seasonId != 0 && teamId != 0)
+            {
+                return Ok(await matchDbService.GetMatches(seasonId, teamId));
+            }
+
+            return Ok(await matchDbService.GetMatches(leagueId, seasonId, roundId));
         }
     }
 }

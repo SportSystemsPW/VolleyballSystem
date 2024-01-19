@@ -23,7 +23,7 @@ namespace Volleyball.DbServices.Services
         {
             var response = new ServiceResponse<List<SeasonDto>>();
 
-            response.Data = (await _context.Seasons.ToListAsync()).Select(s => (SeasonDto)s).ToList();
+            response.Data = (await _context.Seasons.OrderByDescending(s => s.Id).ToListAsync()).Select(s => (SeasonDto)s).ToList();
 
             return response;
         }
