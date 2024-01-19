@@ -12,10 +12,11 @@ namespace Volleyball.Api.Controllers
     {
         private readonly RoundDbService roundDbService = new RoundDbService();
         [HttpGet]
-        public async Task<IActionResult> GetAllRounds()
+        public async Task<IActionResult> GetAllRounds([FromQuery]int? seasonId)
         {
-            return Ok(await roundDbService.GetAllRoundsAsync());
+            return Ok(await roundDbService.GetAllRoundsAsync(seasonId)) ;
         }
+
 
         [HttpPost]
         [Authorize(Roles = "Admin")]

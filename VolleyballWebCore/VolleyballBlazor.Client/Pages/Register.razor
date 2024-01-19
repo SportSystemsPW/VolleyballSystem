@@ -74,6 +74,18 @@
                     <ValidationMessage For="@(() => registerModel.BirthYear)" />
                 </div>
             </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" for="Photo">Zdjęcie:</label>
+                
+                <div class="col-sm-6">
+                    <InputFile class="form-control" id="Photo" OnChange="HandleFileChange" />
+
+                    <ValidationMessage For="@(() => registerModel.Photo)" />
+                </div>
+            </div>
+
+            <ImagePreview ImageData="@registerModel.Photo" />
+
 
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label" for="Height">Wzrost:</label>
@@ -236,6 +248,23 @@
         {
             ShowErrorMessage = true;
             ErrorMessage = result.Message;
+        }
+    }
+
+    private async Task HandleFileChange(InputFileChangeEventArgs e)
+    {
+        var imageFile = e.File;
+
+        if (imageFile != null)
+        {
+            using (var stream = imageFile.OpenReadStream())
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await stream.CopyToAsync(memoryStream);
+                    registerModel.Photo = memoryStream.ToArray();
+                }
+            }
         }
     }
 }

@@ -12,9 +12,9 @@
             <div>
                 <small>@ArticleData.CreationDate</small>
                 <h1>@ArticleData.Title</h1>
+                <hr class="w-100"/>
 
-
-                <p>@ArticleData.Content</p>
+                <p>@ArticleContent</p>
 
 
                 <small>
@@ -25,11 +25,12 @@
                 <small>@ArticleData.CreationDate</small>
             </div>
             <div class="p-2">
-                <img src="@ArticleData.Image">
+                <ImagePreview Image="ArticleData.Image" />
             </div>
         </div>
+        <hr style="width: 100%"/>
 
-        <div class="text-left mt-3">
+        <div class="text-left mt-2">
             <h4>Komentarze</h4>
             @if (CommentsErrorMessage != "")
             {
@@ -56,33 +57,38 @@
                         <div>
                             <small>
                                 @context.CreationDate przez <NavLink href=@{
-                                "/user-profile/" + @context.Author.Id
-}>@context.Author.FirstName @context.Author.LastName</NavLink>
+                                                                 "/user-profile/" + @context.Author.Id
+                                                                 }>@context.Author.FirstName @context.Author.LastName</NavLink>
                             </small>
                             <p>@context.Content</p>
                         </div>
                     </div>
                 </ItemTemplate>
             </Pagination>
-            <div class="mb-4">
-                <EditForm Model="@commentModel" OnValidSubmit="HandleValidSubmit">
-                    <DataAnnotationsValidator />
-                    <div class="form-group">
-                        <label class="row-form-label" for="Comment">Dodaj komentarz:</label>
-                        <InputTextArea class="form-control" id="Comment" @bind-Value="commentModel.Content" />
-                        <ValidationMessage class="text-danger" For="@(() => commentModel.Content)" />
+
+            <AuthorizeView Context="authContext">
+                <Authorized>
+                    <div class="mb-4">
+                        <EditForm Model="@commentModel" OnValidSubmit="HandleValidSubmit">
+                            <DataAnnotationsValidator />
+                            <div class="form-group">
+                                <label class="row-form-label" for="Comment">Dodaj komentarz:</label>
+                                <InputTextArea class="form-control" id="Comment" @bind-Value="commentModel.Content" />
+                                <ValidationMessage class="text-danger" For="@(() => commentModel.Content)" />
+                            </div>
+                            <p class="text-danger">@NewCommentError</p>
+                            @if (SubmitLoading)
+                            {
+                                <LoadingIcon />
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary">Dodaj</button>
+                            }
+                        </EditForm>
                     </div>
-                    <p class="text-danger">@NewCommentError</p>
-                    @if (SubmitLoading)
-                    {
-                        <LoadingIcon />
-                    }
-                    else
-                    {
-                        <button type="submit" class="btn btn-primary">Dodaj</button>
-                    }
-                </EditForm>
-            </div>
+                </Authorized>
+            </AuthorizeView>
         </div>
     }
     else
@@ -115,11 +121,13 @@
     public string NewCommentError { get; set; } = "";
 
     public bool SubmitLoading { get; set; } = false;
+    public MarkupString ArticleContent;
 
 
     protected override async Task OnInitializedAsync()
     {
         ArticleData = await GetArticle();
+        ArticleContent = new MarkupString(ArticleData.Content);
         await DownloadComments();
         commentModel.ContentLocationId = Id;
     }

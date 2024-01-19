@@ -1,0 +1,121 @@
+﻿@page "/editprofile"
+@using System.ComponentModel.DataAnnotations
+@inject IUserService UserService
+@attribute [Authorize]
+
+<h3>Edycja profilu</h3>
+
+<div class="m-2">
+
+    <EditForm Model="@editModel" OnValidSubmit="HandleValidSubmit">
+        <GenericForm Model="editModel" EditorClass="form-control">
+            <FieldTemplate Context="field">
+                <div class="form-group">
+                    <label for="@field.EditorId">@field.DisplayName</label>
+                    @field.EditorTemplate
+                    <p class="text-danger">@field.FieldValidationTemplate</p>
+                </div>
+            </FieldTemplate>
+
+
+        </GenericForm>
+
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            @if (IsLoading)
+            {
+                <LoadingIcon></LoadingIcon>
+            }
+            else
+            {
+                @if (ShowErrorMessage)
+                {
+                    <div class="alert alert-danger">@ErrorMessage </div> <br />
+                }
+                @if (ShowSuccessMessage)
+                {
+                    <div class="alert alert-success">Zmiany zostały zapisane</div> <br />
+                }
+                <button type="submit" class="btn btn-primary col-sm-3">Zatwierdź</button>
+            }
+        </div>
+    </EditForm>
+
+</div>
+
+@code {
+    private UpdateUserModel editModel = new UpdateUserModel();
+
+    private bool IsLoading = false;
+
+    private bool ShowSuccessMessage = false;
+
+    private bool ShowErrorMessage = false;
+
+    private string ErrorMessage = "";
+
+    private List<PositionDto> Positions = new List<PositionDto>();
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userResult = await UserService.GetCurrentUserProfile();
+
+        if (userResult.Success)
+        {
+            editModel = new UpdateUserModel(userResult.Data!);
+        }
+
+        editModel.PositionList = new List<PositionDto>() { new PositionDto { Id = 1, Name = "Ładowanie pozycji..." } };
+
+        var positionResult = await UserService.GetPositions();
+
+        if (positionResult.Success)
+        {
+            editModel.PositionList = positionResult.Data!;
+        }
+        else
+        {
+            editModel.PositionList = new List<PositionDto>() { new PositionDto { Id = 1, Name = positionResult.Message } };
+        }
+
+
+        StateHasChanged();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        ShowErrorMessage = false;
+        IsLoading = true;
+        var result = await UserService.UpdateUser(editModel);
+        IsLoading = false;
+        if (result.Success)
+        {
+            IsLoading = false;
+            ShowSuccessMessage = true;
+        }
+        else
+        {
+            ShowErrorMessage = true;
+            ErrorMessage = result.Message;
+        }
+    }
+
+    private async Task HandleFileChange(InputFileChangeEventArgs e)
+    {
+        var imageFile = e.File;
+
+        if (imageFile != null)
+        {
+            using (var stream = imageFile.OpenReadStream())
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await stream.CopyToAsync(memoryStream);
+                    editModel.Photo = memoryStream.ToArray();
+                }
+            }
+        }
+    }
+}

@@ -20,6 +20,7 @@ namespace VolleyballBlazor.Infrastructure.Client.Services
         Task<ApiResponse<List<CommentDto>>> GetArticleComments(int id);
         Task<ApiResponse<List<CommentDto>>> GetMatchComments(int id);
         Task<ApiResponse<ArticleDto>> GetArticle(int id);
+        Task<ApiResponse<List<LogDto>>> GetRecentLogs();
     }
 
     public class DiscussionService : IDiscussionService
@@ -89,6 +90,23 @@ namespace VolleyballBlazor.Infrastructure.Client.Services
         {
             var response = await _httpClient.GetAsync($"api/discussion/matchcomments/{id}");
             return new ApiResponse<List<CommentDto>>(response);
+        }
+
+
+        // get logs
+        public async Task<ApiResponse<List<LogDto>>> GetRecentLogs()
+        {
+            try
+            {
+                using (var response = await _httpClient.GetAsync($"api/discussion/logs"))
+                {
+                    return new ApiResponse<List<LogDto>>(response);
+                }
+            }
+            catch
+            {
+                return ApiResponse<List<LogDto>>.NetworkErrorResponse;
+            }
         }
     }
 }

@@ -52,10 +52,10 @@
                     <InputText style="max-width:110px" @bind-Value="ManagedTeam.Captain.FirstName" disabled />
                 </td>
                 <td><InputText style="max-width:110px" @bind-Value="ManagedTeam.Captain.LastName" disabled /></td>
-                <td><InputNumber style="max-width:60px" @bind-Value="ManagedTeam.Captain.JerseyNumber" /></td>
-                <td><InputNumber style="max-width:60px" @bind-Value="ManagedTeam.Captain.Height" /></td>
+                <td><InputNumber style="max-width:55px" @bind-Value="ManagedTeam.Captain.JerseyNumber" /></td>
+                <td><InputNumber style="max-width:55px" @bind-Value="ManagedTeam.Captain.Height" /></td>
                 <td>
-                    <InputSelect @bind-Value="ManagedTeam.Captain.PositionId">
+                    <InputSelect style="max-width:100px" @bind-Value="ManagedTeam.Captain.PositionId">
                         @foreach (var position in Positions)
                         {
                             <option value="@position.Id">@position.Name</option>
@@ -87,10 +87,10 @@
                         <p class="text-danger"><ValidationMessage For="@(() => player.FirstName)" /></p>
                     </td>
                     <td><InputText style="max-width:110px" @bind-Value="player.LastName" disabled /></td>
-                    <td><InputNumber style="max-width:60px" @bind-Value="player.JerseyNumber" /></td>
-                    <td><InputNumber style="max-width:60px" @bind-Value="player.Height" /></td>
+                    <td><InputNumber style="max-width:55px" @bind-Value="player.JerseyNumber" /></td>
+                    <td><InputNumber style="max-width:55px" @bind-Value="player.Height" /></td>
                     <td>
-                        <InputSelect @bind-Value="player.PositionId">
+                        <InputSelect  style="max-width:100px" @bind-Value="player.PositionId">
                             @foreach (var position in Positions)
                             {
                                 <option value="@position.Id">@position.Name</option>
@@ -132,11 +132,11 @@
                         <InputText style="max-width:110px" @bind-Value="player.FirstName" />
                         <p class="text-danger"><ValidationMessage For="@(() => player.FirstName)" /></p>
                     </td>
-                    <td><InputText style="max-width:120px" @bind-Value="player.LastName" /></td>
-                    <td><InputNumber style="max-width:60px" @bind-Value="player.JerseyNumber" /></td>
-                    <td><InputNumber style="max-width:60px" @bind-Value="player.Height" /></td>
+                    <td><InputText style="max-width:110px" @bind-Value="player.LastName" /></td>
+                    <td><InputNumber style="max-width:55px" @bind-Value="player.JerseyNumber" /></td>
+                    <td><InputNumber style="max-width:55px" @bind-Value="player.Height" /></td>
                     <td>
-                        <InputSelect @bind-Value="player.PositionId">
+                        <InputSelect style="max-width:100px" @bind-Value="player.PositionId">
                             @foreach (var position in Positions)
                             {
                                 <option value="@position.Id">@position.Name</option>
@@ -152,7 +152,7 @@
                         </InputRadioGroup>
                     </td>
                     <td>
-                        <InputText style="max-width:120px" @bind-Value="player.Email" />
+                        <InputText style="max-width:110px" @bind-Value="player.Email" />
                         <p class="text-danger"><ValidationMessage For="@(() => player.Email)" /></p>
                     </td>
                     <td>
@@ -372,7 +372,6 @@ else
         IsLoading = false;
         if (response.Success)
         {
-            //Console.WriteLine(ManagedTeam.Logo.Length);
             navigationManager.NavigateTo("/ManageTeam", forceLoad: true);
         }
         else

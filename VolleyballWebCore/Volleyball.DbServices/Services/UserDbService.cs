@@ -148,23 +148,21 @@ namespace VolleyballDomain.Shared.Services
 
             var user = credentials.User;
 
-            user.AdditionalEmail = updateUserDto.AdditionalEmail ?? user.AdditionalEmail;
-            user.AttackRange = updateUserDto.AttackRange ?? user.AttackRange;
-            user.BirthYear = updateUserDto.BirthYear ?? user.BirthYear;
-            user.City = updateUserDto.City ?? user.City;
-            user.BlockRange = updateUserDto.BlockRange ?? user.BlockRange;
+            user.AttackRange = updateUserDto.AttackRange;
+            user.BirthYear = updateUserDto.BirthYear;
+            user.City = updateUserDto.City;
+            user.BlockRange = updateUserDto.BlockRange;
             user.FirstName = updateUserDto.FirstName ?? user.FirstName;
-            user.Gender = updateUserDto.Gender ?? user.Gender;
-            user.Height = updateUserDto.Height ?? user.Height;
-            user.Weight = updateUserDto.Weight ?? user.Weight;
-            user.JerseyNumber = updateUserDto.JerseyNumber ?? user.JerseyNumber;
-            user.VolleyballIdol = updateUserDto.VolleyballIdol ?? user.VolleyballIdol;
-            user.Hobby = updateUserDto.Hobby ?? user.Hobby;
-            user.Photo = updateUserDto.Photo ?? user.Photo;
-            user.Phone = updateUserDto.Phone ?? user.Phone;
+            user.Gender = updateUserDto.Gender;
+            user.Height = (byte?)(updateUserDto.Height);
+            user.Weight = (byte?)(updateUserDto.Weight);
+            user.JerseyNumber = (byte?)(updateUserDto.JerseyNumber);
+            user.VolleyballIdol = updateUserDto.VolleyballIdol;
+            user.Hobby = updateUserDto.Hobby;
+            user.Photo = updateUserDto.Photo;
             user.LastName = updateUserDto.LastName ?? user.LastName;
-            user.PositionId = updateUserDto.PositionId ?? user.PositionId;
-            user.PersonalInfo = updateUserDto.PersonalInfo ?? user.PersonalInfo;
+            user.PositionId = updateUserDto.PositionId;
+            user.PersonalInfo = updateUserDto.PersonalInfo;
 
             await _context.SaveChangesAsync();
 
@@ -222,6 +220,21 @@ namespace VolleyballDomain.Shared.Services
             response.Data = player;
 
             return response;
+        }
+
+        // Get user profile by email
+        public async Task<ServiceResponse<UserProfileDto>> GetUserProfileByEmailAsync(string email)
+        {
+            int userId = (await _context.Credentials.FirstOrDefaultAsync(c => c.Email == email))?.UserId ?? 0;
+            if (userId == 0)
+            {
+                return new ServiceResponse<UserProfileDto>()
+                {
+                    Success = false,
+                    Message = "Nie znaleziono użytkownika"
+                };
+            }
+            return await GetUserProfileAsync(userId);
         }
 
 

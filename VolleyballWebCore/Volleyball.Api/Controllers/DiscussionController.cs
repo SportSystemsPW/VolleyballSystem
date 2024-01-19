@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Volleyball.DbServices.Services;
 using Volleyball.DTO.Discussion;
+using VolleyballDomain.Shared.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -100,6 +101,15 @@ namespace Volleyball.Api.Controllers
                 return Unauthorized();
             }
             var result = await discussionDbService.AddMatchComment(comment, user);
+            return Ok(result);
+        }
+
+
+        [HttpGet]
+        [Route("logs")]
+        public async Task<IActionResult> GetLogs([FromQuery] int amount = 10)
+        {
+            var result = await discussionDbService.GetRecentLogs(amount);
             return Ok(result);
         }
 

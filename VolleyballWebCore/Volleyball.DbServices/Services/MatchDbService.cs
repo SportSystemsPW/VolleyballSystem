@@ -40,9 +40,11 @@ namespace Volleyball.DbServices.Services
             var response = new ServiceResponse<MatchDto>();
             var match = await _context.Matches
                 .Include(m => m.League)
-                .Include(m => m.GuestTeam)
-                .Include(m => m.HomeTeam)
+                .Include(m => m.GuestTeam).ThenInclude(t => t.TeamPlayers).ThenInclude(tp => tp.Player)
+                .Include(m => m.HomeTeam).ThenInclude(t => t.TeamPlayers).ThenInclude(tp => tp.Player)
                 .Include(m => m.Mvp)
+                .Include(m => m.Round)
+                .Include(m => m.Venue)
                 .Include(m => m.Referee)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -89,6 +91,8 @@ namespace Volleyball.DbServices.Services
             var matches = (await _context.Matches
                 .Include(m => m.League)
                 .Include(m => m.HomeTeam)
+                .Include(m => m.GuestTeam)
+                .Include(m => m.Referee).ThenInclude(r => r.Position)
                 .Include(m => m.Mvp)
                 .Include(m => m.Round)
                 .Where(m => m.LeagueId == leagueId && m.RoundId == roundId && m.Round.SeasonId == seasonId)
@@ -126,7 +130,7 @@ namespace Volleyball.DbServices.Services
             matchToUpdate.RefereeId = match.RefereeId;
             matchToUpdate.Sector = (byte)match.Sector;
             matchToUpdate.Schedule = match.Schedule;
-            matchToUpdate.VenueId = match.VenueId;
+            matchToUpdate.VenueId = match.VenueId ?? matchToUpdate.VenueId;
             matchToUpdate.UnknownRefereeName = match.UnknownRefereeName;
             matchToUpdate.MatchInfo = match.MatchInfo;
             matchToUpdate.Set1Team1Score = (byte?)match.Set1Team1Score;
@@ -185,6 +189,40 @@ namespace Volleyball.DbServices.Services
 
             response.Data = referees.Select(r => (PlayerSummaryDto)r!).ToList();
 
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<MatchSummaryDto>>> GetMatches(int leagueId, int seasonId, int roundId)
+        {
+            var response = new ServiceResponse<List<MatchSummaryDto>>();
+            var matches = await _context.Matches
+                .Include(m => m.HomeTeam)
+                .Include(m => m.GuestTeam)
+                .Include(m => m.Mvp)
+                .Include(m => m.Referee)
+                .Include(m => m.Venue)
+                .Include(m => m.Round)
+                .Where(m => m.Round.SeasonId == seasonId && m.LeagueId == leagueId && m.RoundId == roundId)
+                .ToListAsync();
+
+            response.Data = matches.Select(m => (MatchSummaryDto)m).ToList();
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<MatchSummaryDto>>> GetMatches(int seasonId, int teamId)
+        {
+            var response = new ServiceResponse<List<MatchSummaryDto>>();
+            var matches = await _context.Matches
+                .Include(m => m.HomeTeam)
+                .Include(m => m.GuestTeam)
+                .Include(m => m.Mvp)
+                .Include(m => m.Referee)
+                .Include(m => m.Venue)
+                .Include(m => m.Round)
+                .Where(m => m.Round.SeasonId == seasonId && (m.HomeTeamId == teamId || m.GuestTeamId == teamId))
+                .ToListAsync();
+
+            response.Data = matches.Select(m => (MatchSummaryDto)m).ToList();
             return response;
         }
     }

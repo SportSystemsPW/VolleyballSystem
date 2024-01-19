@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Volleyball.DTO.Discussion;
 using Volleyball.DTO.Teams;
 using Volleyball.DTO.Users;
 using VolleyballDomain.Shared;
@@ -21,6 +22,8 @@ namespace VolleyballBlazor.Infrastructure.Client.Services
         Task<ApiResponse<PlayerSummaryDto>> GetUserSummary();
         Task<ApiResponse<UserProfileDto>> GetUserProfile(int userId);
         Task<ApiResponse<bool>> IsTeamCaptain();
+        Task<ApiResponse<UserProfileDto>> GetCurrentUserProfile();
+        Task<ApiResponse> UpdateUser(UpdateUserDto userProfileDto);
     }
 
     public class UserService : IUserService
@@ -119,6 +122,36 @@ namespace VolleyballBlazor.Infrastructure.Client.Services
             catch
             {
                 return ApiResponse<bool>.NetworkErrorResponse;
+            }
+        }
+
+        // get current user profile
+        public async Task<ApiResponse<UserProfileDto>> GetCurrentUserProfile()
+        {
+            try
+            {
+                using (var response = await _httpClient.GetAsync($"api/User/myprofile"))
+                {
+                    return new ApiResponse<UserProfileDto>(response);
+                }
+            }
+            catch
+            {
+                return ApiResponse<UserProfileDto>.NetworkErrorResponse;
+            }
+        }
+
+        // update user profile
+        public async Task<ApiResponse> UpdateUser(UpdateUserDto userProfileDto)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync("api/user/updateuserdata", userProfileDto);
+                return new ApiResponse(response);
+            }
+            catch (HttpRequestException)
+            {
+                return ApiResponse.NetworkErrorResponse;
             }
         }
 

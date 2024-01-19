@@ -30,7 +30,7 @@ namespace Volleyball.DbServices.Services
 
             try
             {
-                response.Data = (await context.Articles.Include(a => a.Author).ToListAsync()).Select(a => (ArticleDto)a).ToList();
+                response.Data = (await context.Articles.Include(a => a.Author).OrderByDescending(a => a.CreationDate).ToListAsync()).Select(a => (ArticleDto)a).ToList();
             }
             catch (Exception e)
             {

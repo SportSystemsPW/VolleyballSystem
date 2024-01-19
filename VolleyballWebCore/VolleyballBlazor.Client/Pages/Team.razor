@@ -1,6 +1,7 @@
 ﻿@page "/team/{Id:int}"
 @inject ITeamService teamService
 @inject IDiscussionService discussionService
+@inject IMatchService matchService
 
 <div class="text-center">
     @if (TeamData != null)
@@ -129,7 +130,6 @@
                         <th>Miejsce</th>
                         <th>Kolejka</th>
                         <th>Sędzia</th>
-                        <th>MVP</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -160,11 +160,6 @@
                                     <NavLink href=@{
                                  "/user-profile/" + game.Referee.Id
                                  }>@game.Referee.FirstName @game.Referee.LastName</NavLink>
-                                </td>
-                                <td>
-                                    <NavLink href=@{
-                                 "/user-profile/" + game.Mvp.Id
-                                 }>@game.Mvp.FirstName @game.Mvp.LastName</NavLink>
                                 </td>
                             </tr>
                         }
@@ -211,25 +206,30 @@
                     </div>
                 </ItemTemplate>
             </Pagination>
-            <div class="mb-4">
-                <EditForm Model="@commentModel" OnValidSubmit="HandleValidSubmit">
-                    <DataAnnotationsValidator />
-                    <div class="form-group">
-                        <label class="row-form-label" for="Comment">Dodaj komentarz:</label>
-                        <InputTextArea class="form-control" id="Comment" @bind-Value="commentModel.Content" />
-                        <ValidationMessage class="text-danger" For="@(() => commentModel.Content)" />
+
+            <AuthorizeView Context="authContext">
+                <Authorized>
+                    <div class="mb-4">
+                        <EditForm Model="@commentModel" OnValidSubmit="HandleValidSubmit">
+                            <DataAnnotationsValidator />
+                            <div class="form-group">
+                                <label class="row-form-label" for="Comment">Dodaj komentarz:</label>
+                                <InputTextArea class="form-control" id="Comment" @bind-Value="commentModel.Content" />
+                                <ValidationMessage class="text-danger" For="@(() => commentModel.Content)" />
+                            </div>
+                            <p class="text-danger">@NewCommentError</p>
+                            @if (SubmitLoading)
+                            {
+                                <LoadingIcon />
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary">Dodaj</button>
+                            }
+                        </EditForm>
                     </div>
-                    <p class="text-danger">@NewCommentError</p>
-                    @if (SubmitLoading)
-                    {
-                        <LoadingIcon />
-                    }
-                    else
-                    {
-                        <button type="submit" class="btn btn-primary">Dodaj</button>
-                    }
-                </EditForm>
-            </div>
+                </Authorized>
+            </AuthorizeView>
         </div>
     }
     else
@@ -268,7 +268,7 @@
 
     public NewCommentDto commentModel { get; set; } = new NewCommentDto();
 
-    public List<MatchDto>? Games { get; set; }
+    public List<MatchSummaryDto>? Games { get; set; }
 
     public bool SubmitLoading { get; set; } = false;
 
@@ -353,82 +353,13 @@
         UpdateSeason(seasonId);
     }
 
-    private void UpdateSeason(int id)
+    private async void UpdateSeason(int id)
     {
-        Console.WriteLine("UpdateSeason: " + id);
-        var leagueDto = new LeagueDto
-            {
-                Id = 1,
-                Name = "Sample League"
-            };
-
-        var userSummaryDto = new PlayerSummaryDto
-            {
-                Id = 101,
-                FirstName = "John",
-                LastName = "Doe",
-            };
-
-        var teamDto1 = new TeamDto
-            {
-                Id = 201,
-                Name = "Team A",
-                CreationDate = DateTime.Now,
-                Logo = new byte[] { 1, 2, 3 },
-            };
-
-        var teamDto2 = new TeamDto
-            {
-                Id = 202,
-                Name = "Team B",
-                CreationDate = DateTime.Now,
-                Logo = new byte[] { 4, 5, 6 },
-            };
-
-
-        var matchDto = new MatchDto
-            {
-                Id = 1,
-                Schedule = DateTime.Now.AddHours(24),
-                CreationDate = DateTime.Now,
-                VenueName = "Sample Venue",
-                League = leagueDto,
-                Sector = 2,
-                Team1Score = 3,
-                Team2Score = 2,
-                RoundName = "Kolejka 9",
-                Referee = userSummaryDto,
-                MatchInfo = "Sample match info",
-                Mvp = userSummaryDto,
-                Set1Team1Score = 25,
-                Set2Team1Score = 23,
-                Set3Team1Score = 25,
-                Set4Team1Score = 22,
-                Set5Team1Score = 15,
-                Set1Team2Score = 21,
-                Set2Team2Score = 25,
-                Set3Team2Score = 23,
-                Set4Team2Score = 25,
-                Set5Team2Score = 13,
-                MatchLeague = "Sample Match League",
-                HomeTeam = teamDto1,
-                GuestTeam = teamDto2,
-            };
-        if (id == 1)
+        var gamesResult = await matchService.GetMatches(id, Id);
+        if (gamesResult.Success)
         {
-            Games = new List<MatchDto>
-                {
-                    matchDto, matchDto, matchDto
-                };
+            Games = gamesResult.Data!;
         }
-        else
-        {
-            Games = new List<MatchDto>
-                {
-                    matchDto, matchDto, matchDto, matchDto, matchDto
-                };
-        }
-
     }
 
     public async Task<List<SeasonDto>> GetSeasons()

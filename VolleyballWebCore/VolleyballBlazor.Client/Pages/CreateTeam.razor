@@ -48,14 +48,14 @@
                 <tr>
                     <td>@(++i)</td>
                     <td>
-                        <InputText style="max-width:130px" @bind-Value="player.FirstName" />
+                        <InputText style="max-width:120px" @bind-Value="player.FirstName" />
                         <p class="text-danger"><ValidationMessage For="@(() => player.FirstName)" /></p>
                     </td>
-                    <td><InputText style="max-width:130px" @bind-Value="player.LastName" /></td>
-                    <td><InputNumber style="max-width:60px" @bind-Value="player.JerseyNumber" /></td>
-                    <td><InputNumber style="max-width:60px" @bind-Value="player.Height" /></td>
+                    <td><InputText style="max-width:120px" @bind-Value="player.LastName" /></td>
+                    <td><InputNumber style="max-width:55px" @bind-Value="player.JerseyNumber" /></td>
+                    <td><InputNumber style="max-width:55px" @bind-Value="player.Height" /></td>
                     <td>
-                        <InputSelect @bind-Value="player.PositionId">
+                        <InputSelect style="max-width:100px" @bind-Value="player.PositionId">
                             @foreach (var position in Positions)
                             {
                                 <option value="@position.Id">@position.Name</option>
@@ -70,7 +70,7 @@
                             <label class="m-1">K </label>
                         </InputRadioGroup>
                     </td>
-                    <td><InputText style="max-width:130px" @bind-Value="player.Email" /></td>
+                    <td><InputText style="max-width:120px" @bind-Value="player.Email" /></td>
                     <td>
                         <button type="button" class="btn btn-danger" @onclick="() => NewTeam.Players.Remove(player)"><b>-</b></button>
                     </td>

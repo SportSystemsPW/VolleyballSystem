@@ -1,26 +1,67 @@
 ﻿@page "/createMatch"
 @inject IMatchOrganizerService matchOrganizerService
 @inject ITeamService teamService
+@inject NavigationManager NavigationManager
+@attribute [Authorize(Roles = "Admin, Arbiter")]
 
-<EditForm Model="NewMatch" OnValidSubmit="OnSubmit">
-    <DataAnnotationsValidator />
+<div class="d-flex flex-column justify-content-center">
+    <h1>Tworzenie meczu</h1>
 
-    <GenericForm ModelChanged="OnChange" TModel="NewMatchModel" Model="NewMatch" EditorClass="form-control">
-        <FieldTemplate Context="field">
-            <div class="form-group">
-                <label for="@field.EditorId">@field.DisplayName</label>
-                @field.EditorTemplate
-                <p class="text-danger">@field.FieldValidationTemplate</p>
+
+
+    @if (pageReady)
+    {
+        <div>
+            <EditForm Model="NewMatch" OnValidSubmit="OnSubmit">
+                <DataAnnotationsValidator />
+
+                <GenericForm ModelChanged="OnChange" TModel="NewMatchModel" Model="NewMatch" EditorClass="form-control">
+                    <FieldTemplate Context="field">
+                        <div class="form-group">
+                            <label for="@field.EditorId">@field.DisplayName</label>
+                            @field.EditorTemplate
+                            <p class="text-danger">@field.FieldValidationTemplate</p>
+                        </div>
+                    </FieldTemplate>
+
+
+                </GenericForm>
+
+                <div class="form-group d-flex flex-column align-items-center justify-content-center">
+
+                    @if (submitError != "")
+                    {
+                        <p class="text-danger" role="alert">
+                            @submitError
+                        </p>
+                    }
+
+                    @if (!submitLoading)
+                    {
+                        <button type="submit" class="btn btn-primary">Utwórz</button>
+                    }
+                    else
+                    {
+                        <LoadingIcon />
+                    }
+                </div>
+            </EditForm>
+        </div>
+    }
+    else
+    {
+        if (loadingError != "")
+        {
+            <div class="alert alert-danger" role="alert">
+                @loadingError
             </div>
-        </FieldTemplate>
-
-
-    </GenericForm>
-
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Utwórz</button>
-    </div>
-</EditForm>
+        }
+        else
+        {
+            <LoadingIcon />
+        }
+    }
+</div>
 @code {
     public NewMatchModel NewMatch { get; set; } = new NewMatchModel();
     private List<RoundDto> AllRounds { get; set; } = new List<RoundDto>();
@@ -28,6 +69,13 @@
 
     private int previousLeagueId = 0;
     private int previousSeasonId = 0;
+
+    private bool pageReady = false;
+    private string loadingError = "";
+
+    private bool submitLoading = false;
+    private string submitError = "";
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -38,11 +86,21 @@
             NewMatch.SeasonId = NewMatch.SeasonList.First().Id;
             previousSeasonId = NewMatch.SeasonId;
         }
+        else
+        {
+            loadingError = seasonsResult.Message;
+            return;
+        }
 
         var venuesResult = (await matchOrganizerService.GetVenues());
         if (venuesResult.Success)
         {
             NewMatch.VenueList = venuesResult.Data!;
+        }
+        else
+        {
+            loadingError = seasonsResult.Message;
+            return;
         }
 
         var roundsResult = await matchOrganizerService.GetRounds();
@@ -51,7 +109,11 @@
             AllRounds = roundsResult.Data!;
             NewMatch.RoundList = AllRounds.Where(r => r.SeasonId == NewMatch.SeasonId).ToList();
         }
-
+        else
+        {
+            loadingError = seasonsResult.Message;
+            return;
+        }
         var leaguesResult = await matchOrganizerService.GetLeagues();
         if (leaguesResult.Success)
         {
@@ -59,25 +121,52 @@
             NewMatch.LeagueId = NewMatch.LeagueList.First().Id;
             previousLeagueId = NewMatch.LeagueId;
         }
-
+        else
+        {
+            loadingError = seasonsResult.Message;
+            return;
+        }
         var refereesResult = await matchOrganizerService.GetReferees();
         if (refereesResult.Success)
         {
             NewMatch.RefereeList = refereesResult.Data!;
         }
-
+        else
+        {
+            loadingError = seasonsResult.Message;
+            return;
+        }
         var teamsResult = await teamService.GetAllTeams();
         if (teamsResult.Success)
         {
             AllTeams = teamsResult.Data!;
             NewMatch.GuestTeamList = AllTeams.Where(t => t.LeagueId == NewMatch.LeagueId).ToList();
             NewMatch.HomeTeamList = AllTeams.Where(t => t.LeagueId == NewMatch.LeagueId).ToList();
+            NewMatch.HomeTeamId = NewMatch.HomeTeamList.FirstOrDefault()?.Id ?? 0;
+            NewMatch.GuestTeamId = NewMatch.GuestTeamList.ElementAtOrDefault(1)?.Id ?? 0;
         }
+        else
+        {
+            loadingError = seasonsResult.Message;
+            return;
+        }
+        pageReady = true;
     }
 
     public async Task OnSubmit()
     {
+        submitLoading = true;
+        var submitResult = await matchOrganizerService.CreateMatch(NewMatch);
 
+        if (submitResult.Success)
+        {
+            NavigationManager.NavigateTo("/matches");
+        }
+        else
+        {
+            submitError = submitResult.Message;
+        }
+        submitLoading = false;
     }
 
     private void OnChange(NewMatchModel model)
@@ -87,6 +176,9 @@
             previousLeagueId = model.LeagueId;
             NewMatch.GuestTeamList = AllTeams.Where(t => t.LeagueId == model.LeagueId).ToList();
             NewMatch.HomeTeamList = AllTeams.Where(t => t.LeagueId == model.LeagueId).ToList();
+            NewMatch.HomeTeamId = NewMatch.HomeTeamList.FirstOrDefault()?.Id ?? 0;
+            NewMatch.GuestTeamId = NewMatch.GuestTeamList.FirstOrDefault()?.Id ?? 0;
+
         }
 
         if (previousSeasonId != model.SeasonId)

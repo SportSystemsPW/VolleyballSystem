@@ -8,9 +8,12 @@
                 <div class="card-body">
                     <h6 class="card-title">Jesteś zalogowany jako:</h6>
 
-                    <NavLink class="card-link text-secondary" href=@{
+                    <h5><NavLink class="card-link text-secondary" href=@{
                              "/user-profile/" + playerSummary.Id
-                             }>@playerSummary.FirstName @playerSummary.LastName</NavLink>
+                                 }>@playerSummary.FirstName @playerSummary.LastName</NavLink>
+                    </h5>
+
+                    <NavLink class="card-link text-secondary" href="/editprofile">Edycja profilu</NavLink>
                 </div>
             </div>
 
