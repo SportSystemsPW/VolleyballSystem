@@ -23,7 +23,9 @@ public partial class VolleyballContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder builder)
     {
         // development
-        string connectionString = "Data Source=.;Initial Catalog=VolleyballDatabase;Integrated Security=True;TrustServerCertificate=True;";
+        //string connectionString = "Data Source=.;Initial Catalog=VolleyballDatabase1;Integrated Security=True;TrustServerCertificate=True;";
+        // production
+        string connectionString = "Data Source=mssql4.webio.pl,2401;Initial Catalog=tomasz1_VolleyballDatabase;Persist Security Info=True;User ID=tomasz1_student;Password=sdikjf#o3D;TrustServerCertificate=true";
         builder.UseSqlServer(connectionString);
     }
 

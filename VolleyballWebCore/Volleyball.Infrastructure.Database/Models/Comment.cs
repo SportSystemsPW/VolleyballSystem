@@ -7,6 +7,7 @@ namespace Volleyball.Infrastructure.Database.Models
     {
         public int Id { get; set; }
 
+        // location id (article, user, team, etc.)
         public int ContentId { get; set; }
 
         public int AuthorId { get; set; }
