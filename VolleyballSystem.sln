@@ -29,6 +29,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TreningOrganizer.MAUI", "Vo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Volleyball.Infrastructure.Database", "VolleyballWebCore\Volleyball.Infrastructure.Database\Volleyball.Infrastructure.Database.csproj", "{031320A9-E42A-4EAD-A6C6-0FEAAF5045BB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArbiterClient.Blazor", "VolleyballArbiter\ArbiterClient.Blazor\ArbiterClient.Blazor.csproj", "{34F220C8-005D-4899-A98B-DB789A949B05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arbiter.Contracts", "VolleyballArbiter\Arbiter.Contracts\Arbiter.Contracts.csproj", "{96D7DD00-5E35-4A78-99B9-86B399E88D23}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +83,14 @@ Global
 		{031320A9-E42A-4EAD-A6C6-0FEAAF5045BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{031320A9-E42A-4EAD-A6C6-0FEAAF5045BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{031320A9-E42A-4EAD-A6C6-0FEAAF5045BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34F220C8-005D-4899-A98B-DB789A949B05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34F220C8-005D-4899-A98B-DB789A949B05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34F220C8-005D-4899-A98B-DB789A949B05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34F220C8-005D-4899-A98B-DB789A949B05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96D7DD00-5E35-4A78-99B9-86B399E88D23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96D7DD00-5E35-4A78-99B9-86B399E88D23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96D7DD00-5E35-4A78-99B9-86B399E88D23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96D7DD00-5E35-4A78-99B9-86B399E88D23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +106,8 @@ Global
 		{48077658-3AF1-4744-A185-98C385678140} = {C2674A0E-31BC-4C9F-9ABC-B1A0122E7683}
 		{0B0D8D80-9919-488A-96BB-3AD7193CEB69} = {C2674A0E-31BC-4C9F-9ABC-B1A0122E7683}
 		{031320A9-E42A-4EAD-A6C6-0FEAAF5045BB} = {B727C8AD-AC19-4076-8A33-3A000FCE9919}
+		{34F220C8-005D-4899-A98B-DB789A949B05} = {83EA714D-E653-43B4-BD76-52E9792D9F4D}
+		{96D7DD00-5E35-4A78-99B9-86B399E88D23} = {83EA714D-E653-43B4-BD76-52E9792D9F4D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8DF48D3A-2813-4D8C-AB1B-52A5220713AF}

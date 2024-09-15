@@ -1,0 +1,146 @@
+﻿@page "/match/{matchId:int}"
+
+@using ArbiterClient.Blazor.VolleballMatch.SpeechRecognition
+@using ArbiterClient.Blazor.Components
+@using ArbiterClient.Blazor.Match
+@using ArbiterClient.Blazor.VolleballMatch;
+
+@inject IMatchRepository matchRepository
+@inject ICommandMatcher commandMatcher
+
+<PageTitle>Mecz</PageTitle>
+
+<div class="grid row-gap-3">
+    <div class="container text-center p-3 border rounded shadow-lg">
+        <div class="row align-items-center">
+            <div class="col-3" @onclick="PointTeamA">
+                <h5>Drużyna A</h5>
+                <a class="img-fluid team-logo mb-2"><RadzenIcon Icon="star" style="font-size: 50px" /></a>
+                <h5 class="fw-bold">@State.TeamAName</h5>
+            </div>
+
+            <div class="col-1">
+                @if (@State.TeamAHasBall)
+                {
+                    <RadzenIcon Icon="sports_volleyball" Style="font-size: 60px;" />
+                }
+            </div>
+
+            <div class="col-4">
+                <ArbiterTimer />
+                <div class="d-flex justify-content-center align-items-center score-display">
+                    <span class="display-4 fw-bold">@State.TeamAScore</span>
+                    <span class="mx-2 display-4">:</span>
+                    <span class="display-4 fw-bold">@State.TeamBScore</span>
+                </div>
+                <div class="set-info mt-2">
+                    <span class="d-block text-danger fw-bold">SET @State.CurrentSet</span>
+                    <span class="d-block">@State.TeamASetScore - @State.TeamBSetScore</span>
+                </div>
+            </div>
+
+            <div class="col-1">
+                @if (@State.TeamBHasBall)
+                {
+                    <RadzenIcon Icon="sports_volleyball" Style="font-size: 60px;" />
+                }
+            </div>
+
+            <div class="col-3" @onclick="PointTeamB">
+                <h5>Drużyna B</h5>
+                <a class="img-fluid team-logo mb-2"><RadzenIcon Icon="star" style="font-size: 50px" /></a>
+                <h5 class="fw-bold">@State.TeamBName</h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="h-100 d-flex align-items-center justify-content-center">
+           <RadzenSpeechToTextButton Change="OnSpeechCaptured" />
+    </div>
+</div>
+
+<style>
+    .team-name {
+        font-weight: 600;
+    }
+
+    .score, .sets {
+        font-size: 1.1rem;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public int MatchId { get; set; }
+
+    public MatchState State { get; private set; }
+
+    public string Winner { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        State = MatchState.FromDto(await matchRepository.GetMatch(MatchId));
+        State.Start();
+    }
+
+    private void PointTeamA(MouseEventArgs e)
+    {
+        CheckResult(State.PointTeamA());
+    }
+
+    private void PointTeamB(MouseEventArgs e)
+    {
+        CheckResult(State.PointTeamB());
+    }
+
+    private void CheckResult(MatchResult result)
+    {
+        if (result.MatchEnded)
+        {
+            Winner = result.WinnerName;
+            State.End();
+        }
+    }
+
+    void OnSpeechCaptured(string text)
+    {
+        Console.WriteLine($"Speech Captured: {text}");
+
+        var result = commandMatcher.Match(text);
+
+        if (!result.Matched)
+        {
+            return;
+        }
+
+        if (result.CommandType.Equals(CommandType.PointA))
+        {
+            PointTeamA(default);
+        }
+
+        if (result.CommandType.Equals(CommandType.PointB))
+        {
+            PointTeamB(default);
+        }
+
+        if (result.CommandType.Equals(CommandType.BallA))
+        {
+            State.BallA();
+        }
+
+        if (result.CommandType.Equals(CommandType.BallB))
+        {
+            State.BallB();
+        }
+
+        if (result.CommandType.Equals(CommandType.UndoPointA))
+        {
+            State.PointTeamA(-1);
+        }
+
+        if (result.CommandType.Equals(CommandType.UndoPointB))
+        {
+            State.PointTeamB(-1);
+        }
+    }
+}

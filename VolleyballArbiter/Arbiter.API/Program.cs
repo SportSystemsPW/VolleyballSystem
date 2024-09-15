@@ -2,20 +2,33 @@ using Arbiter.API.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
 builder.Services.AddOptions<AzureSpeechServiceOptions>()
     .Bind(builder.Configuration.GetSection("azureSpeechService"))
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
-var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy
+            .WithOrigins("http://localhost:5299")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+        });
+});
+
+builder.Services.AddControllers();
+builder.Services.AddMemoryCache();
+
+var app = builder.Build();
 
 app.UseHttpsRedirection();
 
+app.UseCors();
 app.UseAuthorization();
 
 app.MapControllers();
