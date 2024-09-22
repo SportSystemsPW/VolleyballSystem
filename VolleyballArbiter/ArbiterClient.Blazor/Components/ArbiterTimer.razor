@@ -1,5 +1,6 @@
 ﻿@using System.Timers;
 @using System;
+@inherits ComponentBase;
 
 <p class="text-muted mb-1">@DateTime.Now</p>
 
@@ -10,7 +11,7 @@
     {
         _timer.Enabled = true;
         _timer.Interval = 1000;
-        _timer.Elapsed += async (object? sender, ElapsedEventArgs e) =>
+        _timer.Elapsed += async (object sender, ElapsedEventArgs e) =>
         {
             await InvokeAsync(StateHasChanged);
         };

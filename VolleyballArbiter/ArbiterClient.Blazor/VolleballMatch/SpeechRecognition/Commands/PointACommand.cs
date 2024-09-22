@@ -6,6 +6,6 @@ public class PointACommand : ICommand
 
     public bool IsMatch(IEnumerable<string> splittedText)
     {
-        return splittedText.Contains("punkt", StringComparer.OrdinalIgnoreCase) && splittedText.Contains("a", StringComparer.OrdinalIgnoreCase);
+        return splittedText.ContainsAll("punkt", "a");
     }
 }

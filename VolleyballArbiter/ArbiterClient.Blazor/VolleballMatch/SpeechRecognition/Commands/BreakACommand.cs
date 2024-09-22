@@ -1,11 +1,11 @@
 ﻿namespace ArbiterClient.Blazor.VolleballMatch.SpeechRecognition.Commands;
 
-public class BallBCommand : ICommand
+public class BreakACommand : ICommand
 {
-    public CommandType Type => CommandType.BallB;
+    public CommandType Type => CommandType.BreakA;
 
     public bool IsMatch(IEnumerable<string> splittedText)
     {
-        return splittedText.ContainsAll("piłka", "b");
+        return splittedText.ContainsAll("przerwa", "a");
     }
 }

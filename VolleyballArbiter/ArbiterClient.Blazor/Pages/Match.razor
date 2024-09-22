@@ -1,14 +1,21 @@
 ﻿@page "/match/{matchId:int}"
-
 @using ArbiterClient.Blazor.VolleballMatch.SpeechRecognition
 @using ArbiterClient.Blazor.Components
 @using ArbiterClient.Blazor.Match
-@using ArbiterClient.Blazor.VolleballMatch;
-
+@using ArbiterClient.Blazor.VolleballMatch
+@using static ArbiterClient.Blazor.Components.SetsResult
 @inject IMatchRepository matchRepository
 @inject ICommandMatcher commandMatcher
 
 <PageTitle>Mecz</PageTitle>
+
+@if (!string.IsNullOrEmpty(@alertText))
+{
+   <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter">
+    @alertText
+</RadzenAlert> 
+}
+
 
 <div class="grid row-gap-3">
     <div class="container text-center p-3 border rounded shadow-lg">
@@ -54,9 +61,13 @@
         </div>
     </div>
 
-    <div class="h-100 d-flex align-items-center justify-content-center">
-           <RadzenSpeechToTextButton Change="OnSpeechCaptured" />
+    <div class="container mt-4">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <RadzenSpeechToTextButton Change="OnSpeechCaptured" />
+        </div>
     </div>
+
+    <SetsResult @ref="setsResult" TeamScores=@teamScores />
 </div>
 
 <style>
@@ -77,6 +88,12 @@
 
     public string Winner { get; set; }
 
+    public IList<TeamScoreEntry> teamScores => State?.TeamScores;
+
+    private SetsResult setsResult;
+
+    private string alertText;
+
     protected override async Task OnInitializedAsync()
     {
         State = MatchState.FromDto(await matchRepository.GetMatch(MatchId));
@@ -86,11 +103,13 @@
     private void PointTeamA(MouseEventArgs e)
     {
         CheckResult(State.PointTeamA());
+        setsResult.UpdateScore();
     }
 
     private void PointTeamB(MouseEventArgs e)
     {
         CheckResult(State.PointTeamB());
+        setsResult.UpdateScore();
     }
 
     private void CheckResult(MatchResult result)
@@ -142,5 +161,7 @@
         {
             State.PointTeamB(-1);
         }
+
+        setsResult.UpdateScore();
     }
 }

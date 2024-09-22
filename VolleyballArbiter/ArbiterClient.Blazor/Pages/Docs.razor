@@ -1,0 +1,56 @@
+﻿@page "/"
+
+@inject NavigationManager NavigationManager
+
+<RadzenSteps Change=@OnChange AllowStepSelect=true NextText="Dalej" PreviousText="Wstecz">
+    <Steps>
+        <RadzenStepsItem Text="A">
+            <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">Treść A</RadzenText>
+        </RadzenStepsItem>
+
+        <RadzenStepsItem Text="B">
+            <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">Treść B</RadzenText>
+        </RadzenStepsItem>
+
+        <RadzenStepsItem Text="C">
+            <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H3" class="rz-my-6">Treść C</RadzenText>
+        </RadzenStepsItem>
+
+
+    </Steps>
+</RadzenSteps>
+
+<div class="rz-m-12">
+    <RadzenProgressBar ShowValue=false ProgressBarStyle="ProgressBarStyle.Primary" Value=@Progress />
+</div>
+
+@code {
+    public int StepsCount { get; set; } = 3;
+    public int CurrentStep { get; set; } = 1;
+    public double Progress { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        Progress = CalculateProgress();
+    }
+
+    void OnChange(int index)
+    {
+        CurrentStep = index + 1;
+        Progress = CalculateProgress();
+
+        if(index == (StepsCount - 1))
+        {
+            NavigationManager.NavigateTo("match/1");
+        }
+    }
+
+    private int CalculateProgress()
+    {
+        if (StepsCount == 0) return 0;
+
+        int progress = (CurrentStep * 100) / StepsCount;
+        return Math.Clamp(progress, 0, 100);
+    }
+}

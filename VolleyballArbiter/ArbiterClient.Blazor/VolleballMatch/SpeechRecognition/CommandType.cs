@@ -7,13 +7,14 @@ public class CommandType
     public static readonly CommandType PointA = new("PointA");
     public static readonly CommandType PointB = new("PointB");
 
-    public static readonly CommandType BallA = new("BallA");
-    public static readonly CommandType BallB = new("BallB");
-
     public static readonly CommandType UndoPointA = new("UndoPointA");
     public static readonly CommandType UndoPointB = new("UndoPointB");
 
-    public static readonly CommandType ChangesSides = new("ChangesSides");
+    public static readonly CommandType BallA = new("BallA");
+    public static readonly CommandType BallB = new("BallB");
+
+    public static readonly CommandType BreakA = new("BreakA");
+    public static readonly CommandType BreakB = new("BreakB");
 
     private CommandType(string name)
     {
@@ -24,7 +25,7 @@ public class CommandType
 
     public override string ToString() => Name;
 
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         if (obj is not CommandType commandType)
         {

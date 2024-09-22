@@ -11,17 +11,20 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddRadzenComponents();
-builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<IMatchRepository, MockMatchRepository>();
 builder.Services.AddScoped<ICommandMatcher>(_ => new CommandMatcher([
     new UndoPointACommand(),
     new UndoPointBCommand(),
     new PointACommand(),
     new PointBCommand(),
     new BallACommand(),
-    new BallBCommand()
+    new BallBCommand(),
+    new BreakACommand(),
+    new BreakBCommand()
 ]));
 
-builder.Services.AddHttpClient("api", client => { client.BaseAddress = new Uri("http://localhost:5218"); });
+builder.Services.AddHttpClient("arbiter-api", client => { client.BaseAddress = new Uri("http://localhost:5218"); });
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 await builder.Build().RunAsync();

@@ -6,8 +6,6 @@ public class UndoPointBCommand : ICommand
 
     public bool IsMatch(IEnumerable<string> splittedText)
     {
-        return splittedText.Contains("cofnij", StringComparer.OrdinalIgnoreCase)
-            && splittedText.Contains("punkt", StringComparer.OrdinalIgnoreCase)
-               && splittedText.Contains("b", StringComparer.OrdinalIgnoreCase);
+        return splittedText.ContainsAll("cofnij", "punkt", "b");
     }
 }

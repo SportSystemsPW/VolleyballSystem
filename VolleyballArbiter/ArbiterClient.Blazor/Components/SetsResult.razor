@@ -1,0 +1,47 @@
+﻿@using System.Timers;
+@using System;
+@inherits ComponentBase;
+
+@using Radzen
+
+<div class="container mt-4">
+    <RadzenDataGrid @ref="grid" Data="@TeamScores" TItem="TeamScoreEntry" ShowPaging="false" ShowColumnHeaders="true" 
+        AllowAlternatingRows="false">
+        <Columns>
+            <RadzenDataGridColumn TItem="TeamScoreEntry" Property="TeamName" Title="Nazwa drużyny" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="TeamScoreEntry" Property="SetsScore" Title="Wynik w setach" TextAlign="TextAlign.Center">
+                  <Template Context="data">
+                    <span style="font-weight: bold;">@data.SetsScore</span>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TeamScoreEntry" Property="Set1Score" Title="SET 1" TextAlign="TextAlign.Center"/>
+            <RadzenDataGridColumn TItem="TeamScoreEntry" Property="Set2Score" Title="SET 2" TextAlign="TextAlign.Center"/>
+            <RadzenDataGridColumn TItem="TeamScoreEntry" Property="Set3Score" Title="SET 3" TextAlign="TextAlign.Center"/>
+            <RadzenDataGridColumn TItem="TeamScoreEntry" Property="Set4Score" Title="SET 4" TextAlign="TextAlign.Center"/>
+            <RadzenDataGridColumn TItem="TeamScoreEntry" Property="Set5Score" Title="SET 5" TextAlign="TextAlign.Center"/>
+        </Columns>
+    </RadzenDataGrid>
+</div>
+
+@code {
+    RadzenDataGrid<TeamScoreEntry> grid;
+
+    [Parameter]
+    public IList<TeamScoreEntry> TeamScores { get; set; }
+
+    public void UpdateScore()
+    {
+        grid.Reload();
+    }
+
+    public class TeamScoreEntry
+    {
+        public string TeamName { get; set; }
+        public int SetsScore { get; set; }
+        public int Set1Score { get; set; }
+        public int Set2Score { get; set; }
+        public int Set3Score { get; set; }
+        public int Set4Score { get; set; }
+        public int Set5Score { get; set; }
+    }
+}

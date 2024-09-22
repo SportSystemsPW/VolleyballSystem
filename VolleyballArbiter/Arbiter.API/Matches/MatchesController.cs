@@ -1,6 +1,5 @@
 using Arbiter.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Arbiter.API.Controllers
 {
@@ -9,42 +8,11 @@ namespace Arbiter.API.Controllers
     [Route("matches")]
     public class MatchesController : ControllerBase
     {
-        private IMemoryCache _memoryCache;
-     
-        public MatchesController(IMemoryCache memoryCache)
-        {
-            _memoryCache = memoryCache;
-            
-            if (!_memoryCache.TryGetValue(1, out var _))
-            {
-                _memoryCache.Set(1, CreateMock());
-            }
-        }
-
         [HttpGet("{matchId:int}")]
         [ProducesResponseType(typeof(MatchDto), 200)]
         public async Task<IActionResult> GetMatch(int matchId)
         {
-            if(_memoryCache.TryGetValue(matchId, out var matchDto))
-            {
-                return Ok(matchDto);
-            }
-        
-            return NotFound();
-        }
-
-        [HttpPut("{matchId:int}")]
-        [ProducesResponseType(204)]
-        public async Task<IActionResult> PutMatch([FromRoute] int matchId, [FromBody] MatchDto matchDto)
-        {
-            _memoryCache.Set(matchId, matchDto);
-
-            return NoContent();
-        }
-
-        private MatchDto CreateMock()
-        {
-            return new MatchDto
+            return Ok(new MatchDto
             {
                 TeamA = new TeamDto
                 {
@@ -63,8 +31,14 @@ namespace Arbiter.API.Controllers
                     TeamBSetScore = 0,
                     Sets = []
                 }
-            };
+            });
+        }
+
+        [HttpPut("{matchId:int}")]
+        [ProducesResponseType(204)]
+        public async Task<IActionResult> PutMatch([FromRoute] int matchId, [FromBody] MatchDto matchDto)
+        {
+            return NoContent();
         }
     }
 }
- 

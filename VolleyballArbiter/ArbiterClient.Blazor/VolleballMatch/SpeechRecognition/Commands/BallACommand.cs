@@ -6,6 +6,6 @@ public class BallACommand : ICommand
 
     public bool IsMatch(IEnumerable<string> splittedText)
     {
-        return splittedText.Contains("piłka", StringComparer.OrdinalIgnoreCase) && splittedText.Contains("a", StringComparer.OrdinalIgnoreCase);
+        return splittedText.ContainsAll("piłka", "a");
     }
 }
